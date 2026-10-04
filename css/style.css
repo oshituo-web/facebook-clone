@@ -1,0 +1,82 @@
+/*=========================
+    1. DESIGN VARIABLES
+==========================*/
+
+:root {
+    --facebook-blue: #1877f2;
+    --page-background: #f0f2f5;
+    --white: #ffffff;
+    --text-primary: #050505;
+    --text-secondary: #65676b;
+    --border: #ced0d4;
+    --hover: #f2f2f2;
+    --border-radius: 8px;
+}
+
+/*=============================
+    2. BASIC RESET
+==============================*/
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/*===========================
+    3. GLOBAL BODY
+============================*/
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--page-background);
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+/*============================
+    4. MAIN PAGE LAYOUT
+=============================*/
+
+.main-layout {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 680px) 300px;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/*========================
+    5. SHARED IMAGE RULE
+=========================*/
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/*=========================
+    6. RESPONSIVE DESIGN
+==========================*/
+
+/* Tablet */
+@media (max-width: 1023px) {
+    .main-layout {
+        grid-template-columns: 200px minmax(0, 1fr);
+    }
+    .right-sidebar {
+        display: none;
+    }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    .main-layout {
+        display: block;
+        padding: 0;
+    }
+    .left-sidebar, .right-sidebar {
+        display: none;
+    }
+}

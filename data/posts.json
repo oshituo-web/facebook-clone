@@ -1,0 +1,26 @@
+[
+    {
+        "id": 101,
+        "userId": 1,
+        "content": "Teaching Web Development!",
+        "image": "./assets/images/post1.jpg",
+        "createdAt": "2026-10-04T08:00:00",
+        "likes": 20
+    },
+    {
+        "id": 102,
+        "userId": 2,
+        "content": "Interning at DYEN!",
+        "image": "./assets/images/post2.jpg",
+        "createdAt": "2026-10-04T09:30:00",
+        "likes": 50
+    },
+    {
+        "id": 103,
+        "userId": 4,
+        "content": "Building our Facebook-inspired project with the team.",
+        "image": "./assets/images/post4.jpg",
+        "createdAt": "2026-10-04T07:10:00",
+        "likes": 100
+    }
+]

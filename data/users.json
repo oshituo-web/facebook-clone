@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "name": "Tutor Lemuel",
+        "username": "tutorlemuel",
+        "avatar": "./assets/avatars/lemuel.jpg"
+    },
+    {
+        "id": 2,
+        "name": "Tutor Treasure",
+        "username": "tutortreasure",
+        "avatar": "./assets/avatars/treasure.jpg"
+    },
+    {
+        "id": 3,
+        "name": "DYEN",
+        "username": "DYEN",
+        "avatar":"./assets/avatars/dyen.jpg"
+    },
+    {
+        "id": 4,
+        "name": "Oshitu Ochuko",
+        "username": "chyzzy",
+        "avatar": "./assets/avatars/chyzzy.jpg"
+    }
+]

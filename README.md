@@ -62,8 +62,11 @@ facebook-clone/
 ├── css/
 │   └── style.css
 │
-├── js/
-│   └── script.js
+├──js/
+|   ├── script.js     ← Role 5
+|   ├── data.js       ← Role 5
+|   ├── render.js      ← Role 5
+|   └── interactions.js   ← Role 6
 │
 ├── data/
 │   ├── users.json

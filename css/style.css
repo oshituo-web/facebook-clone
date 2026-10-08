@@ -94,7 +94,7 @@ img {
 /* Facebook logo */
 
 .fa-brands.fa-facebook {
-  font-size: 55px;
+  font-size: 40px;
   color: var(--facebook-blue);
 }
 
@@ -150,7 +150,7 @@ img {
 
   height: 100%;
   min-width: 90px;
-  font-size: 32px;
+  font-size: 25px;
   padding: 8px 16px;
   display: flex;
   flex-direction: column;
@@ -172,10 +172,10 @@ img {
   text-align: center;
   padding: 6px 10px;
   border-radius: 12px;
-  font-size: 15px;
+  font-size: 10px;
   white-space: nowrap;
   position: absolute;
-  top: 95%;
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
@@ -194,7 +194,7 @@ img {
 }
 
 .nav-label {
-  font-size: 12px;
+  font-size: 10px;
   margin-top: 3px;
 }
 
@@ -254,7 +254,7 @@ img {
 
   cursor: pointer;
 
-  font-size: 25px;
+  font-size: 20px;
 }
 
 .utility-button:hover {

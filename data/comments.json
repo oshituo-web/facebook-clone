@@ -1,0 +1,20 @@
+[
+    {
+        "id": 301,
+        "postId": 101,
+        "userId": 1,
+        "content": "Web development is getting interesting"
+    },
+    {
+        "id": 302,
+        "postId": 102,
+        "userId": 2,
+        "content":"Nice! keep learning"
+    },
+    {
+        "id": 303,
+        "postId": 103,
+        "userId": 3,
+        "content": "keep building bro"
+    }
+]

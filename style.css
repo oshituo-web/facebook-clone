@@ -58,13 +58,21 @@ body {
   border-radius: 20px;
 }
 
+<<<<<<< HEAD
 .fa-solid.fa-magnifying-glass {
+=======
+.search-icon {
+>>>>>>> main
   margin-right: 8px;
   font-size: 18px;
 }
 
 .search-input {
+<<<<<<< HEAD
   width: 100%;
+=======
+  width: 200%;
+>>>>>>> main
   border: none;
   outline: none;
   background: transparent;
@@ -79,11 +87,35 @@ body {
   align-items: center;
   justify-content: center;
   height: 100%;
+<<<<<<< HEAD
   gap: 10px;
 }
 
 .nav-item {
   font-size: 100px;
+=======
+  gap: 8px;
+}
+
+.nav-item {
+  position: relative;
+  height: 100%;
+  min-width: 90px;
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #65676b;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.nav-icon {
+  font-size: 21px;
+>>>>>>> main
 }
 
 .nav-label {
@@ -96,7 +128,10 @@ body {
 }
 
 .nav-item.active {
+<<<<<<< HEAD
   size: 50px;
+=======
+>>>>>>> main
   color: #1877f2;
 }
 
@@ -117,8 +152,13 @@ body {
 .header-right {
   display: flex;
   align-items: center;
+<<<<<<< HEAD
   gap: 80px;
   min-width: 300px;
+=======
+  gap: 10px;
+  min-width: 280px;
+>>>>>>> main
   justify-content: flex-end;
 }
 

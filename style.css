@@ -58,13 +58,13 @@ body {
   border-radius: 20px;
 }
 
-.search-icon {
+.fa-solid.fa-magnifying-glass {
   margin-right: 8px;
   font-size: 18px;
 }
 
 .search-input {
-  width: 200%;
+  width: 100%;
   border: none;
   outline: none;
   background: transparent;

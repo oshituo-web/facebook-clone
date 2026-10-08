@@ -4,128 +4,155 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
    <title>Facebook Clone</title>
-
-   <!-- Main CSS -->
    <link rel="stylesheet" href="./css/style.css">
-   <!-- Font Awesome -->
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
 </head>
 
 <body>
 
-   <!-- Header Container (Role 3) -->
-   <header class="facebook-header">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-      <!-- Header Left Section -->
-      <div class="header-left">
+      <title>Facebook Clone</title>
 
-         <!-- Facebook Logo -->
-         <i class="fa-brands fa-facebook"></i>
+      <!-- Main CSS -->
+      <link rel="stylesheet" href="./css/style.css">
+      <!-- Font Awesome -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
+   </head>
 
-         <!-- Search -->
-         <div class="search-container">
-            <span class="search-icon">⌕</span>
+   <body>
 
-            <input type="search" class="search-input" placeholder="Search Facebook" aria-label="Search Facebook">
+      <!-- Header Container (Role 3) -->
+      <header class="facebook-header">
+
+         <!-- Header Left Section -->
+         <div class="header-left">
+
+            <!-- Facebook Logo -->
+            <i class="fa-brands fa-facebook"></i>
+
+            <!-- Search -->
+            <div class="search-container">
+               <i class="fa-solid fa-magnifying-glass"></i>
+               <input type="search" class="search-input" placeholder="Search Facebook" aria-label="Search Facebook">
+            </div>
+
          </div>
 
-      </div>
+
+         <!-- Main Navigation -->
+         <nav class="main-navigation">
+
+            <!-- Home -->
+            <button class="nav-item" data-action="home">
+               <i class="fa-regular fa-house"></i>
+               <span class="text">Home</span>
+            </button>
+
+            <!-- Video -->
+            <button class="nav-item" data-action="video">
+               <i class="fa-solid fa-film"></i>
+               <span class="text">Video</span>
+            </button>
+
+            <!-- Marketplace -->
+            <button class="nav-item" data-action="marketplace">
+               <i class="fa-solid fa-store"></i>
+               <span class="text">Marketplace</span>
+            </button>
+
+            <!-- Friends -->
+            <button class="nav-item" data-action="friends">
+               <i class="fa-regular fa-user"></i>
+               <span class="text">Friends</span>
+            </button>
+
+            <!-- Groups -->
+            <button class="nav-item" data-action="groups">
+               <i class="fa-solid fa-users"></i>
+               <span class="text">Groups</span>
+            </button>
+
+         </nav>
 
 
-      <!-- Main Navigation -->
-      <nav class="main-navigation">
+         <!-- Header Right Section -->
+         <div class="header-right">
 
-         <!-- Home -->
-         <button class="nav-item active" data-action="home">
-            <span class="nav-icon">⌂</span>
-            <span class="nav-label">Home</span>
-         </button>
+            <!-- Menu -->
+            <button class="utility-button" data-action="menu">
+               <i class="fa-solid fa-bars"></i>
+               <span class="text">Menu</span>
+            </button>
 
-         <!-- Friends -->
-         <button class="nav-item" data-action="friends">
-            <span class="nav-icon">♙</span>
-            <span class="nav-label">Friends</span>
-         </button>
+            <!-- Notifications -->
+            <button class="utility-button" data-action="notifications">
+               <i class="fa-solid fa-bell"></i>
+               <span class="text">Notifications</span>
+            </button>
 
-         <!-- Video -->
-         <button class="nav-item" data-action="video">
-            <span class="nav-icon">▶</span>
-            <span class="nav-label">Video</span>
-         </button>
+            <!-- Messenger -->
+            <button class="utility-button" data-action="messenger">
+               <i class="fa-brands fa-facebook-messenger"></i>
+               <span class="text">Messenger</span>
+            </button>
 
-         <!-- Groups -->
-         <button class="nav-item" data-action="groups">
-            <span class="nav-icon">👥</span>
-            <span class="nav-label">Groups</span>
-         </button>
-
-      </nav>
+            <!-- Profile -->
+            <button class="utility-button" data-action="profile">
+               <i class="fa-regular fa-user"></i>
+               <span class="text">Profile</span>
+            </button>
 
 
-      <!-- Header Right Section -->
-      <div class="header-right">
+         </div>
 
-         <!-- Messages -->
-         <button class="utility-button" data-action="messages">
-            💬
-            <span class="notification-badge"></span>
-         </button>
-
-         <!-- Notifications -->
-         <button class="utility-button" data-action="notifications">
-            🔔
-            <span class="notification-badge"></span>
-         </button>
-
-      </div>
-
-   </header>
+      </header>
 
 
-   <!-- Main Layout Container -->
-   <main class="main-layout">
+      <!-- Main Layout Container -->
+      <main class="main-layout">
 
-      <!-- Left Sidebar (Role 7) -->
-      <aside class="left-sidebar">
-         <!-- left sidebar content -->
-      </aside>
+         <!-- Left Sidebar (Role 7) -->
+         <aside class="left-sidebar">
+            <!-- left sidebar content -->
+         </aside>
 
 
-      <!-- Central Feed Section (Role 4) -->
-      <section class="feed">
+         <!-- Central Feed Section (Role 4) -->
+         <section class="feed">
 
-         <!-- Stories Section -->
-         <section class="stories">
-            <!-- Stories will be rendered here -->
+            <!-- Stories Section -->
+            <section class="stories">
+               <!-- Stories will be rendered here -->
+            </section>
+
+
+            <!-- Post Composer -->
+            <section class="create-post">
+               <!-- Create post interface will go here -->
+            </section>
+
+
+            <!-- Dynamic Posts Container -->
+            <section class="posts">
+               <!-- Posts will be rendered here -->
+            </section>
+
          </section>
 
 
-         <!-- Post Composer -->
-         <section class="create-post">
-            <!-- Create post interface will go here -->
-         </section>
+         <!-- Right Sidebar (Role 7) -->
+         <aside class="right-sidebar">
+            <!-- Right sidebar content -->
+         </aside>
+
+      </main>
 
 
-         <!-- Dynamic Posts Container -->
-         <section class="posts">
-            <!-- Posts will be rendered here -->
-         </section>
-
-      </section>
-
-
-      <!-- Right Sidebar (Role 7) -->
-      <aside class="right-sidebar">
-         <!-- Right sidebar content -->
-      </aside>
-
-   </main>
-
-
-   <!-- JavaScript -->
-   <script type="module" src="./js/script.js"></script>
-</body>
+      <!-- JavaScript -->
+      <script type="module" src="./js/script.js"></script>
+   </body>
 
 </html>

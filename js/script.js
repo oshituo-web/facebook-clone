@@ -104,7 +104,7 @@ const moreItems   = document.getElementById("moreItems");
 const seeMoreText = document.getElementById("seeMoreText");
 
 // LISTEN for a click on the "See more" button
-seeMoreBtn.addEventListener("click", function () {
+seeMoreBtn.addEventListener("click", () => {
 
     // classList.toggle: adds the class if missing, removes it if present
     moreItems.classList.toggle("open");

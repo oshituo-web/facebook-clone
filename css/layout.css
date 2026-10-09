@@ -9,8 +9,4 @@
   gap: 24px;
   max-width: 1400px;
   margin: 0 auto;
-
-  /* Charles added this styling to push the images to the left */
-  margin-left: var(--sidebar-width);
-  padding: 10px 24px 24px;
 }

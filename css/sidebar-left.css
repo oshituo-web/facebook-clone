@@ -23,10 +23,10 @@ a { color: inherit; text-decoration: none; }
 
 
 .left-sidebar {
-  /* position: fixed; */
-  /* top: 56px; */
-  /* left: 0;  */
-  /* width: var(--sidebar-width); */
+  position: aticky;
+  top: 56px;
+  left: 0; 
+  width: var(--sidebar-width);
   height: calc(100vh - 56px);
   overflow-y: auto;
   padding: 10px 24px 0 24px;

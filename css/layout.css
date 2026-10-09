@@ -4,14 +4,9 @@
 
 .main-layout {
   display: grid;
-
   grid-template-columns:
     240px minmax(0, 680px) 300px;
-
   gap: 24px;
-
   max-width: 1400px;
-
   margin: 0 auto;
-  padding: 20px;
 }

@@ -12,7 +12,7 @@
       200px minmax(0, 1fr);
   }
 
-  .right-sidebar {
+  .left-sidebar {
     display: none;
   }
 }
@@ -20,11 +20,12 @@
 
 /* Mobile */
 
-@media (max-width: 767px) {
+@media (max-width: 900px) {
 
   .main-layout {
     display: block;
     padding: 0;
+    margin-left: 0;
   }
 
   .left-sidebar,

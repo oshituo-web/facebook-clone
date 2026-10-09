@@ -1,156 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-   <title>Facebook Clone</title>
+      <title>Facebook Clone</title>
 
-   <!-- Main CSS -->
-   <link rel="stylesheet" href="./css/style.css">
-   <!-- Font Awesome -->
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
-</head>
+      <!-- Stylesheets -->
+      <link rel="stylesheet" href="./css/base.css">
+      <link rel="stylesheet" href="./css/layout.css">
+      <link rel="stylesheet" href="./css/header.css">
+      <link rel="stylesheet" href="./css/feed.css">
+      <link rel="stylesheet" href="./css/sidebar-left.css">
+      <link rel="stylesheet" href="./css/sidebar-right.css">
+      <link rel="stylesheet" href="./css/auth.css">
+      <link rel="stylesheet" href="./css/responsive.css">
 
-<body>
+      <!-- Font Awesome -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
+   </head>
 
-   <!-- Header Container (Role 3) -->
-   <header class="facebook-header">
+   <body>
 
-      <!-- Header Left Section -->
-      <div class="header-left">
+      <!-- Header Container (Role 3) -->
+      <header class="facebook-header">
 
-         <!-- Facebook Logo -->
-         <i class="fa-brands fa-facebook"></i>
+         <!-- Header Left Section -->
+         <div class="header-left">
 
-         <!-- Search -->
-         <div class="search-container">
-            <span class="search-icon">⌕</span>
+            <!-- Facebook Logo -->
+            <i class="fa-brands fa-facebook"></i>
 
-            <input type="search" class="search-input" placeholder="Search Facebook" aria-label="Search Facebook">
+            <!-- Search -->
+            <div class="search-container">
+               <i class="fa-solid fa-magnifying-glass"></i>
+               <input type="search" class="search-input" placeholder="Search Facebook" aria-label="Search Facebook">
+            </div>
+
          </div>
 
-      </div>
 
-      <aside class="left-sidebar">
+         <!-- Main Navigation -->
+         <nav class="main-navigation">
 
-         <nav class="sidebar-menu">
-            <a href="#">
-               <span>👤</span>
-               <span>Profile name</span>
-            </a>
+            <!-- Home -->
+            <button class="nav-item" data-action="home">
+               <i class="fa-regular fa-house"></i>
+               <span class="text">Home</span>
+            </button>
 
-            <a href="#">
-               <span>👤</span>
-               <span>Meta Ai</span>
-            </a>
+            <!-- Video -->
+            <button class="nav-item" data-action="video">
+               <i class="fa-solid fa-film"></i>
+               <span class="text">Video</span>
+            </button>
 
-            <a href="#">
-               <img src="./assets/icons/friends.svg" alt="">
-               <span>Friends</span>
-            </a>
-            <a href="#">
-               <span>👤</span>
-               <span>Profile name</span>
-            </a>
+            <!-- Marketplace -->
+            <button class="nav-item" data-action="marketplace">
+               <i class="fa-solid fa-store"></i>
+               <span class="text">Marketplace</span>
+            </button>
+
+            <!-- Friends -->
+            <button class="nav-item" data-action="friends">
+               <i class="fa-regular fa-user"></i>
+               <span class="text">Friends</span>
+            </button>
+
+            <!-- Groups -->
+            <button class="nav-item" data-action="groups">
+               <i class="fa-solid fa-users"></i>
+               <span class="text">Groups</span>
+            </button>
+
          </nav>
 
-      </aside>
+         <!-- Header Right Section -->
+         <div class="header-right">
+
+            <!-- Menu -->
+            <button class="utility-button" data-action="menu">
+               <i class="fa-solid fa-bars"></i>
+               <span class="text">Menu</span>
+            </button>
+
+            <!-- Notifications -->
+            <button class="utility-button" data-action="notifications">
+               <i class="fa-solid fa-bell"></i>
+               <span class="text">Notifications</span>
+            </button>
+
+            <!-- Messenger -->
+            <button class="utility-button" data-action="messenger">
+               <i class="fa-brands fa-facebook-messenger"></i>
+               <span class="text">Messenger</span>
+            </button>
+
+            <!-- Profile -->
+            <button class="utility-button" data-action="profile">
+               <i class="fa-regular fa-user"></i>
+               <span class="text">Profile</span>
+            </button>
 
 
-      <!-- Main Navigation -->
-      <nav class="main-navigation">
+         </div>
 
-         <!-- Home -->
-         <button class="nav-item active" data-action="home">
-            <span class="nav-icon">⌂</span>
-            <span class="nav-label">Home</span>
-         </button>
+      </header>
 
-         <!-- Friends -->
-         <button class="nav-item" data-action="friends">
-            <span class="nav-icon">♙</span>
-            <span class="nav-label">Friends</span>
-         </button>
+      <!-- Main Layout Container -->
+      <main class="main-layout">
+         
+         <!-- Left Sidebar (Role 7) -->
 
-         <!-- Video -->
-         <button class="nav-item" data-action="video">
-            <span class="nav-icon">▶</span>
-            <span class="nav-label">Video</span>
-         </button>
+         <aside class="left-sidebar">
+            <!-- left sidebar content -->
+            <nav>
+               <ul> 
+                  <li>
+                     <img class="avatar" src="https://i.pravatar.cc/100?img=47" alt="Your profile photo">
+                     <span><i class="fa-solid fa-user"></i>
+                     </span>
+                     <span>Your Name</span>
+                  </li>
 
-         <!-- Groups -->
-         <button class="nav-item" data-action="groups">
-            <span class="nav-icon">👥</span>
-            <span class="nav-label">Groups</span>
-         </button>
+                  <!-- icons and their titles -->
+                  <li class="menu-item">
+                     <span class="icon c-blue"><i class="fa-solid fa-user-group"></i></span>
+                     <span>Friends</span>
+                  </li>
 
-      </nav>
+                  <li class="menu-item">
+                     <span class="icon c-blue"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                     <span>Memories</span>
+                  </li>
+
+                  <li class="menu-item">
+                     <span class="icon c-purple"><i class="fa-solid fa-bookmark"></i></span>
+                     <span>Saved</span>
+                  </li>
+
+                  <li class="menu-item">
+                     <span class="icon c-blue"><i class="fa-solid fa-users"></i></span>
+                     <span>Groups</span>
+                  </li>
+
+                  <li class="menu-item">
+                     <span class="icon c-blue"><i class="fa-solid fa-circle-play"></i></span>
+                     <span>Video</span>
+                  </li>
+
+                  <li class="menu-item">
+                     <span class="icon c-teal"><i class="fa-solid fa-shop"></i></span>
+                     <span>Marketplace</span>
+                  </li>
+
+                  <li class="menu-item">
+                     <span class="icon c-blue"><i class="fa-solid fa-newspaper"></i></span>
+                     <span>Feeds</span>
+                  </li>
+
+                  <!-- Items hidden until "See more" is clicked -->
+                  <div class="more-items" id="moreItems">
+
+                     <li class="menu-item">
+                        <span class="icon c-red"><i class="fa-solid fa-calendar-days"></i></span>
+                        <span>Events</span>
+                     </li>
+
+                     <li class="menu-item">
+                        <span class="icon c-orange"><i class="fa-solid fa-flag"></i></span>
+                        <span>Pages</span>
+                     </li>
+
+                     <li class="menu-item">
+                        <span class="icon c-pink"><i class="fa-solid fa-heart"></i></span>
+                        <span>Fundraisers</span>
+                     </li>
+
+                     <li class="menu-item">
+                        <span class="icon c-green"><i class="fa-solid fa-gamepad"></i></span>
+                        <span>Gaming</span>
+                     </li>
+
+                  </div>
+
+                  <!-- The "See more" button — JavaScript listens for clicks on this -->
+                  <li class="menu-item see-more" id="seeMoreBtn">
+                     <span class="icon"><i class="fa-solid fa-chevron-down"></i></span>
+                     <span id="seeMoreText">See more</span>
+                  </li>
+               </ul> 
+
+               <div class="divider"></div>
+
+               <!-- (HTML) — Shortcuts section -->
+               <div class="section-title">Your shortcuts</div>
+               <ul>
+                  <li class="menu-item shortcut">
+                     <img class="thumb" src="https://picsum.photos/seed/shortcut1/80" alt="">
+                     <span>Web Developers Hub</span>
+                  </li>
+                  <li class="menu-item shortcut">
+                     <img class="thumb" src="https://picsum.photos/seed/shortcut2/80" alt="">
+                     <span>Design Inspiration</span>
+                  </li>
+                  <li class="menu-item shortcut">
+                     <img class="thumb" src="https://picsum.photos/seed/shortcut3/80" alt="">
+                     <span>Learn to Code Together</span>
+                  </li>
+               </ul>
+
+               <div class="footer-links">
+                  <a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Advertising</a> ·
+                  <a href="#">Cookies</a> · <a href="#">More</a> · Meta © 2026
+               </div>
+            </nav>
+               
+         </aside>
+
+         <!-- Central Feed Section (Role 4) -->
+         <section class="feed">
+
+            <!-- Stories Section -->
+            <section class="stories">
+               <!-- Stories will be rendered here -->
+            </section>
 
 
-      <!-- Header Right Section -->
-      <div class="header-right">
-
-         <!-- Messages -->
-         <button class="utility-button" data-action="messages">
-            💬
-            <span class="notification-badge"></span>
-         </button>
-
-         <!-- Notifications -->
-         <button class="utility-button" data-action="notifications">
-            🔔
-            <span class="notification-badge"></span>
-         </button>
-
-      </div>
-
-   </header>
+            <!-- Post Composer -->
+            <section class="create-post">
+               <!-- Create post interface will go here -->
+            </section>
 
 
-   <!-- Main Layout Container -->
-   <main class="main-layout">
+            <!-- Dynamic Posts Container -->
+            <section class="posts">
+               <!-- Posts will be rendered here -->
+            </section>
 
-      <!-- Left Sidebar (Role 7) -->
-      <aside class="left-sidebar">
-         <!-- left sidebar content -->
-      </aside>
-
-
-      <!-- Central Feed Section (Role 4) -->
-      <section class="feed">
-
-         <!-- Stories Section -->
-         <section class="stories">
-            <!-- Stories will be rendered here -->
          </section>
 
-
-         <!-- Post Composer -->
-         <section class="create-post">
-            <!-- Create post interface will go here -->
-         </section>
+      </main>
 
 
-         <!-- Dynamic Posts Container -->
-         <section class="posts">
-            <!-- Posts will be rendered here -->
-         </section>
-
-      </section>
-
-
-      <!-- Right Sidebar (Role 7) -->
-      <aside class="right-sidebar">
-         <!-- Right sidebar content -->
-      </aside>
-
-   </main>
-
-
-   <!-- JavaScript -->
-<script type="module" src="./js/script.js"></script>
-</body>
+      <!-- JavaScript -->
+      <script type="module" src="./js/script.js"></script>
+   </body>
 
 </html>

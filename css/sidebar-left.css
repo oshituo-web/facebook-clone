@@ -1,0 +1,42 @@
+:root {
+  --page-bg: #F0F2F5;       /* light grey page background */
+  --text: #050505;          /* main text */
+  --text-soft: #65676B;     /* secondary text, footer links */
+  --hover: #E4E6EB;         /* item background on hover */
+  --active: #E7F3FF;        /* item background when selected */
+  --blue: #1877F2;          /* Facebook blue */
+  --divider: #CED0D4;       /* thin lines */
+  --sidebar-width: 320px;
+}
+
+/* RESET: browsers add default spacing. We remove it so we're in control. */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--page-bg);
+  color: var(--text);
+}
+
+ul { list-style: none; }
+a { color: inherit; text-decoration: none; }
+
+
+.left-sidebar {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  width: var(--sidebar-width);
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  padding: 8px 8px 24px;
+  background: red;
+}
+
+/* Profile row uses a photo instead of an icon */
+.menu-item img.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;        /* 50% turns a square into a circle */
+  object-fit: cover;         /* crops the photo instead of stretching it */
+}

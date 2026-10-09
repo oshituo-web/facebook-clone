@@ -1,91 +1,99 @@
-:root {
-  --facebook-blue: #1877f2;
-  --page-background: #f0f2f5;
-  --white: #ffffff;
-  --text-primary: #050505;
-  --text-secondary: #65676b;
-  --border: #ced0d4;
-  --hover: #f2f2f2;
-  --border-radius: 8px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #f0f2f5;
-}
+/* =========================================
+   5. HEADER
+========================================= */
 
 .facebook-header {
   height: 64px;
   width: 100%;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   padding: 0 24px;
-  background: #ffffff;
-  border-bottom: 1px solid #ddd;
+
+  background-color: var(--white);
+  border-bottom: 1px solid var(--border);
+
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
 
-/* LEFT */
+/* =========================================
+   6. HEADER - LEFT SECTION
+========================================= */
 
 .header-left {
   display: flex;
   align-items: center;
   gap: 12px;
+
   min-width: 280px;
 }
 
+
+/* Facebook logo */
+
 .fa-brands.fa-facebook {
-  font-size: 32px;
-  color: #1877f2;
+  font-size: 40px;
+  color: var(--facebook-blue);
 }
+
+
+/* Search */
 
 .search-container {
   display: flex;
   align-items: center;
+
   width: 250px;
   height: 40px;
+
   padding: 0 12px;
-  background: #f0f2f5;
+
+  background-color: var(--page-background);
   border-radius: 20px;
 }
 
-.fa-solid.fa-magnifying-glass {
+.search-icon {
   margin-right: 8px;
   font-size: 18px;
 }
 
 .search-input {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
+
   border: none;
   outline: none;
+
   background: transparent;
-  font-size: 20px;
+
+  font-size: 16px;
 }
 
 
-/* MAIN NAVIGATION */
+/* =========================================
+   7. HEADER - MAIN NAVIGATION
+========================================= */
 
 .main-navigation {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
-  gap: 8px;
+
+  gap: 20px;
 }
 
 .nav-item {
   position: relative;
+
   height: 100%;
   min-width: 90px;
+  font-size: 25px;
   padding: 8px 16px;
   display: flex;
   flex-direction: column;
@@ -93,9 +101,35 @@ body {
   justify-content: center;
   border: none;
   background: transparent;
-  color: #65676b;
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background-color 0.2s ease;
+}
+
+.nav-item .text,
+.utility-button .text {
+  visibility: hidden;
+  opacity: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: var(--white);
+  text-align: center;
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  white-space: nowrap;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  transition: opacity 0.2s ease-in-out;
+  pointer-events: none;
+}
+
+.nav-item:hover .text,
+.utility-button:hover .text {
+  visibility: visible;
+  opacity: 1;
 }
 
 .nav-icon {
@@ -103,102 +137,138 @@ body {
 }
 
 .nav-label {
-  font-size: 12px;
+  font-size: 10px;
   margin-top: 3px;
 }
 
 .nav-item:hover {
-  background: #f0f2f5;
+  background-color: var(--hover);
 }
 
 .nav-item.active {
-  color: #1877f2;
+  font-size: 40px;
+  color: var(--facebook-blue);
 }
 
 .nav-item.active::after {
   content: "";
+
   position: absolute;
   bottom: 0;
   left: 10%;
   right: 10%;
+
   height: 3px;
-  background: #1877f2;
+
+  background-color: var(--facebook-blue);
+
   border-radius: 3px 3px 0 0;
 }
 
 
-/* RIGHT */
+/* =========================================
+   8. HEADER - RIGHT SECTION
+========================================= */
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-width: 280px;
   justify-content: flex-end;
+
+  gap: 10px;
+
+  min-width: 280px;
 }
 
 .utility-button {
   position: relative;
+
   width: 42px;
   height: 42px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   border: none;
   border-radius: 50%;
-  background: #f0f2f5;
+
+  background-color: var(--page-background);
+
   cursor: pointer;
-  font-size: 18px;
+
+  font-size: 20px;
 }
 
 .utility-button:hover {
-  background: #e4e6eb;
+  background-color: #e4e6eb;
 }
+
+
+/* Notification badge */
 
 .notification-badge {
   position: absolute;
+
   top: -2px;
   right: -2px;
+
   min-width: 18px;
   height: 18px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   padding: 0 4px;
-  background: #e41e3f;
-  color: white;
+
+  background-color: #e41e3f;
+  color: var(--white);
+
   border-radius: 10px;
+
   font-size: 10px;
   font-weight: bold;
 }
 
 
-/* PROFILE */
+/* =========================================
+   9. PROFILE
+========================================= */
 
 .profile-button {
   display: flex;
   align-items: center;
+
   gap: 7px;
+
   padding: 5px 10px;
+
   border: none;
   border-radius: 20px;
+
   background: transparent;
+
   cursor: pointer;
 }
 
 .profile-button:hover {
-  background: #f0f2f5;
+  background-color: var(--page-background);
 }
 
 .profile-avatar {
   width: 34px;
   height: 34px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   border-radius: 50%;
-  background: #1877f2;
-  color: white;
+
+  background-color: var(--facebook-blue);
+  color: var(--white);
+
   font-weight: bold;
 }
 
@@ -209,76 +279,4 @@ body {
 
 .dropdown-arrow {
   font-size: 16px;
-}
-
-/*=============================
-    2. BASIC RESET
-==============================*/
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/*===========================
-    3. GLOBAL BODY
-============================*/
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: var(--page-background);
-  color: var(--text-primary);
-  line-height: 1.5;
-}
-
-/*============================
-    4. MAIN PAGE LAYOUT
-=============================*/
-
-.main-layout {
-  display: grid;
-  grid-template-columns: 240px minmax(0, 680px) 300px;
-  gap: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-/*========================
-    5. SHARED IMAGE RULE
-=========================*/
-
-img {
-  max-width: 100%;
-  display: block;
-}
-
-
-/*=========================
-    6. RESPONSIVE DESIGN
-==========================*/
-
-/* Tablet */
-@media (max-width: 1023px) {
-  .main-layout {
-    grid-template-columns: 200px minmax(0, 1fr);
-  }
-
-  .right-sidebar {
-    display: none;
-  }
-}
-
-/* Mobile */
-@media (max-width: 767px) {
-  .main-layout {
-    display: block;
-    padding: 0;
-  }
-
-  .left-sidebar,
-  .right-sidebar {
-    display: none;
-  }
 }

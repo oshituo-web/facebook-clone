@@ -1,0 +1,34 @@
+/* =========================================
+   11. RESPONSIVE FOUNDATION
+========================================= */
+
+
+/* Tablet */
+
+@media (max-width: 1023px) {
+
+  .main-layout {
+    grid-template-columns:
+      200px minmax(0, 1fr);
+  }
+
+  .right-sidebar {
+    display: none;
+  }
+}
+
+
+/* Mobile */
+
+@media (max-width: 767px) {
+
+  .main-layout {
+    display: block;
+    padding: 0;
+  }
+
+  .left-sidebar,
+  .right-sidebar {
+    display: none;
+  }
+}

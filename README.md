@@ -1,609 +1,215 @@
-# Facebook-Inspired Web App
+# Facebook Clone — Team Project
 
-A collaborative web development project that recreates the core user-interface experience of a modern social media platform using HTML, CSS, and JavaScript.
+A collaborative front-end project to recreate the core interface and selected interactions of Facebook using HTML, CSS, and JavaScript.
 
-This project is being developed as a team assignment to demonstrate practical frontend development concepts including semantic HTML, responsive CSS, JavaScript, JSON, Fetch API, HTTP requests, asynchronous programming, localStorage, URL parameters, and Git/GitHub collaboration.
+The project is designed to help our team practise real-world web development, responsive design, Git/GitHub collaboration, working with JSON data, APIs, asynchronous JavaScript, and user authentication.
 
-> **Important:** This project is inspired by the observable interface patterns of Facebook. It is not affiliated with, endorsed by, or connected to Meta or Facebook.
+## Project Objectives
 
----
-
-## Project Goals
-
-The goal of this project is to build a functional, responsive social-media-style web application that demonstrates:
-
-* Semantic HTML5
-* CSS3 and responsive design
-* JavaScript DOM manipulation
-* JSON data
-* Fetch API
-* GET requests
-* POST requests
-* Promises
-* `async/await`
-* HTTP response/status handling
-* URL parameters and queries
-* localStorage
-* Event handling
-* Dynamic rendering
-* Git and GitHub collaboration
-* Responsive design for desktop, tablet, and mobile
-
----
+* Recreate the main Facebook-inspired interface across desktop, tablet, and mobile screens.
+* Build reusable page sections, including the header, navigation, feed, stories, and sidebars.
+* Load application data from JSON files using JavaScript and the Fetch API.
+* Implement interactive features such as creating posts, liking posts, and other agreed UI interactions.
+* Practise client-side state management and localStorage where appropriate.
+* Implement authentication using Supabase Auth.
+* Develop good teamwork habits through branches, commits, pull requests, code reviews, and documentation.
 
 ## Technology Stack
 
-We are using:
+* **HTML5** — page structure and semantic markup.
+* **CSS3** — styling, layout, and responsive design.
+* **Vanilla JavaScript** — application logic and interactions.
+* **JSON** — initial application data.
+* **Fetch API** — loading local JSON data and working with API responses.
+* **localStorage** — suitable non-sensitive client-side preferences and state.
+* **Supabase Auth** — planned authentication implementation.
+* **Git and GitHub** — version control and team collaboration.
+* **Font Awesome** — interface icons where included.
 
-* **HTML5** — page structure
-* **CSS3** — styling and responsive layout
-* **Vanilla JavaScript** — application logic and interactions
-* **JSON** — local development data
-* **Fetch API** — retrieving and sending data
-* **localStorage** — storing appropriate client-side state
-* **Git** — version control
-* **GitHub** — collaboration and code hosting
-
-### No Framework
-
-This project intentionally uses **plain HTML, CSS, and JavaScript**.
-
-We are not using React, Vue, Angular, Bootstrap, or other frontend frameworks unless our tutor specifically requires one later.
-
----
-
-# Project Structure
+## Project Structure
 
 ```text
 facebook-clone/
-│
 ├── index.html
-│
+├── login.html
+├── signup.html
 ├── css/
+│   ├── base.css
+│   ├── layout.css
+│   ├── header.css
+│   ├── feed.css
+│   ├── sidebar-left.css
+│   ├── sidebar-right.css
+│   ├── auth.css
+│   ├── responsive.css
 │   └── style.css
-│
-├──js/
-|   ├── script.js     ← Role 5
-|   ├── data.js       ← Role 5
-|   ├── render.js      ← Role 5
-|   └── interactions.js   ← Role 6
-│
+├── js/
+│   ├── script.js
+│   ├── data.js
+│   ├── render.js
+│   └── auth.js
 ├── data/
 │   ├── users.json
 │   ├── posts.json
 │   ├── stories.json
 │   └── comments.json
-│
 ├── assets/
 │   ├── avatars/
 │   ├── icons/
 │   └── images/
-│
-└── README.md
+├── README.md
+└── ROADMAP.md
 ```
 
----
+**Note:** The structure represents the project's working and planned files. `style.css` is retained during the CSS refactor until the replacement stylesheets have been verified.
 
-# Page Structure
+## Getting Started
 
-The main page follows this structure:
+1. Install Git and Visual Studio Code.
 
-```text
-Header
-   │
-   └── Navigation / Search / Profile controls
+2. Clone the repository:
 
-Main
-   │
-   ├── Left Sidebar
-   │
-   ├── Feed
-   │   ├── Stories
-   │   ├── Create Post
-   │   └── Posts
-   │
-   └── Right Sidebar
-```
+   ```bash
+   git clone <repository-url>
+   ```
 
-The main layout is designed to use:
+3. Open the project folder in VS Code.
 
-* Three columns on desktop
-* Two-column layout on tablet
-* Single-column feed on mobile
+4. Run the project through a local development server, such as the VS Code Live Server extension. This is important because the application fetches JSON files, which may not work correctly when `index.html` is opened directly through `file://`.
 
----
+5. Open the local URL provided by the server.
 
-# Data Architecture
+6. Open the browser developer tools and check the Console and Network tabs if something fails to load.
 
-The project uses separate JSON files for different types of data.
+Replace `<repository-url>` with the actual GitHub repository URL.
 
-```text
-users.json
-    │
-    ├── posts.json
-    │       │
-    │       └── comments.json
-    │
-    └── stories.json
-```
+## CSS Architecture
 
-Data relationships are maintained using IDs.
+The project is being organised into separate stylesheets so that each file has a clear responsibility.
 
-For example:
+| File                | Responsibility                                         |
+| ------------------- | ------------------------------------------------------ |
+| `base.css`          | CSS variables, reset, and global styles                |
+| `layout.css`        | Main page layout and columns                           |
+| `header.css`        | Header, logo, search, navigation, and utility controls |
+| `feed.css`          | Stories, create-post area, and feed posts              |
+| `sidebar-left.css`  | Left sidebar                                           |
+| `sidebar-right.css` | Right sidebar                                          |
+| `auth.css`          | Login and signup styling                               |
+| `responsive.css`    | Page-wide responsive behaviour                         |
+| `style.css`         | Temporary legacy stylesheet during refactoring         |
 
-```json
-{
-    "id": 101,
-    "userId": 1,
-    "content": "Learning JavaScript today!"
-}
-```
+The CSS refactor must be tested before the legacy stylesheet is removed.
 
-`userId` connects the post to the corresponding user in `users.json`.
+## Team Roles and Responsibilities
 
----
+### Role 1 — Project Lead and Git/GitHub
 
-# Example Data Structure
+* Coordinate tasks and communication.
+* Maintain the project roadmap and documentation.
+* Manage branches, pull requests, reviews, and merges.
+* Help ensure that team contributions work together.
 
-### User
+### Role 2 — HTML Structure and Page Layout
 
-```json
-{
-    "id": 1,
-    "name": "David Johnson",
-    "username": "davidjohnson",
-    "avatar": "./assets/avatars/david.jpg"
-}
-```
+* Maintain the semantic HTML structure.
+* Establish the overall page sections and their relationships.
+* Coordinate with the header, feed, and sidebar roles.
 
-### Post
+### Role 3 — Header and Navigation
 
-```json
-{
-    "id": 101,
-    "userId": 1,
-    "content": "Learning JavaScript today!",
-    "image": "./assets/images/post1.jpg",
-    "createdAt": "2026-10-04T08:00:00",
-    "likes": 12
-}
-```
+* Build the Facebook-inspired header.
+* Implement the logo, search field, main navigation, and utility controls.
+* Refine header alignment, spacing, and responsive behaviour.
 
----
+### Role 4 — Feed, Stories, and Create Post
 
-# Fetch and API Architecture
+* Build the feed interface, stories section, and create-post area.
+* Render posts using the shared data layer.
+* Coordinate with Roles 5 and 6.
 
-Data will generally follow this flow:
+### Role 5 — Data, JSON, and Fetch/API
 
-```text
-JSON / API
-    ↓
-fetch()
-    ↓
-Response
-    ↓
-response.ok
-    ↓
-response.json()
-    ↓
-JavaScript data
-    ↓
-DOM
-    ↓
-User interface
-```
+* Maintain the JSON data structure and relationships between users, posts, stories, and comments.
+* Implement and maintain data-loading functions.
+* Handle asynchronous requests and response errors.
+* Coordinate with roles that consume application data.
 
-The project will demonstrate both:
+### Role 6 — JavaScript Interactions and Client-Side State
 
-### GET
+* Implement agreed user-interface interactions.
+* Manage appropriate client-side state and localStorage.
+* Coordinate with the data and authentication roles.
+* Avoid treating client-side state as secure authentication.
 
-Used to retrieve data.
+### Role 7A — Left Sidebar
 
-### POST
+* Build and style the left sidebar.
+* Ensure it fits the shared page layout.
 
-Used to demonstrate sending data to a test/mock API or backend.
+### Role 7B — Right Sidebar
 
-> A static JSON file is not a POST API. POST requests will use an appropriate mock/test API or backend when implemented.
+* Build and style the right sidebar.
+* Ensure it fits the shared page layout.
 
----
+### Role 8 — Responsive Design and Visual Consistency
 
-# JavaScript Concepts
+* Test the application on mobile, tablet, and desktop.
+* Identify layout overflow, inconsistent spacing, and breakpoint issues.
+* Coordinate responsive fixes without overwriting other roles' work.
 
-The project will demonstrate:
+### Role 9 — Authentication
 
-### Promises
+* Implement login and signup using Supabase Auth.
+* Handle user sessions and logout.
+* Coordinate authentication state with the main application.
+* Protect authenticated functionality appropriately.
+* Never store passwords in JSON or expose Supabase service-role credentials in front-end code.
 
-```javascript
-fetch("./data/users.json")
-    .then(response => response.json())
-    .then(users => {
-        console.log(users);
-    })
-    .catch(error => {
-        console.error(error);
-    });
-```
+**Team coordination:** Each role should communicate with the other roles whose work depends on theirs. Role ownership does not prevent code review or collaborative fixes.
 
-### Async/Await
+## Git and GitHub Workflow
 
-```javascript
-async function getPosts() {
-    const response = await fetch("./data/posts.json");
-
-    if (!response.ok) {
-        throw new Error("Failed to load posts");
-    }
-
-    return await response.json();
-}
-```
-
-### Local Storage
-
-Appropriate application state may be stored using:
-
-```javascript
-localStorage.setItem("currentUser", JSON.stringify(user));
-```
-
-Sensitive information such as passwords, private credentials, API keys, or secret tokens must never be stored in localStorage.
-
----
-
-# URL Parameters
-
-The project may use URL parameters for features such as search or viewing a particular user.
+1. Pull the latest changes from `main`.
+2. Create or switch to a task-specific branch.
+3. Make changes within the assigned scope.
+4. Test the changes locally.
+5. Commit with a clear message.
+6. Push the branch to GitHub.
+7. Open a pull request.
+8. Review the changes and resolve conflicts before merging.
+9. Update the local `main` branch after the merge.
 
 Example:
-
-```text
-index.html?user=2
-```
-
-JavaScript can read the parameter using:
-
-```javascript
-const params = new URLSearchParams(window.location.search);
-
-const userId = params.get("user");
-```
-
----
-
-# Visual Design Standard
-
-The project follows a shared visual language.
-
-### Primary colors
-
-```text
-Facebook-style blue
-Light grey page background
-White cards
-Dark primary text
-Muted grey secondary text
-```
-
-### General design principles
-
-* Clean layout
-* Clear spacing
-* White content cards
-* Subtle borders
-* Rounded corners
-* Circular avatars
-* Consistent buttons
-* Minimal shadows
-* No excessive gradients
-* Readable typography
-
-The exact values are maintained in the project's CSS variables.
-
----
-
-# Responsive Design
-
-The application must work across:
-
-### Desktop
-
-```text
-Left Sidebar | Feed | Right Sidebar
-```
-
-### Tablet
-
-```text
-Left Sidebar | Feed
-```
-
-### Mobile
-
-```text
-Header
-Stories
-Create Post
-Feed
-```
-
-The mobile version should not simply squeeze the desktop layout into a smaller screen.
-
----
-
-# Team Roles
-
-The project is divided into eight development roles.
-
-### Role 1 — Project Lead & Git/GitHub
-
-Responsible for:
-
-* GitHub repository
-* Branch management
-* Pull Requests
-* Code integration
-* Project architecture
-* Final testing
-* Deployment
-* README
-
-### Role 2 — HTML Structure & Page Layout
-
-Responsible for:
-
-* Semantic HTML
-* Page structure
-* Main layout containers
-* Shared HTML class names
-* Feed/sidebar/header structure
-
-### Role 3 — Header & Navigation
-
-Responsible for:
-
-* Header
-* Branding
-* Search
-* Navigation
-* Profile/menu controls
-
-### Role 4 — Feed, Stories & Post Composer
-
-Responsible for:
-
-* Stories
-* Create-post area
-* Post structure
-* Feed presentation
-
-### Role 5 — Data, JSON & Fetch/API
-
-Responsible for:
-
-* JSON data
-* Data relationships
-* Fetch API
-* GET requests
-* POST requests
-* Promises
-* Async/await
-* Response/status handling
-* Error handling
-
-### Role 6 — JavaScript Interactions & LocalStorage
-
-Responsible for:
-
-* Likes
-* Saves
-* Comments
-* Shares
-* Event listeners
-* Dynamic interactions
-* localStorage
-
-### Role 7 — Left & Right Sidebars
-
-Responsible for:
-
-* Left sidebar
-* Right sidebar
-* Sidebar content
-* Sidebar responsiveness
-
-### Role 8 — Responsive Design & Visual Consistency
-
-Responsible for:
-
-* Global design system
-* Colors
-* Typography
-* Spacing
-* Responsive layout
-* Mobile/tablet/desktop behaviour
-* Visual consistency
-* Final responsive testing
-
----
-
-# Git & GitHub Workflow
-
-The `main` branch contains the integrated project.
-
-Team members should normally **not work directly on `main`**.
-
-The standard workflow is:
-
-```text
-main
-  ↓
-Pull latest changes
-  ↓
-Create feature branch
-  ↓
-Develop
-  ↓
-Test
-  ↓
-Commit
-  ↓
-Push branch
-  ↓
-Create Pull Request
-  ↓
-Code review
-  ↓
-Merge into main
-```
-
----
-
-# Before Starting Work
-
-Always update your local `main` branch:
 
 ```bash
 git switch main
 git pull origin main
-```
+git switch -c feature/header-improvements
 
-Then create a feature branch:
+# Make and test your changes
 
-```bash
-git switch -c feature/your-feature
-```
-
-Example:
-
-```bash
-git switch -c feature/header
-```
-
----
-
-# Saving Your Work
-
-Check your changes:
-
-```bash
-git status
-```
-
-Stage your files:
-
-```bash
 git add .
+git commit -m "feat: improve header navigation"
+git push -u origin feature/header-improvements
 ```
 
-Commit:
+Do not commit directly to `main` unless the team has explicitly agreed to do so.
 
-```bash
-git commit -m "Build header navigation"
-```
+## Contribution Guidelines
 
-Push your branch:
+* Keep changes focused on the assigned task.
+* Reuse existing data functions instead of duplicating logic.
+* Do not hardcode permanent feed data in the rendering logic when it belongs in the JSON data layer.
+* Do not overwrite another contributor's work without communicating first.
+* Test your changes before opening a pull request.
+* Keep documentation accurate about what is completed, in progress, or planned.
+* Report blockers early so other roles can continue their work.
 
-```bash
-git push -u origin feature/header
-```
+## Project Status
 
-Then open a Pull Request on GitHub.
+The project has an initial application structure, JSON data files, JavaScript data-loading and rendering code, and a modular CSS refactor in progress. Further interface improvements, responsive testing, interactions, and authentication will be tracked in `ROADMAP.md`.
 
----
+## Disclaimer
 
-# Pull Request Standard
-
-Every Pull Request should explain:
-
-```text
-WHAT I BUILT:
-...
-
-FILES I CHANGED:
-...
-
-WHAT I TESTED:
-...
-
-ANYTHING THE TEAM NEEDS TO KNOW:
-...
-```
-
----
-
-# Definition of Done
-
-A feature is considered complete when:
-
-* It works in the browser
-* It follows the agreed project structure
-* It uses the correct data source
-* It does not introduce unexplained console errors
-* It has been tested at relevant screen sizes
-* The code has been committed
-* The feature branch has been pushed
-* A Pull Request has been created
-* The Project Lead can review and merge it
-
----
-
-# Development Order
-
-The project should generally progress in this order:
-
-```text
-1. Project/Git foundation
-        ↓
-2. HTML structure
-        ↓
-3. Global design system
-        ↓
-4. Header + Feed + Sidebars
-        ↓
-5. JSON + Fetch/API
-        ↓
-6. Connect data to UI
-        ↓
-7. JavaScript interactions
-        ↓
-8. localStorage
-        ↓
-9. POST/API demonstrations
-        ↓
-10. Responsive testing
-        ↓
-11. Final integration
-        ↓
-12. Deployment
-```
-
-Some tasks may happen in parallel when their dependencies are satisfied.
-
----
-
-# Team Development Rules
-
-1. Do not work directly on `main` unless explicitly agreed.
-2. Pull the latest `main` before starting new work.
-3. Use feature branches.
-4. Do not overwrite another team member's work without communication.
-5. Agree on shared class names and data fields before changing them.
-6. Do not hardcode dynamic user/post data when JSON/API data is required.
-7. Do not create unnecessary files or frameworks.
-8. Keep JavaScript understandable and well organized.
-9. Test your work before opening a Pull Request.
-10. Communicate breaking changes to the team.
-11. Never commit passwords, API keys, or private credentials.
-12. Keep the project simple enough for every team member to understand.
-
----
-
-# Project Principle
-
-> **Build independently, integrate deliberately.**
-
-Each team member owns a part of the project, but the final product must behave as **one application**.
-
-The goal is not simply to make separate parts work.
-
-The goal is to make all the parts work **together**.
+This is an educational Facebook-inspired clone. It is not an official Facebook product and is not affiliated with Meta.

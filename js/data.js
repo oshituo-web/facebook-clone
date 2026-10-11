@@ -1,6 +1,5 @@
 /* =========================================
-   DATA & API
-   Role 5
+   DATA & API (Role 5)
 ========================================= */
 
 
@@ -13,10 +12,10 @@ export async function getUsers() {
     const response = await fetch("./data/users.json");
 
     if (!response.ok) {
-        throw new Error("Failed to load users");
+        throw new Error(`Failed to load users: ${response.status}`);
     }
 
-    return await response.json();
+    return response.json();
 }
 
 
@@ -29,10 +28,10 @@ export async function getPosts() {
     const response = await fetch("./data/posts.json");
 
     if (!response.ok) {
-        throw new Error("Failed to load posts");
+        throw new Error(`Failed to load posts: ${response.status}`);
     }
 
-    return await response.json();
+    return response.json();
 }
 
 
@@ -45,10 +44,10 @@ export async function getStories() {
     const response = await fetch("./data/stories.json");
 
     if (!response.ok) {
-        throw new Error("Failed to load stories");
+        throw new Error(`Failed to load stories: ${response.status}`);
     }
 
-    return await response.json();
+    return response.json();
 }
 
 
@@ -61,10 +60,10 @@ export async function getComments() {
     const response = await fetch("./data/comments.json");
 
     if (!response.ok) {
-        throw new Error("Failed to load comments");
+        throw new Error(`Failed to load comments: ${response.status}`);
     }
 
-    return await response.json();
+    return response.json();
 }
 
 

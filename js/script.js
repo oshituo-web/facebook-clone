@@ -24,46 +24,29 @@ async function loadApplication() {
 
     try {
 
-        const users =
-            await getUsers();
+        const [users, posts, stories, comments] = await Promise.all([
+            getUsers(),
+            getPosts(),
+            getStories(),
+            getComments(),
+        ]);
 
-        const posts =
-            await getPosts();
+        renderPosts(posts, users, comments);
+        renderStories(stories, users);
 
-        const stories =
-            await getStories();
+        console.log("Application data loaded successfully.");
+    }
+    
+    catch (error) {
+        console.error("Failed to load application:", error);
 
-        const comments =
-            await getComments();
+        const postsContainer = document.querySelector(".posts");
 
-
-        renderPosts(
-            posts,
-            users
-        );
-
-
-        renderStories(
-            stories,
-            users
-        );
-
-
-        console.log(
-            "Application data loaded successfully."
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Failed to load application:",
-            error
-        );
-
+        if (postsContainer) {
+            postsContainer.textContent = "We couldn't load the feeds. please refresh and try again.";
+        }
     }
 }
-
 
 /* =========================================
    START APPLICATION

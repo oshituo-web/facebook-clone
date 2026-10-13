@@ -1,0 +1,250 @@
+
+/* Reset browser defaults */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f0f2f5;
+    color: #050505;
+}
+
+/* Right sidebar container */
+.right-sidebar {
+    position: fixed;
+    top: 70px;
+    right: 0;
+    width: 320px;
+    height: calc(100vh - 70px);
+    padding: 16px 12px;
+    overflow-y: auto;
+    background-color: #f0f2f5;
+}
+
+/* Sidebar headings */
+.right-sidebar h3 {
+    color: #65676b;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 14px;
+}
+
+/* Sponsored advertisements */
+.sponsored-section {
+    padding-bottom: 4px;
+}
+
+.sponsored-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 8px;
+}
+
+.sponsored-card:hover {
+    background-color: #e4e6eb;
+}
+
+.ad-image {
+    width: 110px;
+    height: 85px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.ad-details {
+    min-width: 0;
+}
+
+.ad-details h4 {
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.ad-details p {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #65676b;
+    margin-bottom: 5px;
+}
+
+.ad-details span {
+    color: #8a8d91;
+    font-size: 12px;
+}
+
+/* Section dividers */
+.right-sidebar hr {
+    border: none;
+    border-top: 1px solid #ced0d4;
+    margin: 16px 0;
+}
+
+/* Birthdays */
+.birthday-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.gift-icon {
+    font-size: 32px;
+    flex-shrink: 0;
+}
+
+.birthday-details {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.birthday-details a {
+    display: inline-block;
+    margin-top: 4px;
+    color: #0866ff;
+    text-decoration: none;
+}
+
+.birthday-details a:hover {
+    text-decoration: underline;
+}
+
+/* Contacts heading and action buttons */
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.section-heading h3 {
+    margin-bottom: 10px;
+}
+
+.contact-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.contact-actions button {
+    border: none;
+    background: transparent;
+    color: #65676b;
+    font-size: 19px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+}
+
+.contact-actions button:hover {
+    background-color: #e4e6eb;
+}
+
+/* Contacts list */
+.contacts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 7px;
+    color: #050505;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+}
+
+.contact-item:hover {
+    background-color: #e4e6eb;
+}
+
+/* Circular profile images */
+.avatar-wrapper {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.avatar-wrapper img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Green online indicator */
+.online-dot {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 12px;
+    height: 12px;
+    background-color: #31a24c;
+    border: 2px solid #f0f2f5;
+    border-radius: 50%;
+}
+
+/* Group chats */
+.group-chats-section h3 {
+    margin-bottom: 12px;
+}
+
+.create-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #050505;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.create-group:hover {
+    background-color: #e4e6eb;
+}
+
+.plus-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #d8dadf;
+    font-size: 28px;
+    color: #050505;
+}
+
+/* Keyboard accessibility */
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid #0866ff;
+    outline-offset: 2px;
+}
+
+/* Hide sidebar on tablets and mobile */
+@media (max-width: 900px) {
+    .right-sidebar {
+        display: none;
+    }
+}

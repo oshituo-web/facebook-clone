@@ -22,5 +22,23 @@
         "name": "Oshitu Ochuko",
         "username": "chyzzy",
         "avatar": "./assets/avatars/chyzzy.jpg"
-    }
+    },
+    { 
+        "id": 5, 
+        "name": "Zainab Musa", 
+        "username": "chzy", 
+        "avatar": "https://i.pravatar.cc/100?img=5"  
+    },
+    { 
+        "id": 6, 
+        "name": "Tunde Bello",  
+        "username": "Tunde",
+        "avatar": "https://i.pravatar.cc/100?img=52" 
+    },
+    { 
+        "id": 7, "name": 
+        "Emeka Nwosu", 
+        "username": "Emeka", 
+        "avatar": "https://i.pravatar.cc/100?img=15" }
 ]
+

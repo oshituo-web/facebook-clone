@@ -23,5 +23,6 @@
         "id": 14, 
         "userId": 6, 
         "image": "https://picsum.photos/seed/story5/300/500" 
-    }
+    },
+    { "id": 15, "userId": 7, "image": "https://picsum.photos/seed/story4/300/500" }
 ]

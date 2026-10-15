@@ -33,3 +33,19 @@
     display: none;
   }
 }
+
+/* ===== MOBILE RESPONSIVENESS ===== */
+@media (max-width: 600px) {
+    .posts {
+        gap: 10px;
+    }
+
+    .post {
+        padding: 12px;
+        border-radius: 6px;
+    }
+
+    .post-image {
+        max-height: 480px;
+    }
+}

@@ -191,13 +191,55 @@
   .create-post__input:hover { background: #E4E6EB; }
   .create-post__divider { height: 1px; background: #CED0D4; margin: 12px 0 8px; }
   .create-post__actions { display: flex; }
+
   .create-post__action {
-    flex: 1; display: flex; align-items: center; justify-content: center;
-    gap: 8px; padding: 8px; border: none; background: none;
-    border-radius: 8px; color: #65676B; font-size: 15px; font-weight: 600; cursor: pointer;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    gap: 8px; 
+    padding: 8px; 
+    border: none; 
+    background: none;
+    border-radius: 8px; 
+    color: #65676B; 
+    font-size: 15px; 
+    font-weight: 600; 
+    cursor: pointer;
   }
   .create-post__action:hover { background: #F0F2F5; }
   .create-post__action i { font-size: 22px; }
   .icon-red { color: #F3425F; }
   .icon-green { color: #45BD62; }
   .icon-yellow { color: #F7B928; }
+
+  /* Pop-up */
+  .composer-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(255,255,255,0.8); z-index: 100;
+    align-items: center; justify-content: center;
+  }
+  .composer-overlay.open { display: flex; }
+  .composer {
+    width: 500px; max-width: 92vw; background: #fff;
+    border-radius: 8px; padding: 16px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+  }
+  .composer__header {
+    position: relative; text-align: center; padding-bottom: 12px;
+    border-bottom: 1px solid #CED0D4;
+  }
+  .composer__close {
+    position: absolute; right: 0; top: 0; width: 36px; height: 36px;
+    border: none; border-radius: 50%; background: #E4E6EB; cursor: pointer;
+  }
+  .composer__user { display: flex; align-items: center; gap: 8px; margin: 12px 0; }
+  .composer__user img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+  .composer textarea {
+    width: 100%; min-height: 120px; border: none; outline: none;
+    resize: none; font-size: 20px; font-family: inherit;
+  }
+  .composer__submit {
+    width: 100%; padding: 10px; border: none; border-radius: 6px;
+    background: #1877F2; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
+  }
+  .composer__submit:disabled { background: #E4E6EB; color: #BCC0C4; cursor: not-allowed; }

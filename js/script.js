@@ -12,7 +12,8 @@ import {
 
 import {
     renderPosts,
-    renderStories
+    renderStories,
+    renderCreatePost
 } from "./render.js";
 
 
@@ -30,9 +31,11 @@ async function loadApplication() {
             getStories(),
             getComments(),
         ]);
-
+        
+        const currentUser = users[0];
         renderPosts(posts, users, comments);
         renderStories(stories, users);
+        renderCreatePost(currentUser);
 
         console.log("Application data loaded successfully.");
     }

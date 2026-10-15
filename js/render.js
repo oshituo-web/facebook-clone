@@ -160,6 +160,85 @@ export const renderStories = (stories, users) => {
     });
 };
 
+export const renderCreatePost = (currentUser) => {
+      const container = document.querySelector(".create-post");
+      if (!container) return;
+      const firstName = currentUser.name.split(" ")[0];
+
+      container.innerHTML = `
+        <div class="create-post__top">
+          <img class="create-post__avatar" src="${currentUser.avatar}" alt="${currentUser.name}">
+          <button type="button" class="create-post__input" id="openComposer">
+            What's on your mind, ${firstName}?
+          </button>
+          <button type="button" class="create-post__action">
+            <i class="fa-solid fa-images icon-green"></i><span></span>
+          </button>
+        </div>
+        <div class="create-post__divider"></div>
+
+        <!-- The pop-up. Hidden by CSS until JavaScript adds the class "open" -->
+        <div class="composer-overlay" id="composerOverlay">
+          <div class="composer">
+            <header class="composer__header">
+              <h3>Create post</h3>
+              <button type="button" class="composer__close" id="closeComposer" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </header>
+            <div class="composer__user">
+              <img src="${currentUser.avatar}" alt="">
+              <strong>${currentUser.name}</strong>
+            </div>
+            <textarea id="composerText" placeholder="What's on your mind, ${firstName}?"></textarea>
+            <button type="button" class="composer__submit" id="submitPost" disabled>Post</button>
+          </div>
+        </div>
+      `;
+      setupComposer();
+    }
+
+    const setupComposer = () => {
+        // FIND
+        const overlay    = document.getElementById("composerOverlay");
+        const openBtn    = document.getElementById("openComposer");
+        const closeBtn   = document.getElementById("closeComposer");
+        const textarea   = document.getElementById("composerText");
+        const submitBtn  = document.getElementById("submitPost");
+
+        // LISTEN + CHANGE: open
+        openBtn.addEventListener("click", function () {
+            overlay.classList.add("open");
+            textarea.focus();            // cursor ready to type
+        });
+
+        // close with the X button
+        closeBtn.addEventListener("click", () => {
+            overlay.classList.remove("open");
+        });
+
+        // close when clicking the dark area OUTSIDE the box
+        overlay.addEventListener("click", (event) => {
+            if (event.target === overlay) {
+                overlay.classList.remove("open");
+            }
+        });
+
+        // enable "Post" only when there is real text
+        textarea.addEventListener("input", () => { 
+            submitBtn.disabled = textarea.value.trim() === ""; 
+        });
+
+
+        // submit (UI only, no backend)
+        submitBtn.addEventListener("click", () => {
+            console.log("New post text:", textarea.value);
+            textarea.value = "";
+            submitBtn.disabled = true;
+            overlay.classList.remove("open");
+        });
+    }
+
 
 
 

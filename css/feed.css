@@ -135,7 +135,7 @@
 }
 
 /* ===== LIKES AND POST STATS ===== */
-.post-stats {
+/* .post-stats {
     display: flex;
     align-items: center;
     min-height: 40px;
@@ -144,7 +144,55 @@
     border-bottom: 1px solid #ced0d4;
     color: #65676b;
     font-size: 14px;
-}
+} */
+
+.post-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+  }
+
+  .post-stats__actions {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .stat-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #65676B;
+    font-size: 16px;
+    padding: 6px 4px;
+    border-radius: 6px;
+  }
+  .stat-btn:hover { background: #F0F2F5; }
+  .stat-btn i { font-size: 24px; }
+
+  /* Added by JavaScript when the post is liked */
+  .stat-btn.liked { color: #1877F2; }
+
+  /* Right side: two small circles that overlap */
+  .post-stats__reactions { display: flex; align-items: center; }
+
+  .reaction {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-size: 11px;
+  }
+  .reaction--like { background: #1877F2; }
+  .reaction--love { background: #F3425F; margin-left: -6px; } /* negative margin = overlap */
+
 
 /* ===== COMMENTS SECTION ===== */
 .post-comments {
@@ -173,8 +221,6 @@
 .post-comment span {
     color: #050505;
 }
-
-
 
 /* ---------- CREATE POST ---------- */
   .create-post {

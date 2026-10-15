@@ -70,10 +70,70 @@ export function renderPosts(posts, users, comments = []) {
         // Post likes
         const postStats = document.createElement("div");
         postStats.classList.add("post-stats");
+        
+        // ----- The two containers, with Font Awesome icons -----
+        // Every number starts at 0.
+        // data-type tells JavaScript WHICH button was clicked.
+        postStats.innerHTML = `
+            <div class="post-stats__actions">
 
-        const likes = document.createElement("span");
-        likes.textContent = `${post.likes} likes`;
-        postStats.appendChild(likes);
+                <button type="button" class="stat-btn" data-type="like">
+                    <i class="fa-regular fa-thumbs-up"></i>
+                    <span class="count">0</span>
+                </button>
+
+                <button type="button" class="stat-btn" data-type="comment">
+                    <i class="fa-regular fa-comment"></i>
+                    <span class="count">0</span>
+                </button>
+
+                <button type="button" class="stat-btn" data-type="share">
+                    <i class="fa-solid fa-share"></i>
+                    <span class="count">0</span>
+                </button>
+
+            </div>
+
+            <div class="post-stats__reactions">
+                <span class="reaction reaction--like"><i class="fa-solid fa-thumbs-up"></i></span>
+                <span class="reaction reaction--love"><i class="fa-solid fa-heart"></i></span>
+            </div>
+        `;
+
+        // ----- The numbers live here, one set PER post -----
+      // Because this object is created inside the function,
+      // every post gets its own separate counts.
+      const counts = { like: 0, comment: 0, share: 0 };
+      let liked = false;
+
+      // ----- Make the buttons work -----
+      const buttons = postStats.querySelectorAll(".stat-btn");
+
+      buttons.forEach((btn) => {
+
+        btn.addEventListener("click", () => {
+
+          const type    = btn.dataset.type;            // "like", "comment" or "share"
+          const countEl = btn.querySelector(".count"); // the <span> with the number
+          const icon    = btn.querySelector("i");      // the icon
+
+          if (type === "like") {
+            // Like is a TOGGLE: click once to like, click again to unlike
+            liked = !liked;
+            counts.like += liked ? 1 : -1;
+
+            btn.classList.toggle("liked", liked);       // turns it blue
+            icon.classList.toggle("fa-solid", liked);   // filled thumb when liked
+            icon.classList.toggle("fa-regular", !liked);// outline thumb when not
+          } else {
+            // Comment and share just go up by 1 each click
+            counts[type] += 1;
+          }
+
+          // Write the new number onto the page
+          countEl.textContent = counts[type];
+        });
+      });
 
         // Post comments
         const postComments = document.createElement("div");

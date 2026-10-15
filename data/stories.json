@@ -15,17 +15,17 @@
         "image": "./assets/images/story4.jpg"
      },
     { 
-        "id": 13, 
+        "id": 208, 
         "userId": 5, 
         "image": "https://picsum.photos/seed/story4/300/500" 
     },
     { 
-        "id": 14, 
+        "id": 209, 
         "userId": 6, 
         "image": "https://picsum.photos/seed/story5/300/500" 
     },
     { 
-        "id": 15, 
+        "id": 300, 
         "userId": 7, 
         "image": "https://picsum.photos/seed/story4/300/500" }
 ]

@@ -232,7 +232,13 @@ export const renderCreatePost = (currentUser) => {
             What's on your mind, ${firstName}?
           </button>
           <button type="button" class="create-post__action">
+            <i class="fa-solid fa-video icon-red"></i><span></span>
+          </button>
+          <button type="button" class="create-post__action">
             <i class="fa-solid fa-images icon-green"></i><span></span>
+          </button>
+          <button type="button" class="create-post__action">
+            <i class="fa-solid fa-face-smile icon-yellow"></i><span></span>
           </button>
         </div>
         <div class="create-post__divider"></div>

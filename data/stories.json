@@ -1,17 +1,27 @@
 [
-    {
-        "id": 201,
-        "userId": 1,
-        "image": "./assets/images/story1.jpg"
+    { 
+        "id": 201, 
+        "userId": 1, 
+        "image": "./assets/images/story1.jpg" 
     },
-    {
-        "id": 202,
-        "userId": 2,
-        "image": "./assets/images/story2.jpg"
+    { 
+        "id": 202, 
+        "userId": 2, 
+        "image": "./assets/images/story2.jpg" 
     },
-    {
-        "id": 203,
-        "userId": 4,
+    { 
+        "id": 203, 
+        "userId": 4, 
         "image": "./assets/images/story4.jpg"
+     },
+    { 
+        "id": 13, 
+        "userId": 5, 
+        "image": "https://picsum.photos/seed/story4/300/500" 
+    },
+    { 
+        "id": 14, 
+        "userId": 6, 
+        "image": "https://picsum.photos/seed/story5/300/500" 
     }
 ]

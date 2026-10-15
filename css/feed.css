@@ -1,0 +1,52 @@
+.stories {
+    display: flex;            /* cards side by side */
+    gap: 8px;
+    overflow-x: auto;         /* scroll sideways if too many cards */
+    margin-bottom: 16px;
+    padding-bottom: 4px;
+}
+
+.story-card {
+    position: relative;       /* lets children be positioned inside it */
+    flex: 0 0 112px;          /* don't grow, don't shrink, be 112px wide */
+    height: 200px;
+    border-radius: 12px;
+    background-size: cover;   /* image fills the card, cropped not stretched */
+    background-position: center;
+    background-color: #CED0D4; /* shown if the image fails to load */
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+.story-card:hover { transform: scale(1.03); }
+
+/* Dark fade at the bottom so white text is readable on any image */
+.story-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;                 /* shorthand for top/right/bottom/left: 0 */
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent 50%);
+}
+
+.story-avatar {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 4px solid #1877F2;  /* the blue ring */
+    object-fit: cover;
+    z-index: 1;               /* sit ABOVE the dark fade */
+}
+
+.story-name {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 1;
+}

@@ -124,37 +124,40 @@ export function renderPosts(posts, users, comments = []) {
    RENDER STORIES
 ========================================= */
 
-export function renderStories(stories, users) {
-    const storiesContainer = document.querySelector(".stories");
 
-    if (!storiesContainer) {
-        return;
-    }
+export const renderStories = (stories, users) => {
 
-    // Clear existing stories before rendering again.
-    storiesContainer.innerHTML = "";
+    // 1. FIND the section where cards will go
+    const container = document.querySelector(".stories");
+    if (!container) return;
 
-    stories.forEach(story => {
-        const user = users.find(
-            candidate => candidate.id === story.userId
-        );
+    // 2. CLEAR it, so calling this twice never duplicates cards
+    container.innerHTML = "";
 
-        if (!user) {
-            console.warn(`User not found for story ${story.id}`);
-            return;
-        }
+    // 3. LOOP over every story
+    stories.forEach((story) => {
 
-        const storyElement = document.createElement("article");
-        storyElement.classList.add("story");
+        // 4. RELATIONSHIP: find the user who owns this story
+        const user = users.find((u) => {
+            return u.id === story.userId;
+        });
 
-        const storyImage = document.createElement("img");
-        storyImage.src = story.image;
-        storyImage.alt = `${user.name}'s story`;
+        // If no matching user exists, skip this story
+        if (!user) return;
 
-        const authorName = document.createElement("strong");
-        authorName.textContent = user.name;
+        // 5. BUILD one card
+        const card = document.createElement("article");
+        card.className = "story-card";
+        card.style.backgroundImage = `url("${story.image}")`;
 
-        storyElement.append(storyImage, authorName);
-        storiesContainer.appendChild(storyElement);
+        card.innerHTML = `
+            <img class="story-avatar" src="${user.avatar}" alt="${user.name}">
+            <span class="story-name">${user.name}</span>
+        `;
+
+        // 6. ADD it to the page
+        container.appendChild(card);
     });
-}
+};
+
+

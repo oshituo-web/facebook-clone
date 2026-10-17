@@ -4,11 +4,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Facebook Clone</title>
+    <title>Log In | Facebook Clone</title>
+    <link rel="stylesheet" href="./css/auth.css">
 </head>
 
-<body>
+<body class="auth-page">
+    <main class="auth-container">
+        <section class="auth-brand">
+            <h1>facebook</h1>
+            <p>Connect with friends and the world around you.</p>
+        </section>
 
+        <section class="auth-card">
+            <h2>Log in to Facebook Clone</h2>
+
+            <form id="loginForm">
+                <label for="loginEmail">Email address</label>
+                <input 
+                id="loginEmail"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                autocomplete="email"
+                required
+                >
+            
+                <label for="loginPassword">Password</label>
+                <input 
+                id="loginPassword"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+                >
+
+                <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
+
+                <button id="loginButton" type="submit">Log In</button>
+            </form>
+
+            <p class="auth-switch">Don't have an account?
+                <a href="./signup.html">Create a new account</a>
+            </p>
+        </section>
+    </main>
+
+    <script type="module" src="./js/auth.js"></script>
 </body>
 
 </html>

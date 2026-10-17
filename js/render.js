@@ -616,5 +616,12 @@ function setupComposer(container, currentUser, onPostCreated) {
         if (saved === false) {
             return;
         }
+
+        // Clear the writeup after successful posting.
+        textarea.value = "";
+        submitButton.disabled = true;
+
+        // Close the modal using your existing CSS class.
+        closeComposer();
     });
 }

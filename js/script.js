@@ -36,7 +36,8 @@ import {
 import {
     renderPosts,
     renderStories,
-    renderCreatePost
+    renderCreatePost,
+    renderSidebarUser
 } from "./render.js";
 
 
@@ -313,6 +314,7 @@ async function loadApplicationData() {
 
         
         /* Render the feed and stories. */
+        renderSidebarUser(currentUser);
         renderPosts(posts, usersForRendering, comments);
         renderStories(stories, usersForRendering);
         

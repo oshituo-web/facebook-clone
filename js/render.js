@@ -541,7 +541,7 @@ export function renderCreatePost(currentUser, onPostCreated) {
    4. COMPOSER INTERACTIONS
 ========================================= */
 
-function setupComposer(container, currentUser, onPostCreated) {
+const setupComposer = (container, currentUser, onPostCreated) => {
     const overlay = container.querySelector("#composerOverlay");
     const openButton = container.querySelector("#openComposer");
     const closeButton = container.querySelector("#closeComposer");
@@ -625,3 +625,32 @@ function setupComposer(container, currentUser, onPostCreated) {
         closeComposer();
     });
 }
+
+
+export const  renderSidebarUser = (currentUser) => {
+    if (!currentUser) return;
+
+    const sidebarName = document.querySelector("#sidebarName");
+    const sidebarAvatar = document.querySelector("#sidebarAvatar");
+
+    if (sidebarName) {
+        sidebarName.textContent = currentUser.name || "User";
+    }
+
+    if (sidebarAvatar) {
+        const avatarUrl = currentUser.avatar || "";
+
+        sidebarAvatar.hidden = !avatarUrl;
+
+        if (avatarUrl) {
+            sidebarAvatar.src = avatarUrl;
+        } else {
+            sidebarAvatar.removeAttribute("src");
+        }
+
+        sidebarAvatar.alt = currentUser.name
+            ? `${currentUser.name}'s profile photo`
+            : "Your profile photo";
+    }
+}
+

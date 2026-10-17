@@ -4,6 +4,7 @@
    <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="theme-color" content="#f0f2f5">
 
       <title>Facebook Clone</title>
 
@@ -14,7 +15,6 @@
       <link rel="stylesheet" href="./css/feed.css">
       <link rel="stylesheet" href="./css/sidebar-left.css">
       <link rel="stylesheet" href="./css/sidebar-right.css">
-      <link rel="stylesheet" href="./css/auth.css">
       <link rel="stylesheet" href="./css/responsive.css">
 
       <!-- Font Awesome -->
@@ -29,48 +29,51 @@
          <!-- Header Left Section -->
          <div class="header-left">
 
-            <!-- Facebook Logo -->
-            <i class="fa-brands fa-facebook"></i>
+            <!-- Clickable Facebook Logo -->
+             <a href="./index.html"
+             class="facebook-logo"
+             aria-label="Facebook home">
+            <i class="fa-brands fa-facebook" aria-hidden="true"></i>
+         </a>
 
             <!-- Search -->
             <div class="search-container">
-               <i class="fa-solid fa-magnifying-glass"></i>
+               <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                <input type="search" class="search-input" placeholder="Search Facebook" aria-label="Search Facebook">
             </div>
 
          </div>
 
-
          <!-- Main Navigation -->
-         <nav class="main-navigation">
+         <nav class="main-navigation" aria-label="Main navigation">
 
             <!-- Home -->
-            <button class="nav-item" data-action="home">
-               <i class="fa-regular fa-house"></i>
+            <button type="button" class="nav-item active" data-action="home">
+               <i class="fa-solid fa-house" aria-current="page"></i>
                <span class="text">Home</span>
             </button>
 
             <!-- Video -->
-            <button class="nav-item" data-action="video">
-               <i class="fa-solid fa-film"></i>
+            <button type="button" class="nav-item" data-action="video">
+               <i class="fa-solid fa-film" aria-hidden="true"></i>
                <span class="text">Video</span>
             </button>
 
             <!-- Marketplace -->
-            <button class="nav-item" data-action="marketplace">
-               <i class="fa-solid fa-store"></i>
+            <button type="button" class="nav-item" data-action="marketplace">
+               <i class="fa-solid fa-store" aria-hidden="true"></i>
                <span class="text">Marketplace</span>
             </button>
 
             <!-- Friends -->
-            <button class="nav-item" data-action="friends">
-               <i class="fa-regular fa-user"></i>
+            <button type="button" class="nav-item" data-action="friends">
+               <i class="fa-solid fa-user-group" aria-hidden="true"></i>
                <span class="text">Friends</span>
             </button>
 
             <!-- Groups -->
-            <button class="nav-item" data-action="groups">
-               <i class="fa-solid fa-users"></i>
+            <button type="button" class="nav-item" data-action="groups">
+               <i class="fa-solid fa-users" aria-hidden="true"></i>
                <span class="text">Groups</span>
             </button>
 
@@ -80,29 +83,29 @@
          <div class="header-right">
 
             <!-- Menu -->
-            <button class="utility-button" data-action="menu">
-               <i class="fa-solid fa-bars"></i>
+            <button type="button" class="utility-button" data-action="menu">
+               <i class="fa-solid fa-bars" aria-hidden="true"></i>
                <span class="text">Menu</span>
             </button>
 
             <!-- Notifications -->
-            <button class="utility-button" data-action="notifications">
-               <i class="fa-solid fa-bell"></i>
+            <button type="button" class="utility-button" data-action="notifications">
+               <i class="fa-solid fa-bell" aria-hidden="true"></i>
                <span class="text">Notifications</span>
+               <span class="notification-badge" hidden>0</span>
             </button>
 
             <!-- Messenger -->
-            <button class="utility-button" data-action="messenger">
-               <i class="fa-brands fa-facebook-messenger"></i>
+            <button type="button" class="utility-button" data-action="messenger">
+               <i class="fa-brands fa-facebook-messenger" aria-hidden="true"></i>
                <span class="text">Messenger</span>
             </button>
 
             <!-- Profile -->
-            <button class="utility-button" data-action="profile">
-               <i class="fa-regular fa-user"></i>
+            <button type="button" class="utility-button" data-action="profile">
+               <i class="fa-regular fa-user" aria-hidden="true"></i>
                <span class="text">Profile</span>
             </button>
-
 
          </div>
 
@@ -233,173 +236,119 @@
                
          </aside>
 
+   
          <!-- Central Feed Section (Role 4) -->
-         <section class="feed">
-
-            <!-- Stories Section -->
-            <section class="stories">
-               <!-- Stories will be rendered here -->
-            </section>
-
-
-            <!-- Post Composer -->
-            <section class="create-post">
-               <!-- Create post interface will go here -->
-            </section>
-
-
-            <!-- Dynamic Posts Container -->
-            <section class="posts">
-               <!-- Posts will be rendered here -->
-            </section>
-
+         <section class="feed" aria-label="News feed">
+ 
+             <!-- Stories -->
+             <section
+                 class="stories"
+                 aria-label="Stories"
+                 aria-live="polite"
+             >
+                 <!-- Stories are rendered dynamically by render.js -->
+             </section>
+ 
+             <!-- Create Post -->
+             <section
+                 class="create-post"
+                 aria-label="Create a post"
+             >
+                 <!-- The post composer is rendered dynamically by render.js -->
+             </section>
+ 
+             <!-- Posts Feed -->
+             <section
+                 class="posts"
+                 aria-label="Recent posts"
+                 aria-live="polite"
+             >
+                 <!-- Posts are rendered dynamically by render.js -->
+             </section>
+ 
          </section>
 
-         <!-- Right Sidebar (Role 7) -->
-            <!-- Right sidebar content -->
-    <aside class="right-sidebar">
+            <!-- Right Sidebar -->
+            <aside class="right-sidebar" aria-label="Right sidebar">
 
-        <!-- Sponsored Section -->
-        <section class="sponsored-section">
-            <h3>Sponsored</h3>
+            <!-- Sponsored Ads -->
+            <section class="sidebar-section sponsored-section">
+                    <h3>Sponsored</h3>
 
-            <a href="#" class="sponsored-card">
-                <img
-                    src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=300&h=200&fit=crop"
-                    alt="Technology and computer"
-                    class="ad-image"
-                >
-
-                <div class="ad-details">
+            <div class="sponsored-ad">
+                <img src="images/tech-skills.jpg"
+                        alt="Technology skills"
+                        loading="lazy">
+                <div class="sponsored-info">
                     <h4>Build Your Future With Tech Skills</h4>
-                    <p>Learn in-demand skills and get hired.</p>
-                    <span>example.com</span>
-                </div>
-            </a>
-
-            <a href="#" class="sponsored-card">
-                <img
-                    src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=200&fit=crop"
-                    alt="Sports shoe advertisement"
-                    class="ad-image"
-                >
-
-                <div class="ad-details">
-                    <h4>Discover New Styles</h4>
-                    <p>Comfort. Style. Performance.</p>
-                    <span>example.com</span>
-                </div>
-            </a>
-        </section>
-
-        <!-- Divider -->
-        <hr>`
-
-        <!-- Birthdays Section -->
-        <section class="birthdays-section">
-            <h3>Birthdays</h3>
-
-            <div class="birthday-content">
-                <div class="gift-icon">🎁</div>
-
-                <div class="birthday-details">
-                    <p>
-                        Today is <strong>Sarah Williams'</strong>
-                        birthday!
-                    </p>
-
-                    <a href="#">Send her a birthday message</a>
+                    <p>Discover new opportunities and learn skills for the future.</p>
                 </div>
             </div>
-        </section>
 
-        <!-- Divider -->
-        <hr>
+            <div class="sponsored-ad">
+                <img src="images/fashion.jpg"
+                        alt="Fashion styles"
+                        loading="lazy">
+                <div class="sponsored-info">
+                    <h4>Discover New Styles</h4>
+                    <p>Explore the latest trends and find your style.</p>
+                </div>
+            </div>
+            </section>
 
-        <!-- Contacts Section -->
-        <section class="contacts-section">
+            <hr>
 
-            <div class="section-heading">
+            <!-- Birthdays -->
+            <section class="sidebar-section birthdays-section">
+            <h3>Birthdays</h3>
+
+            <div class="birthday-item">
+                <i class="fa-solid fa-gift"></i>
+                <p>
+                    <strong>Birthdays</strong>
+                    <span>See friends who have birthdays today.</span>
+                </p>
+            </div>
+            </section>
+
+            <hr>
+
+            <!-- Contacts -->
+            <section class="sidebar-section contacts-section">
+            <div class="sidebar-heading">
                 <h3>Contacts</h3>
 
                 <div class="contact-actions">
-                    <button aria-label="Search contacts">⌕</button>
-                    <button aria-label="More options">•••</button>
+                    <button type="button" aria-label="Search contacts">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+
+                    <button type="button" aria-label="More contact options">
+                        <i class="fa-solid fa-ellipsis"></i>
+                    </button>
                 </div>
             </div>
 
-            <div class="contacts-list">
-
-                <a href="#" class="contact-item">
-                    <div class="avatar-wrapper">
-                        <img src="https://i.pravatar.cc/100?img=12"
-                             alt="Alex Johnson">
-                        <span class="online-dot"></span>
-                    </div>
-                    <span>Alex Johnson</span>
-                </a>
-
-                <a href="#" class="contact-item">
-                    <div class="avatar-wrapper">
-                        <img src="https://i.pravatar.cc/100?img=47"
-                             alt="Sarah Williams">
-                        <span class="online-dot"></span>
-                    </div>
-                    <span>Sarah Williams</span>
-                </a>
-
-                <a href="#" class="contact-item">
-                    <div class="avatar-wrapper">
-                        <img src="https://i.pravatar.cc/100?img=11"
-                             alt="David James">
-                        <span class="online-dot"></span>
-                    </div>
-                    <span>David James</span>
-                </a>
-
-                <a href="#" class="contact-item">
-                    <div class="avatar-wrapper">
-                        <img src="https://i.pravatar.cc/100?img=13"
-                             alt="Michael Brown">
-                        <span class="online-dot"></span>
-                    </div>
-                    <span>Michael Brown</span>
-                </a>
-
-                <a href="#" class="contact-item">
-                    <div class="avatar-wrapper">
-                        <img src="https://i.pravatar.cc/100?img=44"
-                             alt="Blessing Ade">
-                        <span class="online-dot"></span>
-                    </div>
-                    <span>Blessing Ade</span>
-                </a>
-
-                <a href="#" class="contact-item">
-                    <div class="avatar-wrapper">
-                        <img src="https://i.pravatar.cc/100?img=49"
-                             alt="Grace Wilson">
-                        <span class="online-dot"></span>
-                    </div>
-                    <span>Grace Wilson</span>
-                </a>
-
+            <div id="rightSidebarContacts"
+                    class="contacts-list"
+                    aria-live="polite">
+                <p class="loading-contacts">Loading contacts...</p>
             </div>
-        </section>
+            </section>
 
-        <!-- Divider -->
-        <hr>
+            <hr>
 
-        <!-- Group Chats Section -->
-        <section class="group-chats-section">
-            <h3>Group chats</h3>
+            <!-- Group Chats -->
+            <section class="sidebar-section group-chats-section">
+            <h3>Group Chats</h3>
 
-            <a href="#" class="create-group">
-                <span class="plus-icon">+</span>
+            <div class="group-chat-item">
+                <i class="fa-solid fa-users"></i>
                 <span>Create group chat</span>
-            </a>
-        </section>
-         </aside>
+            </div>
+            </section>
+
+            </aside>
 
       </main>
 

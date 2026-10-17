@@ -4,11 +4,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Facebook Clone</title>
+    <title>Create Account | Facebook Clone</title>
+    <link rel="stylesheet" href="./css/auth.css">
 </head>
 
-<body>
+<body class="auth-page">
+    <main class="auth-container">
+        <section class="auth-brand">
+            <h1>facebook</h1>
+            <p>Discover and connect with the people who mater to you.</p>
+        </section>
 
+        <section class="auth-card">
+            <h2>Create a new account</h2>
+            <p class="auth-subtitle">It's quick and easy.</p>
+
+            <form id="signupForm">
+                <label for="signupName">Full Name</label>
+                <input 
+                    id="signupName"
+                    name="fullName"
+                    type="text"
+                    placeholder="Enter your full name"
+                    autocomplete="name"
+                    maxlength="100"
+                    required
+                    >
+
+                <label for="signupEmail">Email address</label>
+                <input 
+                     id="signupEmail"
+                     name="email"
+                     type="email"
+                     placeholder="Enter your email"
+                     autocomplete="email"
+                     required
+                     >
+
+                <label for="signupPassword">Password</label>
+                <input 
+                     id="signupPassword"
+                     name="password"
+                     type="password"
+                     placeholder="Create a Password(at least 8 characters)"
+                     autocomplete="new-password"
+                     minlength="8"
+                     required
+                     >
+
+                <label for="confirmPassword">Confirm Password</label>
+                <input 
+                     id="confirmPassword"
+                     name="confirmPassword"
+                     type="password"
+                     placeholder="Enter your password again"
+                     autocomplete="new-password"
+                     minlength="8"
+                     required
+                     >
+
+                     <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
+
+                     <button id="signupButton" type="submit">Create Account</button>
+            </form>
+
+            <p class="auth-switch">
+                Already have an account?
+                <a href="./login.html">Log in</a>
+            </p>
+        </section>
+    </main>
+
+    <script type="module" src="./js/auth.js"></script>
 </body>
 
 </html>

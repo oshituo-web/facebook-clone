@@ -1,35 +1,64 @@
+
 /* =========================================
-   11. RESPONSIVE FOUNDATION
+   11. RESPONSIVE DESIGN
 ========================================= */
 
-
 /* Tablet */
+@media (min-width: 761px) and (max-width: 1023px) {
+    .main-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+        padding: 16px;
+    }
 
-@media (max-width: 1023px) {
-
-  .main-layout {
-    grid-template-columns:
-      200px minmax(0, 1fr);
-  }
-
-  .left-sidebar {
-    display: none;
-  }
+    .left-sidebar,
+    .right-sidebar {
+        display: none;
+    }
 }
 
-
 /* Mobile */
+@media (max-width: 760px) {
+    .main-layout {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+    }
 
-@media (max-width: 900px) {
+    .left-sidebar,
+    .right-sidebar {
+        display: none;
+    }
 
-  .main-layout {
-    display: block;
-    padding: 0;
-    margin-left: 0;
-  }
+    .feed {
+        width: 100%;
+        min-width: 0;
+    }
 
-  .left-sidebar,
-  .right-sidebar {
-    display: none;
-  }
+    .stories {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .posts {
+        width: 100%;
+        max-width: 100%;
+        gap: 10px;
+    }
+
+    .post {
+        padding: 12px;
+        border-radius: 6px;
+    }
+
+    .post-image {
+        max-height: 480px;
+    }
+
+    .create-post {
+        margin-bottom: 10px;
+        border-radius: 0;
+    }
 }

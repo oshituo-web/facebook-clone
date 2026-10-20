@@ -32,6 +32,7 @@
             <!-- Facebook Logo -->
             <i class="fa-brands fa-facebook"></i>
 
+
             <!-- Search -->
             <div class="search-container">
                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
@@ -267,100 +268,60 @@
  
          </section>
 
-
-<!-- RIGHT SIDEBAR -->
-
-<aside class="right-sidebar" aria-label="Right sidebar">
-
-    <!-- 1. SPONSORED SECTION -->
-    <section class="sidebar-section sponsored-section">
-        <h3 class="section-heading">Sponsored</h3>
-
-        <a href="https://www.zara.com/" class="sponsored-item"
-            target="_blank" rel="noopener noreferrer">
-            <img
-                src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=300"
-                alt="Fashion products"
-                class="sponsored-image"
-            >
-
-            <div class="sponsored-info">
-                <h4>Discover New Styles</h4>
-                <p>Explore the latest fashion trends.</p>
-                <span>Zara</span>
-            </div>
-        </a>
-
-        <a href="https://www.freecodecamp.org/learn/" class="sponsored-item"
-            target="_blank" rel="noopener noreferrer">
-            <img
-                src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=300"
-                alt="People working with technology"
-                class="sponsored-image"
-            >
-
-            <div class="sponsored-info">
-                <h4>Learn New Skills</h4>
-                <p>Take your next step in technology.</p>
-                <span>freeCodeCamp</span>
-            </div>
-        </a>
-    </section>
-
-    <hr>
-
-    <!-- 2. BIRTHDAYS SECTION -->
-    <section class="sidebar-section birthdays-section">
-        <h3 class="section-heading">Birthdays</h3>
-
-        <div class="birthday-item">
-            <span class="birthday-icon" aria-hidden="true">🎂</span>
-
-            <p>
-                <strong>Alex Johnson</strong> and
-                <strong>2 others</strong> have birthdays today.
-            </p>
-        </div>
-    </section>
-
-            <hr>
-
-            <!-- 3. CONTACTS SECTION -->
-    <section class="sidebar-section contacts-section">
-
-        <div class="contacts-header">
-            <h3 class="section-heading">Contacts</h3>
-
-            <div class="contact-actions">
-                <button type="button" aria-label="Search contacts"
-                    title="Search contacts">⌕</button>
-                <button type="button" aria-label="More contact options"
-                    title="More options">•••</button>
-            </div>
-        </div>
-
-        <!-- JavaScript will insert contacts from users.json here -->
-        <div id="rightSidebarContacts" class="contacts-list">
-            <p class="sidebar-loading">Loading contacts...</p>
-        </div>
-
-    </section>
-
-
-
-
-            <!-- Group Chats -->
-            <section class="sidebar-section group-chats-section">
-                <h3>Group Chats</h3>
-
-                <button type="button" class="create-group-button"
-                    aria-label="Create group chat" title="Create group chat">
-                    <span aria-hidden="true">+</span>
-                    <span>Create group <span class="create-group-chat-label">chat</span></span>
-                </button>
-            </section>
-
-            </aside>
+         <!-- Right Sidebar (Role 7) -->
+            
+         <!-- RIGHT SIDEBAR: supplementary Facebook-style content -->
+         <aside class="right-sidebar" aria-label="Right sidebar">
+         
+             <!-- Sponsored section: empty until real advertisement data is connected -->
+             <section class="sponsored-section" aria-labelledby="sponsored-heading">
+                 <h3 id="sponsored-heading">Sponsored</h3>
+         
+                 <p class="sidebar-empty">
+                     No sponsored content available.
+                 </p>
+             </section>
+         
+             <hr class="sidebar-divider">
+         
+             <!-- Birthdays section: no fictional birthday data -->
+             <section class="birthdays-section" aria-labelledby="birthdays-heading">
+                 <h3 id="birthdays-heading">Birthdays</h3>
+         
+                 <div class="birthday-content">
+                     <span class="gift-icon" aria-hidden="true">🎁</span>
+                     <p class="birthday-details">
+                         No birthdays to display right now.
+                     </p>
+                 </div>
+             </section>
+         
+             <hr class="sidebar-divider">
+         
+             <!-- Contacts: JavaScript will populate this list with real user data -->
+             <section class="contacts-section" aria-labelledby="contacts-heading">
+                 <div class="section-heading">
+                     <h3 id="contacts-heading">Contacts</h3>
+                 </div>
+         
+                 <ul class="contacts-list" id="rightSidebarContacts">
+                     <li class="sidebar-loading">Loading contacts...</li>
+                 </ul>
+             </section>
+         
+             <hr class="sidebar-divider">
+         
+             <!-- Group chats: shown as a heading until the feature is implemented -->
+             <section class="group-chats-section" aria-labelledby="group-chats-heading">
+                 <h3 id="group-chats-heading">Group chats</h3>
+         
+                 <p class="sidebar-empty">
+                     No group chats available.
+                 </p>
+             </section>
+         
+         </aside>
+         
 
       </main>
 

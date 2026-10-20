@@ -1,1 +1,383 @@
 
+/* RIGHT SIDEBAR */
+.right-sidebar {
+    width: 320px;
+    padding: 16px 12px;
+    background-color: #f0f2f5;
+    color: #050505;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+/* Keep padding inside the element's width */
+.right-sidebar *,
+.right-sidebar *::before,
+.right-sidebar *::after {
+    box-sizing: border-box;
+}
+
+/* Section headings */
+.right-sidebar .section-heading {
+    font-size: 17px;
+    font-weight: 600;
+    color: #65676b;
+    margin: 0;
+}
+
+
+
+/* SPONSORED SECTION */
+.sponsored-section {
+    margin-bottom: 18px;
+}
+
+.sponsored-section .section-heading {
+    margin-bottom: 14px;
+}
+
+.sponsored-item {
+    margin-bottom: 14px;
+}
+
+.sponsored-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #050505;
+    border-radius: 8px;
+    padding: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.sponsored-link:hover {
+    background-color: #e4e6eb;
+}
+
+.sponsored-image {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.sponsored-details {
+    min-width: 0;
+}
+
+.sponsored-details h4 {
+    font-size: 14px;
+    margin: 0 0 6px;
+    font-weight: 600;
+}
+
+.sponsored-details p {
+    font-size: 12px;
+    color: #65676b;
+    margin: 0 0 5px;
+    line-height: 1.4;
+}
+
+.sponsored-details span {
+    font-size: 11px;
+    color: #65676b;
+}
+
+
+
+/* DIVIDER BETWEEN SECTIONS */
+.sidebar-divider {
+    height: 1px;
+    background-color: #ced0d4;
+    margin: 16px 0;
+    border: none;
+}
+
+
+
+/* BIRTHDAYS SECTION */
+.birthdays-section {
+    margin-bottom: 16px;
+}
+
+.birthdays-section .section-heading {
+    margin-bottom: 12px;
+}
+
+.birthday-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 6px;
+    border-radius: 8px;
+}
+
+.gift-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.birthday-details p {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+    color: #65676b;
+}
+
+
+
+/* CONTACTS SECTION */
+.contacts-section {
+    margin-bottom: 16px;
+}
+
+.contacts-header,
+.group-chats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.contacts-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.contacts-actions button,
+.create-group-button {
+    border: none;
+    background: transparent;
+    color: #65676b;
+    cursor: pointer;
+    font-size: 18px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contacts-header .section-heading {
+    margin: 0;
+}
+
+.contacts-actions button {
+    flex-shrink: 0;
+    font-family: inherit;
+}
+
+.contacts-actions button:hover,
+.create-group-button:hover {
+    background-color: #e4e6eb;
+}
+
+.contacts-actions button:focus-visible {
+    outline: 2px solid #1877f2;
+    outline-offset: 2px;
+}
+
+
+/* CONTACT LIST */
+.contacts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* EACH CONTACT */
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 8px;
+    list-style: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.contact-item:hover {
+    background-color: #e4e6eb;
+}
+
+/* PROFILE PICTURE */
+.contact-avatar-wrapper,
+.avatar-wrapper {
+    width: 40px;
+    height: 40px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.contact-avatar,
+.avatar-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+.contacts-list > .sidebar-empty {
+    padding: 8px;
+    color: #65676b;
+    font-size: 14px;
+}
+
+/* ONLINE STATUS */
+.online-indicator {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    background-color: #31a24c;
+    border: 2px solid #f0f2f5;
+    border-radius: 50%;
+    right: 0;
+    bottom: 0;
+}
+
+/* CONTACT NAME */
+.contact-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #050505;
+}
+
+
+
+/* GROUP CONVERSATIONS */
+.group-chats-section {
+    margin-bottom: 16px;
+}
+
+.group-chats-header {
+    margin-bottom: 12px;
+}
+
+.group-chats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.group-chat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.group-chat-item:hover {
+    background-color: #e4e6eb;
+}
+
+.group-chat-avatar {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.group-chat-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+.group-chat-details {
+    min-width: 0;
+}
+
+.group-chat-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    color: #050505;
+}
+
+.group-chat-description {
+    font-size: 12px;
+    color: #65676b;
+}
+
+
+
+/* RIGHT SIDEBAR FIX */
+.right-sidebar {
+    position: fixed;
+    top: 56px;
+    right: 0;
+    width: 320px;
+    height: calc(100vh - 56px);
+    padding: 16px 12px;
+    background-color: #f0f2f5;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+.right-sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Keep all sidebar elements inside its width */
+.right-sidebar *,
+.right-sidebar *::before,
+.right-sidebar *::after {
+    box-sizing: border-box;
+}
+
+/* Prevent images from stretching the sidebar */
+.right-sidebar img {
+    max-width: 100%;
+}
+
+/* Keep section headings on one line where possible */
+.right-sidebar .section-heading {
+    font-size: 17px;
+    color: #65676b;
+    font-weight: 600;
+    margin: 0 0 12px;
+}
+
+
+
+.main-content {
+    margin-right: 320px;
+}
+
+
+
+
+/* RESPONSIVE SIDEBAR */
+@media (max-width: 1100px) {
+    .right-sidebar {
+        width: 280px;
+    }
+
+    .sponsored-image {
+        width: 95px;
+        height: 80px;
+    }
+}
+
+@media (max-width: 850px) {
+    .right-sidebar {
+        display: none;
+    }
+}

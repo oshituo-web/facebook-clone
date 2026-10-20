@@ -1,4 +1,7 @@
 
+.right-sidebar {
+    justify-self: flex-end;
+}
 /* Empty states for sidebar sections without real data */
 .sidebar-empty,
 .sidebar-loading,

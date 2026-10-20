@@ -212,6 +212,194 @@ export async function markNotificationRead(notificationId) {
 }
 
 
+
+// =========================================================
+// FRIEND REQUESTS 5: GET FRIEND SUGGESTIONS
+// - Excludes the signed-in user.
+// - Excludes anyone with an existing friend-request record
+//   in either direction.
+// - Does not yet rank people by mutual friends.
+// =========================================================
+
+export async function getFriendSuggestions() {
+    const currentUser = await getCurrentAuthenticatedUser();
+
+    // Make sure a user is signed in before querying suggestions.
+    if (!currentUser) {
+        throw new Error("Please sign in to view friend suggestions.");
+    }
+
+    // Reuse the existing function to load other registered profiles.
+    const profiles = await getMessageableProfiles();
+
+    // Retrieve requests involving the signed-in user.
+    const { data: requests, error } = await supabase
+        .from("friend_requests")
+        .select("requester_id, recipient_id")
+        .or(
+            `requester_id.eq.${currentUser.id},recipient_id.eq.${currentUser.id}`
+        );
+
+    if (error) {
+        throw error;
+    }
+
+    // Exclude people with pending, accepted, or rejected requests.
+    const excludedUserIds = new Set(
+        (requests ?? []).map(request =>
+            request.requester_id === currentUser.id
+                ? request.recipient_id
+                : request.requester_id
+        )
+    );
+
+    // Return only eligible profiles.
+    return profiles.filter(
+        profile =>
+            profile.id !== currentUser.id &&
+            !excludedUserIds.has(profile.id)
+    );
+}
+
+
+
+/* =========================================================
+   FRIEND REQUESTS 1: SEND A FRIEND REQUEST
+   The sender ID comes from Supabase Auth.
+   The recipient ID must be a real profile UUID.
+   ========================================================= */
+
+export async function sendFriendRequest(recipientId) {
+    const currentUser = await getCurrentAuthenticatedUser();
+
+    // Ensure the user is signed in.
+    if (!currentUser) {
+        throw new Error("Please sign in before sending a friend request.");
+    }
+
+    // Prevent sending a request to yourself or an invalid recipient.
+    if (!recipientId || recipientId === currentUser.id) {
+        throw new Error("Please select a valid person to add.");
+    }
+
+    // Check whether a request exists in either direction.
+    const { data: existingRequests, error: lookupError } = await supabase
+        .from("friend_requests")
+        .select("id, requester_id, recipient_id, status")
+        .or(
+            `and(requester_id.eq.${currentUser.id},recipient_id.eq.${recipientId}),and(requester_id.eq.${recipientId},recipient_id.eq.${currentUser.id})`
+        );
+
+    if (lookupError) {
+        throw lookupError;
+    }
+
+    const requests = existingRequests ?? [];
+
+    if (requests.some(request => request.status === "pending")) {
+        throw new Error(
+            "A pending friend request already exists between these users."
+        );
+    }
+
+    if (requests.some(request => request.status === "accepted")) {
+        throw new Error("You are already friends with this person.");
+    }
+
+    // Create the request. The database trigger should create its notification.
+    const { data, error } = await supabase
+        .from("friend_requests")
+        .insert({
+            requester_id: currentUser.id,
+            recipient_id: recipientId,
+            status: "pending"
+        })
+        .select("id, requester_id, recipient_id, status, created_at")
+        .single();
+
+    if (error) {
+        throw error;
+    }
+
+    return data;
+}
+
+
+
+// =========================================================
+// FRIEND REQUESTS 2: GET INCOMING REQUESTS
+// Return pending requests addressed to the signed-in user.
+// =========================================================
+
+export async function getIncomingFriendRequests() {
+    const currentUser = await getCurrentAuthenticatedUser();
+
+    if (!currentUser) {
+        throw new Error("Please sign in to view friend requests.");
+    }
+
+    const { data, error } = await supabase
+        .from("friend_requests")
+        .select("id, requester_id, recipient_id, status, created_at")
+        .eq("recipient_id", currentUser.id)
+        .eq("status", "pending")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        throw error;
+    }
+
+    return data ?? [];
+}
+
+
+// =========================================================
+// FRIEND REQUESTS 3: ACCEPT OR REJECT A REQUEST
+// Only the recipient can respond, as enforced by RLS.
+// =========================================================
+
+export async function respondToFriendRequest(requestId, accept) {
+    const currentUser = await getCurrentAuthenticatedUser();
+
+    if (!currentUser) {
+        throw new Error("Please sign in to respond to friend requests.");
+    }
+
+    if (requestId === undefined || requestId === null || typeof accept !== "boolean") {
+        throw new Error("A valid request and response are required.");
+    }
+
+    const newStatus = accept ? "accepted" : "rejected";
+
+    const { data, error } = await supabase
+        .from("friend_requests")
+        .update({
+            status: newStatus,
+            updated_at: new Date().toISOString()
+        })
+        .eq("id", requestId)
+        .eq("recipient_id", currentUser.id)
+        .eq("status", "pending")
+        .select("id, requester_id, recipient_id, status")
+        .maybeSingle();
+
+    if (error) {
+        throw error;
+    }
+
+    if (!data) {
+        throw new Error(
+            "This request may already have been handled, or you cannot respond to it."
+        );
+    }
+
+    // The database trigger notifies the requester if accepted.
+    // Do not insert another notification here.
+    return data;
+}
+       
+
+
 /* =========================================================
    MESSENGER 2: LOAD A CONVERSATION
 

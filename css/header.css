@@ -3,14 +3,12 @@
 ========================================= */
 
 .facebook-header {
-  height: 64px;
+  height: 56px;
   width: 100%;
-  padding: 0 16px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
 
   background-color: var(--white);
   border-bottom: 1px solid var(--border);
@@ -28,7 +26,7 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 5px;
 }
 
 
@@ -39,6 +37,7 @@
     align-items: center;
     justify-content: center;
     flex: 0;
+    padding-left: 12px;
 
     color: var(--facebook-blue);
     text-decoration: none;
@@ -55,10 +54,10 @@
   display: flex;
   align-items: center;
 
-  width: 250px;
+  width: 220px;
   max-width: 100%;
   height: 40px;
-  padding: 0 12px;
+  padding: 0 10px;
 
   background-color: var(--page-background);
   border-radius: 20px;
@@ -98,6 +97,8 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
+  padding-right: 50px;
+  margin-right: 50px;
 
   height: 100%;
   flex: 1 1 auto;
@@ -110,17 +111,13 @@
   height: 100%;
   min-width: 90px;
   font-size: 20px;
-  padding: 8px 16px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  flex: 1 1 0;
-  min-width: 0;
-  max-width: 112px;
-  height: 100%;
+  flex: 1 1 auto;
   padding: 8px 12px;
  
   border: none;
@@ -203,6 +200,7 @@
     align-items: center;
     justify-content: flex-end;
     gap: 8px;
+    margin-left: 40px;
 
     flex: 0 0 auto;
 }
@@ -434,6 +432,355 @@ body.dark-theme .header-dropdown-search {
 .profile-action-item > span:last-child {
     flex: 1;
 }
+
+
+
+/* =========================================================
+   MESSENGER DROPDOWN — VISUAL IMPROVEMENTS
+
+   Styles the dynamically generated Messenger interface.
+   Existing JavaScript and class names are preserved.
+   ========================================================= */
+
+/* Main Messenger layout */
+.messenger-interface {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    min-width: 0;
+    color: #1c1e21;
+    background: #ffffff;
+}
+
+/* Search field */
+.messenger-interface .header-dropdown-search {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    padding: 10px 14px;
+    color: #1c1e21;
+    background: #f0f2f5;
+    border: 1px solid transparent;
+    border-radius: 22px;
+    font: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.messenger-interface .header-dropdown-search:focus {
+    background: #ffffff;
+    border-color: #1877f2;
+    box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.12);
+}
+
+/* Registered-user list */
+.messenger-user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 340px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+}
+
+.messenger-user-list > * {
+    min-width: 0;
+    border-radius: 10px;
+}
+
+/* User entries, whether rendered as buttons or links */
+.messenger-user-list button,
+.messenger-user-list a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 11px 10px;
+    color: inherit;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.18s ease;
+}
+
+.messenger-user-list button:hover,
+.messenger-user-list a:hover {
+    background: #f0f2f5;
+}
+
+.messenger-user-list button:focus-visible,
+.messenger-user-list a:focus-visible {
+    outline: 2px solid #1877f2;
+    outline-offset: -2px;
+}
+
+/* Empty and loading messages */
+.messenger-interface .header-dropdown-empty {
+    margin: 0;
+    padding: 24px 12px;
+    color: #65676b;
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+/* Conversation panel */
+.messenger-conversation {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 320px;
+    max-height: 520px;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e4e6eb;
+    border-radius: 12px;
+}
+
+.messenger-conversation[hidden] {
+    display: none !important;
+}
+
+/* Conversation header */
+.messenger-conversation-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 58px;
+    padding: 10px 12px;
+    background: #ffffff;
+    border-bottom: 1px solid #e4e6eb;
+}
+
+.messenger-back-button {
+    flex-shrink: 0;
+    padding: 8px 10px;
+    color: #1877f2;
+    background: #e7f3ff;
+    border: none;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.messenger-back-button:hover {
+    background: #dbeafe;
+}
+
+.messenger-partner-name {
+    overflow: hidden;
+    color: #1c1e21;
+    font-size: 15px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Scrollable message history */
+.messenger-messages {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 180px;
+    padding: 16px 12px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: #ffffff;
+    scrollbar-width: thin;
+}
+
+/
+/* -----------------------------------------------------
+   MESSENGER CHAT BUBBLES
+----------------------------------------------------- */
+
+.messenger-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 180px;
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 14px 10px;
+    background: #f0f2f5;
+    border-radius: 10px;
+    scroll-behavior: smooth;
+}
+
+/* Shared styling for individual messages. */
+.messenger-message {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    max-width: 82%;
+    padding: 9px 12px;
+    border-radius: 16px;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+}
+
+/* Messages sent by the signed-in user. */
+.messenger-message.message-sent {
+    align-self: flex-end;
+    background: #0084ff;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+/* Messages received from the other user. */
+.messenger-message.message-received {
+    align-self: flex-start;
+    background: #ffffff;
+    color: #1c1e21;
+    border: 1px solid #e4e6eb;
+    border-bottom-left-radius: 4px;
+}
+
+/* Message text. */
+.messenger-message-text {
+    margin: 0;
+    font-size: 14px;
+    white-space: pre-wrap;
+}
+
+/* Message timestamps. */
+.messenger-message-time {
+    display: block;
+    margin-top: 5px;
+    font-size: 10px;
+    line-height: 1.3;
+    opacity: 0.75;
+    overflow-wrap: anywhere;
+}
+
+.messenger-message.message-sent .messenger-message-time {
+    color: #ffffff;
+}
+
+/* Scrollbar styling. */
+.messenger-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messenger-messages::-webkit-scrollbar-thumb {
+    background: #bcc0c4;
+    border-radius: 10px;
+}
+
+.messenger-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+/* Status feedback */
+.messenger-status {
+    margin: 0;
+    padding: 0 12px 8px;
+    color: #65676b;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* Message input and Send button */
+.messenger-send-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: #ffffff;
+    border-top: 1px solid #e4e6eb;
+}
+
+.messenger-message-input {
+    flex: 1;
+    width: 0;
+    min-width: 0;
+    min-height: 42px;
+    padding: 10px 14px;
+    color: #1c1e21;
+    background: #f0f2f5;
+    border: 1px solid transparent;
+    border-radius: 22px;
+    font: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.messenger-message-input:focus {
+    background: #ffffff;
+    border-color: #1877f2;
+    box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1);
+}
+
+.messenger-send-form button {
+    flex-shrink: 0;
+    min-height: 40px;
+    padding: 9px 16px;
+    color: #ffffff;
+    background: #1877f2;
+    border: none;
+    border-radius: 22px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.messenger-send-form button:hover {
+    background: #166fe5;
+}
+
+.messenger-send-form button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* Keyboard accessibility */
+.messenger-back-button:focus-visible,
+.messenger-send-form button:focus-visible {
+    outline: 3px solid rgba(24, 119, 242, 0.3);
+    outline-offset: 2px;
+}
+
+/* Smaller screens */
+@media (max-width: 480px) {
+    .messenger-user-list {
+        max-height: 280px;
+    }
+
+    .messenger-conversation {
+        min-height: 280px;
+        max-height: 430px;
+    }
+
+    .messenger-conversation-heading {
+        gap: 8px;
+        padding: 8px;
+    }         
+
+    .messenger-send-form {
+        gap: 6px;
+        padding: 9px;
+    }
+
+    .messenger-send-form button {
+        padding: 9px 12px;
+    }
+}
+
 
 
 

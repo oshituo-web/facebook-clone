@@ -27,10 +27,14 @@ import {
     getComments,
     getMyNotifications,
     markNotificationRead,
-    getMessageableProfiles,
     getConversationMessages,
     sendDirectMessage,
-    markReceivedMessagesRead
+    markReceivedMessagesRead,
+    getFriendSuggestions,
+    sendFriendRequest,
+    getIncomingFriendRequests,
+    respondToFriendRequest,
+    getMessageableProfiles
 } from "./data.js";
 
 import {
@@ -39,6 +43,10 @@ import {
     renderCreatePost,
     renderSidebarUser
 } from "./render.js";
+
+// Load the YouTube video feed feature.
+import { initYoutubeVideos } from "./youtubeVideos.js";
+import { initMarketplace } from "./marketplace.js";
 
 
 
@@ -313,20 +321,26 @@ async function loadApplicationData() {
         ];
 
         
-        /* Render the feed and stories. */
+        // Render the feed and stories.
         renderSidebarUser(currentUser);
         renderPosts(posts, usersForRendering, comments);
         renderStories(stories, usersForRendering);
-        
+
+        // Set up the Add Friend button handler and load suggestions.
+        setupFriendSuggestionEvents();
+        await renderFriendSuggestions();
+
+        // Set up and load incoming friend requests.
+        setupIncomingFriendRequestEvents();
+        await renderIncomingFriendRequests();
+
         // Display contacts using the users loaded from users.json.
         renderRightSidebarContacts(users);
         
 
-        /*
-         * Render the create-post composer.
-         * The callback saves the new post before updating
-         * the visible feed.
-         */
+        /* Render the create-post composer.
+          The callback saves the new post before updating
+          the visible feed. */
         renderCreatePost(currentUser, (newPost) => {
             const updatedLocalPosts = [
                 newPost,
@@ -367,11 +381,333 @@ async function loadApplicationData() {
 }
 
 
+// =========================================================
+// FRIEND SUGGESTIONS — RENDER PROFILES AND HANDLE REQUESTS
+// =========================================================
 
-/*
-   Display an error message inside the feed area when possible.
-*/
+/**
+ * Display suggested profiles in the People You May Know section.
+ */
+async function renderFriendSuggestions() {
+    const suggestionsContainer = document.getElementById(
+        "friendSuggestionsList"
+    );
 
+    // Do nothing if the section is not present in the HTML.
+    if (!suggestionsContainer) return;
+
+    suggestionsContainer.textContent = "Loading suggestions...";
+
+    try {
+        const profiles = await getFriendSuggestions();
+
+        // Clear the loading message before rendering profile cards.
+        suggestionsContainer.replaceChildren();
+
+        if (profiles.length === 0) {
+            const message = document.createElement("p");
+            message.className = "friend-suggestions-message";
+            message.textContent = "No new suggestions right now.";
+            suggestionsContainer.appendChild(message);
+            return;
+        }
+
+        profiles.forEach(profile => {
+            const card = document.createElement("article");
+            card.className = "friend-suggestion-card";
+
+            // Show the profile picture when one is available.
+            if (profile.avatar_url) {
+                const avatar = document.createElement("img");
+                avatar.className = "friend-suggestion-avatar";
+                avatar.src = profile.avatar_url;
+                avatar.alt = "";
+                avatar.loading = "lazy";
+
+                // Hide broken images instead of leaving a broken icon.
+                avatar.addEventListener("error", () => {
+                    avatar.remove();
+                }, { once: true });
+
+                card.appendChild(avatar);
+            } else {
+                // Use a simple icon when the profile has no picture.
+                const avatar = document.createElement("div");
+                avatar.className = "friend-suggestion-avatar";
+                avatar.setAttribute("aria-hidden", "true");
+                avatar.style.display = "grid";
+                avatar.style.placeItems = "center";
+                avatar.innerHTML =
+                    '<i class="fa-solid fa-user"></i>';
+
+                card.appendChild(avatar);
+            }
+
+            const name = document.createElement("p");
+            name.className = "friend-suggestion-name";
+            name.textContent = profile.display_name || "Facebook user";
+            card.appendChild(name);
+
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "friend-suggestion-button";
+            button.textContent = "Add Friend";
+            button.dataset.recipientId = profile.id;
+
+            card.appendChild(button);
+            suggestionsContainer.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Failed to load friend suggestions:", error);
+
+        suggestionsContainer.replaceChildren();
+
+        const message = document.createElement("p");
+        message.className = "friend-suggestions-message";
+        message.textContent =
+            "Could not load suggestions. Please sign in and try again.";
+
+        suggestionsContainer.appendChild(message);
+    }
+}
+
+
+/**
+ * Handle Add Friend clicks using one event listener on the container.
+ */
+function setupFriendSuggestionEvents() {
+    const suggestionsContainer = document.getElementById(
+        "friendSuggestionsList"
+    );
+
+    if (!suggestionsContainer) return;
+
+    // Prevent registering the same listener more than once.
+    if (suggestionsContainer.dataset.eventsReady === "true") return;
+    suggestionsContainer.dataset.eventsReady = "true";
+
+    suggestionsContainer.addEventListener("click", async event => {
+        const button = event.target.closest(
+            "button[data-recipient-id]"
+        );
+
+        if (!button || !suggestionsContainer.contains(button)) return;
+
+        const recipientId = button.dataset.recipientId;
+
+        button.disabled = true;
+        button.textContent = "Sending...";
+
+        try {
+            await sendFriendRequest(recipientId);
+
+            // Remove this card because the request has been sent.
+            const card = button.closest(".friend-suggestion-card");
+            if (card) card.remove();
+
+            if (suggestionsContainer.children.length === 0) {
+                const message = document.createElement("p");
+                message.className = "friend-suggestions-message";
+                message.textContent =
+                    "No new suggestions right now.";
+                suggestionsContainer.appendChild(message);
+            }
+        } catch (error) {
+            console.error("Failed to send friend request:", error);
+
+            button.disabled = false;
+            button.textContent = "Add Friend";
+
+            alert(
+                error.message ||
+                "Could not send the friend request. Please try again."
+            );
+        }
+    });
+}
+
+
+// =========================================================
+// INCOMING FRIEND REQUESTS 1: RENDER REQUESTS
+// Loads pending requests and displays each requester's profile.
+// =========================================================
+
+async function renderIncomingFriendRequests() {
+    const requestsContainer = document.getElementById(
+        "incomingFriendRequestsList"
+    );
+
+    if (!requestsContainer) return;
+
+    requestsContainer.textContent = "Loading friend requests...";
+
+    try {
+        // Load incoming requests and profile information from Supabase.
+        const [requests, profiles] = await Promise.all([
+            getIncomingFriendRequests(),
+            getMessageableProfiles()
+        ]);
+
+        // Match each requester's user ID to their profile.
+        const profilesById = new Map(
+            profiles.map(profile => [profile.id, profile])
+        );
+
+        requestsContainer.replaceChildren();
+
+        if (requests.length === 0) {
+            const message = document.createElement("p");
+            message.className = "incoming-friend-requests-message";
+            message.textContent = "You have no pending friend requests.";
+            requestsContainer.appendChild(message);
+            return;
+        }
+
+        requests.forEach(request => {
+            const profile = profilesById.get(request.requester_id);
+
+            const card = document.createElement("article");
+            card.className = "incoming-friend-request-card";
+            card.dataset.requestId = request.id;
+
+            // Display the requester's avatar, or a default icon.
+            if (profile?.avatar_url) {
+                const avatar = document.createElement("img");
+                avatar.className = "incoming-friend-request-avatar";
+                avatar.src = profile.avatar_url;
+                avatar.alt = "";
+                avatar.loading = "lazy";
+
+                avatar.addEventListener(
+                    "error",
+                    () => avatar.remove(),
+                    { once: true }
+                );
+
+                card.appendChild(avatar);
+            } else {
+                const avatar = document.createElement("div");
+                avatar.className = "incoming-friend-request-avatar";
+                avatar.setAttribute("aria-hidden", "true");
+                avatar.innerHTML = '<i class="fa-solid fa-user"></i>';
+                card.appendChild(avatar);
+            }
+
+            // Display the requester's name safely as text.
+            const name = document.createElement("p");
+            name.className = "incoming-friend-request-name";
+            name.textContent = profile?.display_name || "Facebook user";
+            card.appendChild(name);
+
+            // Accept button.
+            const acceptButton = document.createElement("button");
+            acceptButton.type = "button";
+            acceptButton.className = "friend-request-action accept";
+            acceptButton.dataset.action = "accept";
+            acceptButton.textContent = "Accept";
+            acceptButton.setAttribute("aria-label", `Accept request from ${name.textContent}`);
+
+            // Reject button.
+            const rejectButton = document.createElement("button");
+            rejectButton.type = "button";
+            rejectButton.className = "friend-request-action reject";
+            rejectButton.dataset.action = "reject";
+            rejectButton.textContent = "Reject";
+            rejectButton.setAttribute("aria-label", `Reject request from ${name.textContent}`);
+
+            card.append(acceptButton, rejectButton);
+            requestsContainer.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Failed to load incoming friend requests:", error);
+
+        requestsContainer.replaceChildren();
+
+        const message = document.createElement("p");
+        message.className = "incoming-friend-requests-message";
+        message.textContent =
+            "Could not load friend requests. Please sign in and try again.";
+
+        requestsContainer.appendChild(message);
+    }
+}
+
+
+// =========================================================
+// INCOMING FRIEND REQUESTS 2: ACCEPT OR REJECT
+// Uses event delegation so the buttons work on every request card.
+// =========================================================
+
+function setupIncomingFriendRequestEvents() {
+    const requestsContainer = document.getElementById(
+        "incomingFriendRequestsList"
+    );
+
+    if (!requestsContainer) return;
+
+    // Prevent the same click listener from being attached more than once.
+    if (requestsContainer.dataset.eventsReady === "true") return;
+    requestsContainer.dataset.eventsReady = "true";
+
+    requestsContainer.addEventListener("click", async event => {
+        const button = event.target.closest(
+            "button[data-action]"
+        );
+
+        if (!button || !requestsContainer.contains(button)) return;
+
+        const card = button.closest(".incoming-friend-request-card");
+        if (!card) return;
+
+        const requestId = card.dataset.requestId;
+        const action = button.dataset.action;
+
+        if (action !== "accept" && action !== "reject") return;
+
+        // Temporarily disable both buttons to prevent duplicate responses.
+        const actionButtons = card.querySelectorAll("button");
+        actionButtons.forEach(item => {
+            item.disabled = true;
+        });
+
+        button.textContent = action === "accept" ? "Accepting..." : "Rejecting...";
+
+        try {
+            await respondToFriendRequest(requestId, action === "accept");
+
+            // Remove the handled request from the page.
+            card.remove();
+
+            if (requestsContainer.querySelectorAll(
+                ".incoming-friend-request-card"
+            ).length === 0) {
+                const message = document.createElement("p");
+                message.className = "incoming-friend-requests-message";
+                message.textContent = "You have no pending friend requests.";
+                requestsContainer.replaceChildren(message);
+            }
+
+            // Refresh suggestions to reflect the updated request status.
+            await renderFriendSuggestions();
+        } catch (error) {
+            console.error("Could not respond to friend request:", error);
+
+            actionButtons.forEach(item => {
+                item.disabled = false;
+            });
+
+            button.textContent = action === "accept" ? "Accept" : "Reject";
+
+            alert(
+                error.message ||
+                "Could not update this friend request. Please try again."
+            );
+        }
+    });
+}
+
+
+/*Display an error message inside the feed area when possible.*/
 function showFeedMessage(message) {
     const postsContainer = document.querySelector(".posts");
 
@@ -439,30 +775,103 @@ function selectHeaderNavItem(selectedItem) {
 
 headerNavItems.forEach((item) => {
     item.addEventListener("click", () => {
-        selectHeaderNavItem(item);
+        const action = item.dataset.action;
 
-        // Home is the feed page.
-        if (item.dataset.action === "home") {
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
+        // Switch the central content for supported feed views.
+        if (
+            action === "home" ||
+            action === "video" ||
+            action === "marketplace" ||
+            action === "friends"
+        ) {
+            showFeedView(action);
+            return;
         }
+
+        // Keep the active-button behavior for Groups for now.
+        selectHeaderNavItem(item);
     });
 });
 
 
-// Clicking the Facebook logo returns to the feed.
+    // Clicking the Facebook logo returns to the feed.
 
-const facebookLogo = document.querySelector(".facebook-logo");
+    const facebookLogo = document.querySelector(".facebook-logo");
 
-if (facebookLogo) {
-    facebookLogo.addEventListener("click", (event) => {
-        event.preventDefault();
+    if (facebookLogo) {
+        facebookLogo.addEventListener("click", (event) => {
+            event.preventDefault();
 
-        window.location.href = "./index.html";
+            window.location.href = "./index.html";
+        });
+    }
+
+
+/* =========================================================
+   HOME, VIDEO, MARKETPLACE AND FRIENDS VIEW SWITCHING
+
+   Only one central-feed view is visible at a time.
+   ========================================================= */
+   const homeFeedView = document.getElementById("homeFeedView");
+   const youtubeVideosView = document.getElementById("youtubeVideos");
+   const marketplaceView = document.getElementById("marketplaceView");
+   const friendsView = document.getElementById("friendsView");
+
+    function showFeedView(viewName) {
+    // Find the navigation button the user clicked.
+    const selectedItem = document.querySelector(
+        `.main-navigation .nav-item[data-action="${viewName}"]`
+    );
+
+    // Check that all views and the selected navigation button exist.
+    if (
+        !homeFeedView ||
+        !youtubeVideosView ||
+        !marketplaceView ||
+        !friendsView ||
+        !selectedItem
+    ) {
+        console.error(
+            "Could not switch feed view. Check the HTML IDs and navigation action."
+        );
+        return;
+    }
+
+    // Highlight the selected navigation button.
+    selectHeaderNavItem(selectedItem);
+
+    // Show the selected view and hide the other views.
+    homeFeedView.hidden = viewName !== "home";
+    youtubeVideosView.hidden = viewName !== "video";
+    marketplaceView.hidden = viewName !== "marketplace";
+    friendsView.hidden = viewName !== "friends";
+
+    // Load videos when the Videos view is opened.
+    if (viewName === "video") {
+        initYoutubeVideos();
+    }
+
+    // Load products when Marketplace is opened.
+    if (viewName === "marketplace") {
+        initMarketplace();
+    }
+
+    // Load friend suggestions and incoming requests when Friends is opened.
+    if (viewName === "friends") {
+        setupFriendSuggestionEvents();
+        setupIncomingFriendRequestEvents();
+
+        renderFriendSuggestions();
+        renderIncomingFriendRequests();
+    }
+
+    // Return to the top of the page after switching views.
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
     });
 }
+
 
 
 /* =========================================================
@@ -710,8 +1119,8 @@ if (facebookHeader) {
     let openButton = null;
 
     // Store each Messenger panel's loading function.
-// A WeakMap associates the function with its panel.
-const messengerPanelLoaders = new WeakMap();
+    // A WeakMap associates the function with its panel.
+    const messengerPanelLoaders = new WeakMap();
 
 
     function closeHeaderPanel() {

@@ -17,11 +17,11 @@
     { 
         "id": 209, 
         "userId": 5, 
-        "image": "https://picsum.photos/seed/story5/300/500" 
+        "image": "./assets/images/post4.jpg"
     },
     { 
         "id": 300, 
         "userId": 6, 
-        "image": "https://picsum.photos/seed/story4/300/500" 
+        "image": "./assets/images/post1.jpg"
     }
 ]

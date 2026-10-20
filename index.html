@@ -267,84 +267,97 @@
  
          </section>
 
-            <!-- Right Sidebar -->
-            <aside class="right-sidebar" aria-label="Right sidebar">
 
-            <!-- Sponsored Ads -->
-            <section class="sidebar-section sponsored-section">
-                    <h3>Sponsored</h3>
+<!-- RIGHT SIDEBAR -->
 
-            <div class="sponsored-ad">
-                <img src="images/tech-skills.jpg"
-                        alt="Technology skills"
-                        loading="lazy">
-                <div class="sponsored-info">
-                    <h4>Build Your Future With Tech Skills</h4>
-                    <p>Discover new opportunities and learn skills for the future.</p>
-                </div>
+<aside class="right-sidebar" aria-label="Right sidebar">
+
+    <!-- 1. SPONSORED SECTION -->
+    <section class="sidebar-section sponsored-section">
+        <h3 class="section-heading">Sponsored</h3>
+
+        <a href="https://www.zara.com/" class="sponsored-item"
+            target="_blank" rel="noopener noreferrer">
+            <img
+                src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=300"
+                alt="Fashion products"
+                class="sponsored-image"
+            >
+
+            <div class="sponsored-info">
+                <h4>Discover New Styles</h4>
+                <p>Explore the latest fashion trends.</p>
+                <span>Zara</span>
             </div>
+        </a>
 
-            <div class="sponsored-ad">
-                <img src="images/fashion.jpg"
-                        alt="Fashion styles"
-                        loading="lazy">
-                <div class="sponsored-info">
-                    <h4>Discover New Styles</h4>
-                    <p>Explore the latest trends and find your style.</p>
-                </div>
+        <a href="https://www.freecodecamp.org/learn/" class="sponsored-item"
+            target="_blank" rel="noopener noreferrer">
+            <img
+                src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=300"
+                alt="People working with technology"
+                class="sponsored-image"
+            >
+
+            <div class="sponsored-info">
+                <h4>Learn New Skills</h4>
+                <p>Take your next step in technology.</p>
+                <span>freeCodeCamp</span>
             </div>
-            </section>
+        </a>
+    </section>
+
+    <hr>
+
+    <!-- 2. BIRTHDAYS SECTION -->
+    <section class="sidebar-section birthdays-section">
+        <h3 class="section-heading">Birthdays</h3>
+
+        <div class="birthday-item">
+            <span class="birthday-icon" aria-hidden="true">🎂</span>
+
+            <p>
+                <strong>Alex Johnson</strong> and
+                <strong>2 others</strong> have birthdays today.
+            </p>
+        </div>
+    </section>
 
             <hr>
 
-            <!-- Birthdays -->
-            <section class="sidebar-section birthdays-section">
-            <h3>Birthdays</h3>
+            <!-- 3. CONTACTS SECTION -->
+    <section class="sidebar-section contacts-section">
 
-            <div class="birthday-item">
-                <i class="fa-solid fa-gift"></i>
-                <p>
-                    <strong>Birthdays</strong>
-                    <span>See friends who have birthdays today.</span>
-                </p>
+        <div class="contacts-header">
+            <h3 class="section-heading">Contacts</h3>
+
+            <div class="contact-actions">
+                <button type="button" aria-label="Search contacts"
+                    title="Search contacts">⌕</button>
+                <button type="button" aria-label="More contact options"
+                    title="More options">•••</button>
             </div>
-            </section>
+        </div>
 
-            <hr>
+        <!-- JavaScript will insert contacts from users.json here -->
+        <div id="rightSidebarContacts" class="contacts-list">
+            <p class="sidebar-loading">Loading contacts...</p>
+        </div>
 
-            <!-- Contacts -->
-            <section class="sidebar-section contacts-section">
-            <div class="sidebar-heading">
-                <h3>Contacts</h3>
+    </section>
 
-                <div class="contact-actions">
-                    <button type="button" aria-label="Search contacts">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
 
-                    <button type="button" aria-label="More contact options">
-                        <i class="fa-solid fa-ellipsis"></i>
-                    </button>
-                </div>
-            </div>
 
-            <div id="rightSidebarContacts"
-                    class="contacts-list"
-                    aria-live="polite">
-                <p class="loading-contacts">Loading contacts...</p>
-            </div>
-            </section>
-
-            <hr>
 
             <!-- Group Chats -->
             <section class="sidebar-section group-chats-section">
-            <h3>Group Chats</h3>
+                <h3>Group Chats</h3>
 
-            <div class="group-chat-item">
-                <i class="fa-solid fa-users"></i>
-                <span>Create group chat</span>
-            </div>
+                <button type="button" class="create-group-button"
+                    aria-label="Create group chat" title="Create group chat">
+                    <span aria-hidden="true">+</span>
+                    <span>Create group <span class="create-group-chat-label">chat</span></span>
+                </button>
             </section>
 
             </aside>

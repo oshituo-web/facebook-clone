@@ -91,6 +91,14 @@ function renderRightSidebarContacts(users) {
             avatarWrapper.appendChild(avatarImage);
         }
 
+        if (user.isOnline) {
+            const onlineIndicator = document.createElement("span");
+            onlineIndicator.className = "online-indicator";
+            onlineIndicator.setAttribute("role", "img");
+            onlineIndicator.setAttribute("aria-label", "Online");
+            avatarWrapper.appendChild(onlineIndicator);
+        }
+
         // Display the real name from the JSON record.
         const contactName = document.createElement("span");
         contactName.className = "contact-name";

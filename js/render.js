@@ -415,18 +415,18 @@ try {
 
 export function renderCreatePost(currentUser, onPostCreated) {
     const container = document.querySelector(".create-post");
-
+ 
     // The composer needs both its container and a user.
     if (!container || !currentUser) return;
-
+ 
     const firstName =
         currentUser.name.trim().split(/\s+/)[0] || "there";
-
+ 
     // Create the composer and its modal.
     container.innerHTML = `
         <div class="create-post__top">
             <img class="create-post__avatar" alt="Your profile picture">
-
+ 
             <button
                 type="button"
                 class="create-post__input"
@@ -434,34 +434,34 @@ export function renderCreatePost(currentUser, onPostCreated) {
             >
                 What's on your mind?
             </button>
-
+ 
             <button
                 type="button"
                 class="create-post__action"
-                aria-label="Live video (not available yet)"
+                aria-label="Live a video"
             >
                 <i class="fa-solid fa-video icon-red" aria-hidden="true"></i>
             </button>
-
+ 
             <button
                 type="button"
                 class="create-post__action"
-                aria-label="Add photo (not available yet)"
+                aria-label="Add a phote"
             >
                 <i class="fa-solid fa-images icon-green" aria-hidden="true"></i>
             </button>
-
+ 
             <button
                 type="button"
                 class="create-post__action"
-                aria-label="Add feeling (not available yet)"
+                aria-label="Add feeling "
             >
                 <i class="fa-solid fa-face-smile icon-yellow" aria-hidden="true"></i>
             </button>
         </div>
-
+ 
         <div class="create-post__divider"></div>
-
+ 
         <div class="composer-overlay" id="composerOverlay">
             <div
                 class="composer"
@@ -471,7 +471,7 @@ export function renderCreatePost(currentUser, onPostCreated) {
             >
                 <header class="composer__header">
                     <h3 id="composerTitle">Create post</h3>
-
+ 
                     <button
                         type="button"
                         class="composer__close"
@@ -481,19 +481,82 @@ export function renderCreatePost(currentUser, onPostCreated) {
                         <i class="fa-solid fa-xmark" aria-hidden="true"></i>
                     </button>
                 </header>
-
+ 
                 <div class="composer__user">
                     <img class="composer__avatar" alt="">
                     <strong class="composer__name"></strong>
                 </div>
-
+ 
                 <textarea
                     id="composerText"
                     placeholder="What's on your mind?"
                     aria-label="Post text"
                     maxlength="5000"
                 ></textarea>
-
+ 
+                <!--
+                    NEW: Preview area.
+                    When the user picks a photo or video, JavaScript puts
+                    a preview in here. The "hidden" attribute keeps it
+                    invisible until there is something to show.
+                -->
+                <div class="composer__preview" id="composerPreview" hidden></div>
+ 
+                <!--
+                    NEW: Emoji picker (the "feeling" icon opens this).
+                    It starts empty and hidden. JavaScript fills it with
+                    emoji buttons (see setupComposer below).
+                -->
+                <div class="composer__emojis" id="emojiPicker" hidden></div>
+ 
+                <!--
+                    NEW: The "Add to your post" row from the screenshot.
+                    Left side = the label. Right side = the three icon buttons.
+                -->
+                <div class="composer__add">
+                    <span class="composer__add-label">Add to your post</span>
+ 
+                    <div class="composer__add-icons">
+                        <button
+                            type="button"
+                            class="composer__add-btn"
+                            id="addPhoto"
+                            aria-label="Add a photo"
+                        >
+                            <i class="fa-solid fa-images icon-green" aria-hidden="true"></i>
+                        </button>
+ 
+                        <button
+                            type="button"
+                            class="composer__add-btn"
+                            id="addVideo"
+                            aria-label="Add a video"
+                        >
+                            <i class="fa-solid fa-video icon-red" aria-hidden="true"></i>
+                        </button>
+ 
+                        <button
+                            type="button"
+                            class="composer__add-btn"
+                            id="addFeeling"
+                            aria-label="Add a feeling"
+                            aria-expanded="false"
+                        >
+                            <i class="fa-solid fa-face-smile icon-yellow" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+ 
+                <!--
+                    NEW: Hidden file inputs.
+                    A real <input type="file"> looks ugly and can't be styled
+                    well. So we hide it, and our pretty icon buttons "click"
+                    it for the user (see the listeners below).
+                    accept="image/*" limits the picker to images only.
+                -->
+                <input type="file" id="photoInput" accept="image/*" hidden>
+                <input type="file" id="videoInput" accept="video/*" hidden>
+ 
                 <button
                     type="button"
                     class="composer__submit"
@@ -508,13 +571,13 @@ export function renderCreatePost(currentUser, onPostCreated) {
 
     // Populate profile details safely instead of inserting names into HTML.
     const avatarUrl = currentUser.avatar || "";
-
+ 
     container.querySelectorAll(
         ".create-post__avatar, .composer__avatar"
     ).forEach((avatar) => {
         if (avatarUrl) {
             avatar.src = avatarUrl;
-
+ 
             avatar.addEventListener("error", () => {
                 avatar.hidden = true;
             }, { once: true });
@@ -523,85 +586,277 @@ export function renderCreatePost(currentUser, onPostCreated) {
             avatar.hidden = true;
         }
     });
-
+ 
     container.querySelector(".composer__name").textContent =
         currentUser.name;
-
+ 
     container.querySelector("#openComposer").textContent =
         `What's on your mind, ${firstName}?`;
-
+ 
     container.querySelector("#composerText").placeholder =
         `What's on your mind, ${firstName}?`;
-
+ 
     setupComposer(container, currentUser, onPostCreated);
 }
-
-
+ 
+ 
 /* =========================================
    4. COMPOSER INTERACTIONS
 ========================================= */
-
+ 
+// NEW: The emojis shown in the feeling picker.
+// Want more? Just add another emoji to this list. The buttons are
+// generated from it, so nothing else needs to change.
+const FEELING_EMOJIS = [
+    "😀", "😂", "😍", "😎", "🥳",
+    "😢", "😡", "👍", "🎉", "❤️", "🔥"
+];
+ 
+// NEW: Photos are stored inside the post as text, and browsers only allow
+// about 5MB of that in localStorage. This limit keeps us safely under it.
+const MAX_IMAGE_BYTES = 2 * 1024 * 1024;   // 2MB (1024 bytes = 1KB, 1024KB = 1MB)
+ 
 const setupComposer = (container, currentUser, onPostCreated) => {
     const overlay = container.querySelector("#composerOverlay");
     const openButton = container.querySelector("#openComposer");
     const closeButton = container.querySelector("#closeComposer");
     const textarea = container.querySelector("#composerText");
     const submitButton = container.querySelector("#submitPost");
-
+ 
+    // NEW: Find the extra elements we added to the modal.
+    const preview = container.querySelector("#composerPreview");
+    const emojiPicker = container.querySelector("#emojiPicker");
+    const addPhotoButton = container.querySelector("#addPhoto");
+    const addVideoButton = container.querySelector("#addVideo");
+    const addFeelingButton = container.querySelector("#addFeeling");
+    const photoInput = container.querySelector("#photoInput");
+    const videoInput = container.querySelector("#videoInput");
+ 
     // Verify the required elements exist before adding listeners.
     if (
         !overlay ||
         !openButton ||
         !closeButton ||
         !textarea ||
-        !submitButton
+        !submitButton ||
+        // NEW: check the new elements too, so a typo in an id is caught early.
+        !preview ||
+        !emojiPicker ||
+        !addPhotoButton ||
+        !addVideoButton ||
+        !addFeelingButton ||
+        !photoInput ||
+        !videoInput
     ) {
         console.error("The create-post composer could not be initialised.");
         return;
     }
-
+ 
+    // NEW: "State" = what the composer currently remembers.
+    // selectedImage holds the chosen photo as text (a data URL), or "" for none.
+    // selectedVideoUrl holds a temporary link to the chosen video, or "" for none.
+    let selectedImage = "";
+    let selectedVideoUrl = "";
+ 
+    // NEW: One function that decides if the Post button should be enabled.
+    // Before: only text counted. Now: text OR a photo is enough.
+    // (A video alone does not count yet, because posts can't show videos yet.)
+    function updateSubmitState() {
+        const hasText = textarea.value.trim() !== "";
+        const hasImage = selectedImage !== "";
+ 
+        submitButton.disabled = !(hasText || hasImage);
+    }
+ 
+    // NEW: Show a photo or video preview inside the modal,
+    // with a small X button to remove it.
+    function showPreview(mediaElement) {
+        preview.replaceChildren();            // clear any old preview first
+ 
+        const removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.classList.add("composer__preview-remove");
+        removeButton.setAttribute("aria-label", "Remove attachment");
+        removeButton.innerHTML =
+            `<i class="fa-solid fa-xmark" aria-hidden="true"></i>`;
+ 
+        removeButton.addEventListener("click", clearMedia);
+ 
+        preview.append(mediaElement, removeButton);
+        preview.hidden = false;               // reveal the preview area
+    }
+ 
+    // NEW: Remove whatever photo or video is attached and reset everything.
+    function clearMedia() {
+        // Free the temporary video link so the browser can release memory.
+        if (selectedVideoUrl) {
+            URL.revokeObjectURL(selectedVideoUrl);
+        }
+ 
+        selectedImage = "";
+        selectedVideoUrl = "";
+ 
+        preview.replaceChildren();
+        preview.hidden = true;
+ 
+        // Reset the file inputs, otherwise picking the SAME file again
+        // would not trigger a "change" event.
+        photoInput.value = "";
+        videoInput.value = "";
+ 
+        updateSubmitState();
+    }
+ 
     // Open the composer and focus the text area.
     function openComposer() {
         overlay.classList.add("open");
         textarea.focus();
     }
-
+ 
     // Close the composer.
     function closeComposer() {
         overlay.classList.remove("open");
+ 
+        // NEW: Also fold the emoji picker away when the modal closes.
+        emojiPicker.hidden = true;
+        addFeelingButton.setAttribute("aria-expanded", "false");
     }
-
+ 
     openButton.addEventListener("click", openComposer);
     closeButton.addEventListener("click", closeComposer);
-
+ 
     // Close when the user clicks outside the composer box.
     overlay.addEventListener("click", (event) => {
         if (event.target === overlay) {
             closeComposer();
         }
     });
-
+ 
     // Enable Post only when the text contains actual content.
-    textarea.addEventListener("input", () => {
-        submitButton.disabled = textarea.value.trim() === "";
+    // CHANGED: it now calls updateSubmitState() so photos count too.
+    textarea.addEventListener("input", updateSubmitState);
+ 
+ 
+    /* ---------- NEW: PHOTO ---------- */
+ 
+    // The pretty icon button "clicks" the hidden file input for us,
+    // which opens the computer's file picker.
+    addPhotoButton.addEventListener("click", () => {
+        photoInput.click();
     });
-
+ 
+    // "change" fires after the user picks a file.
+    photoInput.addEventListener("change", () => {
+        const file = photoInput.files[0];     // the first chosen file
+ 
+        if (!file) return;                    // user cancelled the picker
+ 
+        if (file.size > MAX_IMAGE_BYTES) {
+            alert("Please choose a photo smaller than 2MB.");
+            photoInput.value = "";
+            return;
+        }
+ 
+        clearMedia();                         // only ONE attachment at a time
+ 
+        // FileReader reads a file from the computer.
+        // readAsDataURL turns the image into text we can store with the post.
+        const reader = new FileReader();
+ 
+        // Reading takes a moment, so we wait for the "load" event.
+        reader.addEventListener("load", () => {
+            selectedImage = reader.result;    // the image as text
+ 
+            const image = document.createElement("img");
+            image.src = selectedImage;
+            image.alt = "Selected photo preview";
+ 
+            showPreview(image);
+            updateSubmitState();
+        });
+ 
+        reader.readAsDataURL(file);
+    });
+ 
+ 
+    /* ---------- NEW: VIDEO ---------- */
+ 
+    addVideoButton.addEventListener("click", () => {
+        videoInput.click();
+    });
+ 
+    videoInput.addEventListener("change", () => {
+        const file = videoInput.files[0];
+ 
+        if (!file) return;
+ 
+        clearMedia();
+ 
+        // Videos are too big to turn into text, so we make a temporary
+        // link to the file instead. It only works until the page reloads.
+        selectedVideoUrl = URL.createObjectURL(file);
+ 
+        const video = document.createElement("video");
+        video.src = selectedVideoUrl;
+        video.controls = true;                // show play/pause buttons
+ 
+        showPreview(video);
+    });
+ 
+ 
+    /* ---------- NEW: FEELING (EMOJI PICKER) ---------- */
+ 
+    // Build one button per emoji from the FEELING_EMOJIS list.
+    FEELING_EMOJIS.forEach((emoji) => {
+        const emojiButton = document.createElement("button");
+        emojiButton.type = "button";
+        emojiButton.classList.add("composer__emoji");
+        emojiButton.textContent = emoji;
+        emojiButton.setAttribute("aria-label", `Add ${emoji}`);
+ 
+        emojiButton.addEventListener("click", () => {
+            // setRangeText puts the emoji where the cursor is,
+            // replacing any selected text. "end" moves the cursor after it.
+            textarea.setRangeText(
+                emoji,
+                textarea.selectionStart,
+                textarea.selectionEnd,
+                "end"
+            );
+ 
+            textarea.focus();
+            updateSubmitState();              // the textarea now has text
+        });
+ 
+        emojiPicker.appendChild(emojiButton);
+    });
+ 
+    // The feeling icon opens and closes the picker.
+    addFeelingButton.addEventListener("click", () => {
+        const willOpen = emojiPicker.hidden;  // hidden now = we are opening it
+ 
+        emojiPicker.hidden = !willOpen;
+        addFeelingButton.setAttribute("aria-expanded", String(willOpen));
+    });
+ 
+ 
     // Send the new post to the application entry point.
     submitButton.addEventListener("click", () => {
         const content = textarea.value.trim();
-
-        if (!content) return;
-
+ 
+        // CHANGED: a post is allowed if it has text OR a photo.
+        if (!content && !selectedImage) return;
+ 
         const newPost = {
             id: `local-${Date.now()}`,
             userId: currentUser.id,
             content,
-            image: "",
+            image: selectedImage,   // CHANGED: was "" before, now the chosen photo
             createdAt: new Date().toISOString(),
             likes: 0,
             shares: 0
         };
-
+ 
         // The caller is responsible for adding and saving the post.
         if (typeof onPostCreated !== "function") {
             console.warn(
@@ -609,18 +864,21 @@ const setupComposer = (container, currentUser, onPostCreated) => {
             );
             return;
         }
-
+ 
         const saved = onPostCreated(newPost);
-
+ 
         /* Keep the text in the composer if saving failed. */
         if (saved === false) {
             return;
         }
-
+ 
         // Clear the writeup after successful posting.
         textarea.value = "";
         submitButton.disabled = true;
-
+ 
+        // NEW: Also clear any attached photo or video.
+        clearMedia();
+ 
         // Close the modal using your existing CSS class.
         closeComposer();
     });

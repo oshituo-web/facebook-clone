@@ -1,7 +1,6 @@
 
 /* ========================================
    FACEBOOK CLONE - RIGHT SIDEBAR (ROLE 7)
-======================================== */
 
 /* Right sidebar container */
 .right-sidebar {
@@ -65,7 +64,6 @@
 
 /* ========================================
    BIRTHDAYS SECTION
-======================================== */
 
 .birthday-content {
     display: flex;
@@ -103,7 +101,6 @@
 
 /* ========================================
    CONTACTS SECTION
-======================================== */
 
 .section-heading {
     display: flex;
@@ -189,7 +186,6 @@
 
 /* ========================================
    GROUP CHATS SECTION
-======================================== */
 
 .group-chats-section .sidebar-empty {
     padding-top: 4px;
@@ -197,7 +193,6 @@
 
 /* ========================================
    SCROLLBAR
-======================================== */
 
 .right-sidebar::-webkit-scrollbar {
     width: 6px;
@@ -214,7 +209,6 @@
 
 /* ========================================
    RESPONSIVE DESIGN
-======================================== */
 
 /* Hide the right sidebar on smaller screens */
 @media screen and (max-width: 900px) {
@@ -225,7 +219,6 @@
 
 /* ========================================
    FACEBOOK CLONE - RIGHT SIDEBAR (ROLE 7)
-======================================== */
 
 /* Right sidebar container */
 .right-sidebar {
@@ -289,7 +282,6 @@
 
 /* ========================================
    BIRTHDAYS SECTION
-======================================== */
 
 .birthday-content {
     display: flex;
@@ -327,7 +319,6 @@
 
 /* ========================================
    CONTACTS SECTION
-======================================== */
 
 .section-heading {
     display: flex;
@@ -413,7 +404,6 @@
 
 /* ========================================
    GROUP CHATS SECTION
-======================================== */
 
 .group-chats-section .sidebar-empty {
     padding-top: 4px;
@@ -421,7 +411,6 @@
 
 /* ========================================
    SCROLLBAR
-======================================== */
 
 .right-sidebar::-webkit-scrollbar {
     width: 6px;
@@ -438,7 +427,6 @@
 
 /* ========================================
    RESPONSIVE DESIGN
-======================================== */
 
 /* Hide the right sidebar on smaller screens */
 @media screen and (max-width: 900px) {

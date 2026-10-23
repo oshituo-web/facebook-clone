@@ -5,6 +5,41 @@
 ========================================= */
 
 
+/* ---------------------------------------------------------
+   DEFAULT AVATAR HELPER
+
+   Show a neutral placeholder when a user has no profile
+   picture or when their existing picture cannot load.
+   This does not upload or save any images.
+   --------------------------------------------------------- */
+
+const DEFAULT_AVATAR = "data:image/svg+xml," + encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <rect width="100" height="100" rx="50" fill="#e4e6eb"/>
+        <circle cx="50" cy="36" r="19" fill="#8a8d91"/>
+        <path d="M15 94c2-23 16-35 35-35s33 12 35 35"
+              fill="#8a8d91"/>
+    </svg>
+`);
+
+/**
+ * Assign a user's profile picture, falling back to a
+ * neutral default if the URL is missing or fails to load.
+ */
+function setAvatarImage(image, avatarUrl, altText = "") {
+    image.alt = altText;
+
+    // Prevent a missing URL from producing a broken image.
+    image.src = avatarUrl || DEFAULT_AVATAR;
+
+    // If the user's image fails, use the default just once.
+    image.onerror = () => {
+        image.onerror = null;
+        image.src = DEFAULT_AVATAR;
+    };
+}
+
+
 /* =========================================
    1. RENDER POSTS
 ========================================= */

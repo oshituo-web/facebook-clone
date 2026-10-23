@@ -5,12 +5,12 @@
 
 .main-layout {
     display: grid;
-    grid-template-columns: 240px minmax(0, 680px) 300px;
-    gap: 24px;
+    grid-template-columns: 280px minmax(0, 620px) 260px;
+    gap: 30px;
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 12px;
     align-items: start;
 }
 

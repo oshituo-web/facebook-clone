@@ -1,12 +1,13 @@
-
 /* ========================================
    FACEBOOK CLONE - RIGHT SIDEBAR (ROLE 7)
+   ======================================*/
 
 /* Right sidebar container */
 .right-sidebar {
-    width: 320px;
+    width: 100%;
     height: calc(100vh - 70px);
     padding: 16px;
+    margin-left: 30px;
 
     position: fixed;
     top: 70px;
@@ -64,6 +65,7 @@
 
 /* ========================================
    BIRTHDAYS SECTION
+ ==========================================*/  
 
 .birthday-content {
     display: flex;
@@ -101,6 +103,7 @@
 
 /* ========================================
    CONTACTS SECTION
+ =======================================*/  
 
 .section-heading {
     display: flex;
@@ -186,6 +189,7 @@
 
 /* ========================================
    GROUP CHATS SECTION
+   =====================================*/
 
 .group-chats-section .sidebar-empty {
     padding-top: 4px;
@@ -193,6 +197,7 @@
 
 /* ========================================
    SCROLLBAR
+   =====================================*/
 
 .right-sidebar::-webkit-scrollbar {
     width: 6px;
@@ -282,6 +287,7 @@
 
 /* ========================================
    BIRTHDAYS SECTION
+ =========================================*/  
 
 .birthday-content {
     display: flex;
@@ -319,6 +325,7 @@
 
 /* ========================================
    CONTACTS SECTION
+   ====================================*/
 
 .section-heading {
     display: flex;
@@ -404,6 +411,7 @@
 
 /* ========================================
    GROUP CHATS SECTION
+   ==================================*/
 
 .group-chats-section .sidebar-empty {
     padding-top: 4px;
@@ -411,6 +419,7 @@
 
 /* ========================================
    SCROLLBAR
+   ===============================*/
 
 .right-sidebar::-webkit-scrollbar {
     width: 6px;

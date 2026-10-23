@@ -3,7 +3,8 @@
         "id": 1,
         "name": "Tutor Lemuel",
         "username": "tutorlemuel",
-        "avatar": "./assets/avatars/lemuel.jpg"
+        "avatar": "./assets/avatars/lemuel.jpg",
+        "isOnline": true
     },
     {
         "id": 2,
@@ -15,7 +16,8 @@
         "id": 3,
         "name": "DYEN",
         "username": "DYEN",
-        "avatar":"./assets/avatars/dyen.jpg"
+        "avatar":"./assets/avatars/dyen.jpg",
+        "isOnline": true
     },
     {
         "id": 4,
@@ -27,12 +29,13 @@
         "id": 5, 
         "name": "Zainab Musa", 
         "username": "chzy", 
-        "avatar": "https://i.pravatar.cc/100?img=5"  
+        "avatar": "./assets/images/post4.jpg",
+        "isOnline": true
     },
     { 
         "id": 6, 
         "name": "Tunde Bello",  
         "username": "Tunde",
-        "avatar": "https://i.pravatar.cc/100?img=52" 
+        "avatar": "./assets/images/post1.jpg"
     }
 ]

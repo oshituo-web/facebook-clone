@@ -1609,6 +1609,137 @@
 
 
 
+/* =========================================================
+   FRIENDS PAGE — MY FRIENDS LIST
+   Styles the friends displayed on the main Friends page.
+   Messenger dropdown styles remain in header.css.
+   ========================================================= */
+
+.my-friends-section {
+    width: 100%;
+    min-width: 0;
+    margin: 24px 0;
+    padding: 20px;
+    box-sizing: border-box;
+    background: var(--white, #ffffff);
+    color: var(--text-primary, #1c1e21);
+    border: 1px solid var(--border, #e4e6eb);
+    border-radius: 12px;
+}
+
+.my-friends-section h2 {
+    margin: 0 0 18px;
+    color: var(--text-primary, #1c1e21);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.my-friends-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+}
+
+.my-friend-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 12px;
+    box-sizing: border-box;
+    background: var(--white, #ffffff);
+    border: 1px solid var(--border, #e4e6eb);
+    border-radius: 12px;
+    text-align: center;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.my-friend-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.my-friend-avatar {
+    display: flex;
+    flex: 0 0 76px;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #e7f0ff;
+    color: #1877f2;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.my-friend-avatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.my-friend-name {
+    max-width: 100%;
+    margin: 0;
+    color: var(--text-primary, #1c1e21);
+    font-size: 15px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.my-friends-message {
+    margin: 12px 0;
+    color: var(--text-secondary, #65676b);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+    .my-friends-section {
+        margin: 16px 0;
+        padding: 14px;
+    }
+
+    .my-friends-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .my-friend-card {
+        padding: 14px 8px;
+    }
+
+    .my-friend-avatar {
+        flex-basis: 64px;
+        width: 64px;
+        height: 64px;
+        font-size: 24px;
+    }
+}
+
+        body.dark-theme .my-friends-section,
+        body.dark-theme .my-friend-card {
+            background: #242526;
+            border-color: #3e4042;
+        }
+
+        body.dark-theme .my-friends-section h2,
+        body.dark-theme .my-friend-name {
+            color: #e4e6eb;
+        }
+
+        body.dark-theme .my-friends-message {
+            color: #b0b3b8;
+        }
+
+
+
 
 /* =========================================
    11. FEED RESPONSIVENESS
@@ -1704,3 +1835,5 @@
         font-size: 18px;
     }
 }
+
+

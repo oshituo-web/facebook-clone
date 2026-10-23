@@ -30,11 +30,13 @@ import {
     getConversationMessages,
     sendDirectMessage,
     markReceivedMessagesRead,
+    markReceivedMessagesDelivered,
     getFriendSuggestions,
     sendFriendRequest,
     getIncomingFriendRequests,
     respondToFriendRequest,
-    getMessageableProfiles
+    getMessageableProfiles,
+    getMyFriends
 } from "./data.js";
 
 import {
@@ -99,6 +101,14 @@ function renderRightSidebarContacts(users) {
             avatarWrapper.appendChild(avatarImage);
         }
 
+        if (user.isOnline) {
+            const onlineIndicator = document.createElement("span");
+            onlineIndicator.className = "online-indicator";
+            onlineIndicator.setAttribute("role", "img");
+            onlineIndicator.setAttribute("aria-label", "Online");
+            avatarWrapper.appendChild(onlineIndicator);
+        }
+
         // Display the real name from the JSON record.
         const contactName = document.createElement("span");
         contactName.className = "contact-name";
@@ -128,11 +138,11 @@ let authenticatedUser = null;
 
 /* Read locally saved posts safely. */
 
+
 function readLocalPosts() {
     try {
-        const savedPosts = localStorage.getItem(
-            LOCAL_POSTS_STORAGE_KEY
-        );
+        const storageKey = getUserLocalPostsStorageKey();
+        const savedPosts = localStorage.getItem(storageKey);
 
         if (!savedPosts) {
             return [];
@@ -148,12 +158,32 @@ function readLocalPosts() {
 }
 
 
+
+/**
+ * Return a separate Local Storage key for each authenticated user.
+ * This prevents posts from one account appearing in another account's feed.
+ */
+function getUserLocalPostsStorageKey() {
+    if (!authenticatedUser) {
+        throw new Error(
+            "Cannot access local posts without an authenticated user."
+        );
+    }
+
+    return `${LOCAL_POSTS_STORAGE_KEY}_auth-${authenticatedUser.id}`;
+}
+
+
+
 /* Save posts to this browser. */
+
 
 function saveLocalPosts(posts) {
     try {
+        const storageKey = getUserLocalPostsStorageKey();
+
         localStorage.setItem(
-            LOCAL_POSTS_STORAGE_KEY,
+            storageKey,
             JSON.stringify(posts)
         );
 
@@ -163,6 +193,7 @@ function saveLocalPosts(posts) {
         return false;
     }
 }
+
 
 
 
@@ -333,6 +364,7 @@ async function loadApplicationData() {
         // Set up and load incoming friend requests.
         setupIncomingFriendRequestEvents();
         await renderIncomingFriendRequests();
+
 
         // Display contacts using the users loaded from users.json.
         renderRightSidebarContacts(users);
@@ -633,6 +665,120 @@ async function renderIncomingFriendRequests() {
 }
 
 
+/* =========================================================
+   FRIENDS LIST — DISPLAY ACCEPTED FRIENDS
+
+   Retrieve the signed-in user's accepted friends from
+   Supabase and display their profiles in the Friends view.
+========================================================= */
+
+async function renderMyFriends() {
+    const friendsView = document.getElementById("friendsView");
+
+    // Stop if the Friends view is not present on this page.
+    if (!friendsView) return;
+
+    // Create the Friends List section once.
+    let friendsSection = document.getElementById("myFriendsSection");
+
+    if (!friendsSection) {
+        friendsSection = document.createElement("section");
+        friendsSection.id = "myFriendsSection";
+        friendsSection.className = "my-friends-section";
+
+        const heading = document.createElement("h2");
+        heading.textContent = "Friends";
+
+        const friendsList = document.createElement("div");
+        friendsList.id = "myFriendsList";
+        friendsList.className = "my-friends-list";
+
+        friendsSection.append(heading, friendsList);
+        friendsView.appendChild(friendsSection);
+    }
+
+    const friendsList = friendsSection.querySelector("#myFriendsList");
+
+    friendsList.replaceChildren();
+
+    const loadingMessage = document.createElement("p");
+    loadingMessage.className = "my-friends-message";
+    loadingMessage.textContent = "Loading your friends...";
+
+    friendsList.appendChild(loadingMessage);
+
+    try {
+        const friends = await getMyFriends();
+
+        friendsList.replaceChildren();
+
+        if (friends.length === 0) {
+            const emptyMessage = document.createElement("p");
+            emptyMessage.className = "my-friends-message";
+            emptyMessage.textContent =
+                "You haven't added any friends yet. Accept a friend request to see your friends here.";
+
+            friendsList.appendChild(emptyMessage);
+            return;
+        }
+
+        friends.forEach((friend) => {
+            const card = document.createElement("article");
+            card.className = "my-friend-card";
+
+            const avatar = document.createElement("div");
+            avatar.className = "my-friend-avatar";
+
+            const name = friend.display_name || "Facebook user";
+
+            if (
+                typeof friend.avatar_url === "string" &&
+                /^https?:\/\//i.test(friend.avatar_url)
+            ) {
+                const image = document.createElement("img");
+                image.src = friend.avatar_url;
+                image.alt = `${name}'s profile picture`;
+                image.loading = "lazy";
+
+                image.addEventListener("error", () => {
+                    avatar.replaceChildren();
+                    avatar.textContent =
+                        name.trim().charAt(0).toUpperCase() || "?";
+                }, { once: true });
+
+                avatar.appendChild(image);
+            } else {
+                avatar.textContent =
+                    name.trim().charAt(0).toUpperCase() || "?";
+            }
+
+            const nameElement = document.createElement("p");
+            nameElement.className = "my-friend-name";
+            nameElement.textContent = name;
+
+            card.append(avatar, nameElement);
+            friendsList.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Failed to load your friends:", error);
+
+        friendsList.replaceChildren();
+
+        const errorMessage = document.createElement("p");
+        errorMessage.className = "my-friends-message";
+        errorMessage.textContent =
+            "Couldn't load your friends. Please try again.";
+
+        const retryButton = document.createElement("button");
+        retryButton.type = "button";
+        retryButton.textContent = "Retry";
+        retryButton.addEventListener("click", renderMyFriends);
+
+        friendsList.append(errorMessage, retryButton);
+    }
+}
+
+
 // =========================================================
 // INCOMING FRIEND REQUESTS 2: ACCEPT OR REJECT
 // Uses event delegation so the buttons work on every request card.
@@ -856,13 +1002,14 @@ headerNavItems.forEach((item) => {
         initMarketplace();
     }
 
-    // Load friend suggestions and incoming requests when Friends is opened.
+    // Load friend suggestions, incoming requests and accepted friends.
     if (viewName === "friends") {
         setupFriendSuggestionEvents();
         setupIncomingFriendRequestEvents();
-
+    
         renderFriendSuggestions();
         renderIncomingFriendRequests();
+        renderMyFriends();
     }
 
     // Return to the top of the page after switching views.
@@ -1137,155 +1284,232 @@ if (facebookHeader) {
     }
 
     
+    
     /* ---------------------------------------------------------
-       SECTION 7A: LOAD AND DISPLAY NOTIFICATIONS
-    
-       Retrieve notifications for the signed-in user and build
-       the interface using DOM elements and textContent.
-    
-       textContent prevents notification messages from being
-       interpreted as HTML.
-    --------------------------------------------------------- */
-    
+       SECTION 7A: NOTIFICATIONS AND UNREAD BADGE
+
+       This section:
+       1. Displays the signed-in user's notifications.
+       2. Shows the unread notification count on the bell.
+       3. Allows notifications to be marked as read.
+       4. Handles loading, empty and error states.
+       --------------------------------------------------------- */
+
+
+    /* ---------------------------------------------------------
+       7A.1: UPDATE THE NOTIFICATION BADGE
+       Count unread notifications and hide the badge when the
+       unread count is zero.
+       --------------------------------------------------------- */
+
+    function updateNotificationBadge(notifications) {
+        const badge = facebookHeader.querySelector(".notification-badge");
+
+        // Stop safely if the badge is missing from the HTML.
+        if (!badge) return;
+
+        // Count only notifications that have not been read.
+        const unreadCount = notifications.filter(
+            (notification) => !notification.is_read
+        ).length;
+
+        // Show 99+ instead of a number larger than 99.
+        badge.textContent = unreadCount > 99 ? "99+" : String(unreadCount);
+
+        // Hide the badge when there are no unread notifications.
+        badge.hidden = unreadCount === 0;
+    }
+
+
+    /* ---------------------------------------------------------
+       7A.2: REFRESH THE BADGE ON PAGE LOAD
+       Fetch notifications for the currently signed-in user so
+       the badge count appears before the panel is opened.
+       --------------------------------------------------------- */
+
+    async function refreshNotificationBadge() {
+        try {
+            const notifications = await getMyNotifications();
+
+            updateNotificationBadge(notifications);
+        } catch (error) {
+            // A badge error should not stop other header features.
+            console.error("Failed to refresh notification badge:", error);
+        }
+    }
+
+
+    /* ---------------------------------------------------------
+       7A.3: LOAD AND DISPLAY NOTIFICATIONS
+       Build notification items safely using DOM elements and
+       textContent rather than inserting message text as HTML.
+       --------------------------------------------------------- */
+
     async function loadNotifications(panel) {
         const list = panel.querySelector(".notifications-list");
-    
-        if (!list) {
-            return;
-        }
-    
-        // Show feedback while the database request is running.
+
+        // Stop if the panel does not contain a notification list.
+        if (!list) return;
+
+        // Show a loading message while fetching notifications.
         list.replaceChildren();
-    
+
         const loadingMessage = document.createElement("p");
         loadingMessage.className = "header-dropdown-empty";
         loadingMessage.textContent = "Loading notifications...";
-    
+
         list.appendChild(loadingMessage);
-    
+
         try {
-            // Fetch only the signed-in user's notifications.
+            // Fetch notifications belonging to the signed-in user.
             const notifications = await getMyNotifications();
-    
+
+            // Update the badge every time the notifications are loaded.
+            updateNotificationBadge(notifications);
+
+            // Clear the loading message before displaying results.
             list.replaceChildren();
-    
-            // Display a friendly message if there are no results.
+
+            // Show a friendly message if there are no notifications.
             if (notifications.length === 0) {
                 const emptyMessage = document.createElement("p");
                 emptyMessage.className = "header-dropdown-empty";
                 emptyMessage.textContent = "You're all caught up!";
-    
+
                 list.appendChild(emptyMessage);
                 return;
             }
-    
-            // Create a separate interface item for each notification.
+
+            // Create a separate item for each notification.
             notifications.forEach((notification) => {
                 const item = document.createElement("div");
-    
                 item.className = "notification-item";
-    
-                // Give unread notifications a separate CSS class.
+
+                // Highlight unread notifications.
                 if (!notification.is_read) {
                     item.classList.add("is-unread");
                 }
-    
+
+                // Add the notification message.
                 const message = document.createElement("p");
                 message.className = "notification-message";
                 message.textContent =
                     notification.message || "You have a new notification.";
-    
+
                 item.appendChild(message);
-    
-                // Display the time when the notification was created.
+
+                // Display the date and time when available.
                 if (notification.created_at) {
                     const time = document.createElement("small");
                     time.className = "notification-time";
-    
+
                     const date = new Date(notification.created_at);
-    
+
                     time.textContent = Number.isNaN(date.getTime())
                         ? ""
                         : date.toLocaleString();
-    
+
                     item.appendChild(time);
                 }
-    
-                // Add a button only when the notification is unread.
+
+                // Unread notifications get a "Mark as read" button.
                 if (!notification.is_read) {
                     const readButton = document.createElement("button");
-    
+
                     readButton.type = "button";
                     readButton.className = "notification-read-button";
                     readButton.textContent = "Mark as read";
-    
+
                     readButton.addEventListener("click", async () => {
                         readButton.disabled = true;
                         readButton.textContent = "Updating...";
-    
+
                         try {
-                            // Update the record in Supabase.
+                            // Save the read status in Supabase.
                             const updated = await markNotificationRead(
                                 notification.id
                             );
-    
+
                             if (!updated) {
                                 throw new Error(
                                     "The notification could not be updated."
                                 );
                             }
-    
+
                             // Update the interface after the database succeeds.
                             notification.is_read = true;
                             item.classList.remove("is-unread");
-    
+
+                            // Decrease the badge count immediately.
+                            updateNotificationBadge(notifications);
+
+                            // Remove the button after marking as read.
                             readButton.remove();
-    
+
+                            // Show a label confirming that it has been read.
+                            const readLabel = document.createElement("small");
+                            readLabel.className = "notification-read-label";
+                            readLabel.textContent = "Read";
+
+                            item.appendChild(readLabel);
                         } catch (error) {
                             console.error(
                                 "Failed to mark notification as read:",
                                 error
                             );
-    
+
+                            // Allow the user to retry if the update fails.
                             readButton.disabled = false;
                             readButton.textContent = "Try again";
                         }
                     });
-    
+
                     item.appendChild(readButton);
                 } else {
+                    // Already-read notifications display a simple label.
                     const readLabel = document.createElement("small");
                     readLabel.className = "notification-read-label";
                     readLabel.textContent = "Read";
-    
+
                     item.appendChild(readLabel);
                 }
-    
+
                 list.appendChild(item);
             });
-    
         } catch (error) {
+            // Log the error for debugging.
             console.error("Failed to load notifications:", error);
-    
+
+            // Display a helpful error message.
             list.replaceChildren();
-    
+
             const errorMessage = document.createElement("p");
             errorMessage.className = "header-dropdown-empty";
             errorMessage.textContent =
                 "Couldn't load notifications. Please try again.";
-    
+
+            // Let the user retry loading the notifications.
             const retryButton = document.createElement("button");
             retryButton.type = "button";
             retryButton.className = "header-dropdown-item";
             retryButton.textContent = "Retry";
-    
+
             retryButton.addEventListener("click", () => {
                 loadNotifications(panel);
             });
-    
+
             list.append(errorMessage, retryButton);
         }
     }
+
+
+    /* ---------------------------------------------------------
+       7A.4: INITIALIZE THE BADGE
+       Run once when the header setup is initialized.
+       --------------------------------------------------------- */
+
+    refreshNotificationBadge();
+
 
     /* ---------------------------------------------------------
     SECTION 7B: MESSENGER — USER LIST AND CONVERSATIONS
@@ -1447,7 +1671,8 @@ if (facebookHeader) {
          try {
              await loadCurrentUserId();
  
-             profiles = await getMessageableProfiles();
+             // Load only users who are already friends with the current user.
+             profiles = await getMyFriends();
  
              renderUserList();
  
@@ -1575,38 +1800,45 @@ if (facebookHeader) {
      }
  
  
+     
      /* -----------------------------------------------------
         Open a conversation with the selected registered user.
      ----------------------------------------------------- */
- 
      async function openConversation(profile) {
          selectedProfile = profile;
- 
+     
          partnerName.textContent =
              profile.display_name || "Facebook User";
- 
+     
          searchInput.hidden = true;
          userList.hidden = true;
          conversationView.hidden = false;
- 
+     
          statusMessage.textContent = "";
          messageInput.value = "";
- 
+     
+         // First, load and display the conversation.
          await refreshConversation();
- 
-         // Mark incoming messages as read without preventing
-         // the conversation from opening if this update fails.
+     
+         // Update delivery and read receipts for incoming messages.
+         // If an update fails, keep the conversation open.
          try {
+             await markReceivedMessagesDelivered(profile.id);
              await markReceivedMessagesRead(profile.id);
+     
+             // Reload messages to display their latest saved statuses.
+             await refreshConversation();
          } catch (error) {
              console.error(
-                 "Failed to mark received messages as read:",
+                 "Failed to update message delivery/read status:",
                  error
              );
          }
- 
+     
+         // Put the cursor in the message input.
          messageInput.focus();
      }
+     
  
  
      /* -----------------------------------------------------

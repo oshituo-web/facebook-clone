@@ -420,7 +420,7 @@ export async function getConversationMessages(otherUserId) {
     const { data, error } = await supabase
         .from("messages")
         .select(
-            "id, sender_id, recipient_id, content, is_read, created_at"
+            "id, sender_id, recipient_id, content, is_read, status, created_at"
         )
         .or(
             `and(sender_id.eq.${currentUser.id},recipient_id.eq.${otherUserId}),` +
@@ -466,7 +466,7 @@ export async function sendDirectMessage(recipientId, content) {
             content: messageContent
         })
         .select(
-            "id, sender_id, recipient_id, content, is_read, created_at"
+            "id, sender_id, recipient_id, content, is_read, status, created_at"
         )
         .single();
 
@@ -496,11 +496,11 @@ export async function markReceivedMessagesRead(otherUserId) {
 
     const { data, error } = await supabase
         .from("messages")
-        .update({ is_read: true })
+        .update({ is_read: true, status:"read" })
         .eq("sender_id", otherUserId)
         .eq("recipient_id", currentUser.id)
         .eq("is_read", false)
-        .select("id, is_read");
+        .select("id, is_read, status");
 
     if (error) {
         throw error;
@@ -508,3 +508,94 @@ export async function markReceivedMessagesRead(otherUserId) {
 
     return data ?? [];
 }
+
+
+/*=========================================================
+    MESSENGER 5: MARK RECEIVED MESSAGES AS DELIVERED 
+
+    Call this when the recipient's app successfully Loads
+    incoming messages in an open conversation.
+
+    Do not downgrade messages already marked as read.
+    =====================================================*/
+
+    export async function markReceivedMessagesDelivered(otherUserId) {
+        const currentUser = await getCurrentAuthenticatedUser();
+
+        if (!otherUserId || otherUserId === currentUser.id) {
+            throw new Error("Select a valid conversation.");
+        } 
+        
+        const { data, error } = await supabase
+        .from("messages")
+        .update({ status: "delivered"})
+
+        .eq("sender_id", otherUserId)
+        .eq("recipient_id", currentUser.id)
+        .eq("status", "sent")
+        .select("id, status");
+
+        if (error) {
+            throw error;
+        }
+        return data ?? [];
+    }
+
+    
+
+
+/* =========================================================
+   FRIENDS LIST: GET MY ACCEPTED FRIENDS
+
+   Find accepted friend requests involving the signed-in
+   user, then retrieve the profiles of those friends.
+========================================================= */
+
+export async function getMyFriends() {
+    const currentUser = await getCurrentAuthenticatedUser();
+
+    // Find friendships where the current user is either
+    // the person who sent the request or the recipient.
+    const { data: friendships, error: friendshipError } =
+        await supabase
+            .from("friend_requests")
+            .select("requester_id, recipient_id")
+            .eq("status", "accepted")
+            .or(
+                `requester_id.eq.${currentUser.id},recipient_id.eq.${currentUser.id}`
+            );
+
+    if (friendshipError) {
+        throw friendshipError;
+    }
+
+    // Collect the IDs of the accepted friends.
+    const friendIds = [
+        ...new Set(
+            (friendships ?? []).map((friendship) =>
+                friendship.requester_id === currentUser.id
+                    ? friendship.recipient_id
+                    : friendship.requester_id
+            )
+        )
+    ];
+
+    // Return an empty list when the user has no friends.
+    if (friendIds.length === 0) {
+        return [];
+    }
+
+    // Retrieve the friends' actual Supabase profiles.
+    const { data: friends, error: profilesError } = await supabase
+        .from("profiles")
+        .select("id, display_name, avatar_url")
+        .in("id", friendIds)
+        .order("display_name", { ascending: true });
+
+    if (profilesError) {
+        throw profilesError;
+    }
+
+    return friends ?? [];
+}
+

@@ -1,86 +1,84 @@
-/* =========================================
-   5. HEADER
-========================================= */
+
+/* =====================================================
+   FACEBOOK CLONE — HEADER STYLES
+   Desktop layout, navigation, controls and tooltips
+===================================================== */
+
+/* 1. Main header */
 
 .facebook-header {
-  height: 56px;
-  width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 640px minmax(0, 1fr);
+    align-items: center;
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    width: 100%;
+    height: 54px;
 
-  background-color: var(--white);
-  border-bottom: 1px solid var(--border);
+    background-color: var(--white);
+    border-bottom: 1px solid var(--border);
 
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 
-/* =========================================
-   6. HEADER - LEFT SECTION
-========================================= */
+/* 2. Left section: logo and search */
 
 .header-left {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+    grid-column: 1;
+    justify-self: start;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    min-width: 0;
 }
 
-
-/* Facebook logo */
-
-.facebook-logo {
+.fa-brands.fa-facebook {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex: 0;
-    padding-left: 12px;
+    flex: 0 0 auto;
+    margin-left: 18px;
 
     color: var(--facebook-blue);
     text-decoration: none;
+    font-size: 40px;
 }
-
-.facebook-logo .fa-facebook {
-  font-size: 40px;
-}
-
-
-/* Search */
 
 .search-container {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 
-  width: 220px;
-  max-width: 100%;
-  height: 40px;
-  padding: 0 10px;
+    width: 200px;
+    max-width: 100%;
+    height: 40px;
+    padding: 0 10px;
 
-  background-color: var(--page-background);
-  border-radius: 20px;
+    background-color: var(--page-background);
+    border-radius: 20px;
 }
 
 .search-container .fa-magnifying-glass {
-  flex-shrink: 0;
-  font-size: 16px;
-  color: var(--text-secondary);
+    flex-shrink: 0;
+    font-size: 16px;
+    color: var(--text-secondary);
 }
 
 .search-input {
-  flex: 1;
-  min-width: 0;
-  width: 100%;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
 
-  border: none;
-  outline: none;
-  background: transparent;
+    border: none;
+    outline: none;
+    background: transparent;
 
-  font-size: 14px;
-  color: var(--text-primary);
-  font: inherit;
+    color: var(--text-primary);
+    font: inherit;
+    font-size: 14px;
 }
 
 .search-input:focus-visible {
@@ -88,78 +86,78 @@
 }
 
 
-/* =========================================
-   7. HEADER - MAIN NAVIGATION
-========================================= */
+/* 3. Main navigation */
 
 .main-navigation {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding-right: 50px;
-  margin-right: 50px;
+    grid-column: 2;
+    justify-self: center;
 
-  height: 100%;
-  flex: 1 1 auto;
-  min-width: 0;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+
+    width: 100%;
+    max-width: 600px;
+    min-width: 0;
+    height: 100%;
+    gap: 4px;
+
+    margin: 0 auto;
+    padding: 0;
 }
 
 .nav-item {
-  position: relative;
+    position: relative;
 
-  height: 100%;
-  min-width: 90px;
-  font-size: 20px;
+    display: flex;
+    flex: 1 1 0;
+    align-items: center;
+    justify-content: center;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    min-width: 0;
+    height: 100%;
+    padding: 0 8px;
 
-  flex: 1 1 auto;
-  padding: 8px 12px;
- 
-  border: none;
-  border-radius: 8px;
-  background: transparent;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-secondary);
 
-  color: var(--text-secondary);
-  font-size: 20px;
+    font-size: 20px;
+    cursor: pointer;
 
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .nav-item:hover {
     background-color: var(--hover);
-  }
+}
 
-  .nav-item.active {
+.nav-item.active {
     color: var(--facebook-blue);
-  }
+}
 
-  .nav-item.active::after {
+.nav-item.active::after {
     content: "";
-  
+
     position: absolute;
     bottom: 0;
     left: 10%;
     right: 10%;
-  
+
     height: 3px;
-  
+
     background-color: var(--facebook-blue);
-  
     border-radius: 3px 3px 0 0;
-  }
-  
-  /* Navigation labels appear as tooltips */
+}
+
+
+/* 4. Navigation and utility-button tooltips */
 
 .nav-item .text,
 .utility-button:not(#logoutButton) .text {
     position: absolute;
-    top: calc(100% + 8px);
+    top: calc(90% + 8px);
     left: 50%;
     transform: translateX(-50%);
 
@@ -168,7 +166,7 @@
 
     background-color: rgba(0, 0, 0, 0.85);
     color: var(--white);
- 
+
     font-size: 12px;
     font-weight: 400;
     white-space: nowrap;
@@ -190,19 +188,19 @@
 }
 
 
-
-/* =========================================
-    8. HEADER - RIGHT SECTION
-========================================= */
+/* 5. Right section: utility buttons */
 
 .header-right {
+    grid-column: 3;
+    justify-self: end;
+
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 8px;
-    margin-left: 40px;
 
-    flex: 0 0 auto;
+    min-width: 0;
+    margin: 0;
 }
 
 .utility-button {
@@ -232,34 +230,44 @@
     background-color: #e4e6eb;
 }
 
-/* Notification badge */
+
+/* 6. Notification badge */
+
+.utility-button[data-action="notifications"] {
+    position: relative;
+}
 
 .notification-badge {
     position: absolute;
-    top: -2px;
-    right: -2px;
+    top: -4px;
+    right: -4px;
+    z-index: 2;
 
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
 
     min-width: 18px;
     height: 18px;
-    padding: 0 4px;
+    padding: 0 5px;
+
+    border: 2px solid var(--white);
+    border-radius: 999px;
 
     background-color: #e41e3f;
-    color: var(--white);
+    color: #ffffff;
 
-    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+}
 
-    font-size: 10px;
-    font-weight: bold;
+.notification-badge[hidden] {
+    display: none;
 }
 
 
-/* =========================================
-   9. LOGOUT BUTTON
-========================================= */
+/* 7. Logout button */
 
 #logoutButton {
     width: auto;
@@ -296,10 +304,7 @@
 }
 
 
-
-/* =========================================
-    10. KEYBOARD ACCESSIBILITY
-========================================= */
+/* 8. Keyboard accessibility */
 
 .facebook-header button:focus-visible,
 .facebook-logo:focus-visible {
@@ -308,8 +313,667 @@
 }
 
 
+/* =====================================================
+   PROFILE DROPDOWN
+===================================================== */
 
-/* Dark theme for the header and dropdown panels */
+/* Current user's identity */
+
+.current-user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px;
+    margin-bottom: 8px;
+}
+
+.profile-avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    overflow: hidden;
+
+    border-radius: 50%;
+    background: #e4e6eb;
+    color: #1877f2;
+
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.current-user-avatar-image {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.current-user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    min-width: 0;
+}
+
+.current-user-details strong {
+    color: #050505;
+    font-size: 15px;
+    overflow-wrap: anywhere;
+}
+
+.current-user-details span {
+    color: #65676b;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.header-dropdown-divider {
+    height: 1px;
+    margin: 8px 0;
+
+    background: #e4e6eb;
+}
+
+
+/* Profile actions */
+
+.profile-action-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: transparent;
+    color: #050505;
+
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+}
+
+.profile-action-item:hover {
+    background: #f0f2f5;
+}
+
+.profile-action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+
+    border-radius: 50%;
+    background: #e4e6eb;
+    color: #050505;
+
+    font-size: 16px;
+}
+
+.profile-action-item > span:last-child {
+    flex: 1;
+}
+
+
+/* =====================================================
+   MESSENGER DROPDOWN
+===================================================== */
+
+/* Main Messenger layout */
+
+.messenger-interface {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    width: 100%;
+    min-width: 0;
+
+    color: #1c1e21;
+    background: #ffffff;
+}
+
+
+/* Messenger search */
+
+.messenger-interface .header-dropdown-search {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    padding: 10px 14px;
+
+    border: 1px solid transparent;
+    border-radius: 22px;
+
+    background: #f0f2f5;
+    color: #1c1e21;
+
+    font: inherit;
+    font-size: 14px;
+    outline: none;
+
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.messenger-interface .header-dropdown-search:focus {
+    background: #ffffff;
+    border-color: #1877f2;
+    box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.12);
+}
+
+
+/* Registered-user list */
+
+.messenger-user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    max-height: 340px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+}
+
+.messenger-user-list > * {
+    min-width: 0;
+    border-radius: 10px;
+}
+
+.messenger-user-list button,
+.messenger-user-list a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    padding: 11px 10px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: transparent;
+    color: inherit;
+
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+
+    transition: background 0.18s ease;
+}
+
+.messenger-user-list button:hover,
+.messenger-user-list a:hover {
+    background: #f0f2f5;
+}
+
+.messenger-user-list button:focus-visible,
+.messenger-user-list a:focus-visible {
+    outline: 2px solid #1877f2;
+    outline-offset: -2px;
+}
+
+
+/* Empty and loading messages */
+
+.messenger-interface .header-dropdown-empty {
+    margin: 0;
+    padding: 24px 12px;
+
+    color: #65676b;
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+
+/* Conversation panel */
+
+.messenger-conversation {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+    min-height: 320px;
+    max-height: 520px;
+    overflow: hidden;
+
+    background: #ffffff;
+    border: 1px solid #e4e6eb;
+    border-radius: 12px;
+}
+
+.messenger-conversation[hidden] {
+    display: none !important;
+}
+
+
+/* Conversation heading */
+
+.messenger-conversation-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    min-height: 58px;
+    padding: 10px 12px;
+
+    background: #ffffff;
+    border-bottom: 1px solid #e4e6eb;
+}
+
+.messenger-back-button {
+    flex-shrink: 0;
+    padding: 8px 10px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #e7f3ff;
+    color: #1877f2;
+
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.messenger-back-button:hover {
+    background: #dbeafe;
+}
+
+.messenger-partner-name {
+    overflow: hidden;
+
+    color: #1c1e21;
+    font-size: 15px;
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* Scrollable message history */
+
+.messenger-messages {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 10px;
+
+    min-height: 180px;
+    max-height: 320px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    padding: 14px 10px;
+
+    background: #f0f2f5;
+    border-radius: 10px;
+
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+}
+
+
+/* Message bubbles */
+
+.messenger-message {
+    display: flex;
+    flex-direction: column;
+
+    width: fit-content;
+    max-width: 82%;
+    padding: 9px 12px;
+
+    border-radius: 16px;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+
+    box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+}
+
+.messenger-message.message-sent {
+    align-self: flex-end;
+
+    background: #0084ff;
+    color: #ffffff;
+
+    border-bottom-right-radius: 4px;
+}
+
+.messenger-message.message-received {
+    align-self: flex-start;
+
+    background: #ffffff;
+    color: #1c1e21;
+
+    border: 1px solid #e4e6eb;
+    border-bottom-left-radius: 4px;
+}
+
+.messenger-message-text {
+    margin: 0;
+    font-size: 14px;
+    white-space: pre-wrap;
+}
+
+.messenger-message-time {
+    display: block;
+    margin-top: 5px;
+
+    font-size: 10px;
+    line-height: 1.3;
+    opacity: 0.75;
+    overflow-wrap: anywhere;
+}
+
+.messenger-message.message-sent .messenger-message-time {
+    color: #ffffff;
+}
+
+
+/* Messenger scrollbar */
+
+.messenger-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messenger-messages::-webkit-scrollbar-thumb {
+    background: #bcc0c4;
+    border-radius: 10px;
+}
+
+.messenger-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+/* Messenger status feedback */
+
+.messenger-status {
+    margin: 0;
+    padding: 0 12px 8px;
+
+    color: #65676b;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* Message input and Send button */
+
+.messenger-send-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 12px;
+
+    background: #ffffff;
+    border-top: 1px solid #e4e6eb;
+}
+
+.messenger-message-input {
+    flex: 1;
+    width: 0;
+    min-width: 0;
+    min-height: 42px;
+    padding: 10px 14px;
+
+    border: 1px solid transparent;
+    border-radius: 22px;
+
+    background: #f0f2f5;
+    color: #1c1e21;
+
+    font: inherit;
+    font-size: 14px;
+    outline: none;
+
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.messenger-message-input:focus {
+    background: #ffffff;
+    border-color: #1877f2;
+    box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1);
+}
+
+.messenger-send-form button {
+    flex-shrink: 0;
+    min-height: 40px;
+    padding: 9px 16px;
+
+    border: none;
+    border-radius: 22px;
+
+    background: #1877f2;
+    color: #ffffff;
+
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+}
+
+.messenger-send-form button:hover {
+    background: #166fe5;
+}
+
+.messenger-send-form button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+
+/* Messenger keyboard accessibility */
+
+.messenger-back-button:focus-visible,
+.messenger-send-form button:focus-visible {
+    outline: 3px solid rgba(24, 119, 242, 0.3);
+    outline-offset: 2px;
+}
+
+
+/* =====================================================
+   NOTIFICATION DROPDOWN ITEMS
+===================================================== */
+
+.notification-item {
+    padding: 12px 14px;
+
+    border-bottom: 1px solid var(--border);
+    border-radius: 8px;
+
+    transition: background-color 0.15s ease;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item:hover {
+    background: rgba(128, 128, 128, 0.08);
+}
+
+.notification-item.is-unread {
+    background: rgba(24, 119, 242, 0.09);
+}
+
+.notification-message {
+    margin: 0 0 6px;
+
+    color: var(--text-primary, inherit);
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.notification-time {
+    display: block;
+    margin-bottom: 8px;
+
+    color: var(--text-secondary, #65676b);
+    font-size: 12px;
+}
+
+.notification-read-button {
+    padding: 6px 10px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: #1877f2;
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.notification-read-button:hover {
+    background: #166fe5;
+}
+
+.notification-read-button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.notification-read-label {
+    color: var(--text-secondary, #65676b);
+    font-size: 12px;
+}
+
+
+/* =====================================================
+   SHARED HEADER DROPDOWN PANELS
+===================================================== */
+
+.header-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 16px;
+    z-index: 1100;
+
+    width: min(360px, calc(100vw - 24px));
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 16px;
+
+    background: #ffffff;
+    color: #1c1e21;
+
+    border: 1px solid #e4e6eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+}
+
+.header-dropdown[hidden] {
+    display: none;
+}
+
+.header-dropdown-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    margin-bottom: 12px;
+}
+
+.header-dropdown-heading h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.header-dropdown-close {
+    width: 34px;
+    height: 34px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #f0f2f5;
+    color: #1c1e21;
+
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.header-dropdown-item {
+    display: block;
+
+    width: 100%;
+    padding: 12px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: transparent;
+    color: inherit;
+
+    text-align: left;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.header-dropdown-item:hover,
+.header-dropdown-item:focus-visible {
+    background: #f0f2f5;
+}
+
+.header-dropdown-empty,
+.header-dropdown-description {
+    margin: 12px 0;
+
+    color: #65676b;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.header-dropdown-search {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+
+    border: none;
+    border-radius: 20px;
+    outline: none;
+
+    background: #f0f2f5;
+    font-size: 14px;
+}
+
+.header-dropdown-search:focus {
+    box-shadow: 0 0 0 2px #0866ff;
+}
+
+
+/* =====================================================
+   DARK THEME
+===================================================== */
+
 body.dark-theme {
     background-color: #18191a;
     color: #e4e6eb;
@@ -337,425 +1001,86 @@ body.dark-theme .header-dropdown-search {
 }
 
 
-/* Current user's identity inside the Profile dropdown */
+/* =====================================================
+   RESPONSIVE HEADER
+===================================================== */
 
-.current-user-profile {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    margin-bottom: 8px;
-}
+/* Smaller desktop and tablet widths */
 
-.profile-avatar-placeholder {
-    width: 48px;
-    height: 48px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 50%;
-    background: #e4e6eb;
-    color: #1877f2;
-    font-size: 22px;
-    font-weight: 700;
-}
+@media (max-width: 1100px) {
+    .facebook-header {
+        gap: 10px;
+        padding: 0 12px;
+    }
 
-.current-user-avatar-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-}
+    .header-left {
+        gap: 8px;
+    }
 
-.current-user-details {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 0;
-}
+    .search-container {
+        width: 200px;
+    }
 
-.current-user-details strong {
-    color: #050505;
-    font-size: 15px;
-    overflow-wrap: anywhere;
-}
+    .nav-item {
+        padding: 8px 6px;
+        font-size: 18px;
+    }
 
-.current-user-details span {
-    color: #65676b;
-    font-size: 13px;
-    overflow-wrap: anywhere;
-}
+    .header-right {
+        gap: 6px;
+    }
 
-.header-dropdown-divider {
-    height: 1px;
-    margin: 8px 0;
-    background: #e4e6eb;
+    .utility-button {
+        width: 38px;
+        height: 38px;
+    }
+
+    #logoutButton {
+        width: auto;
+        padding: 0 10px;
+    }
 }
 
 
-/* Profile dropdown: align each action icon with its label. */
-.profile-action-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    min-height: 44px;
-    padding: 10px 12px;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: #050505;
-    text-align: left;
-    font: inherit;
-    cursor: pointer;
-}
+/* Mobile header layout */
 
-.profile-action-item:hover {
-    background: #f0f2f5;
-}
+@media (max-width: 760px) {
+    .facebook-header {
+        display: flex;
+        flex-wrap: wrap;
 
-.profile-action-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 36px;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #e4e6eb;
-    color: #050505;
-    font-size: 16px;
-}
+        height: auto;
+        padding: 8px 10px 0;
+        gap: 8px;
+    }
 
-.profile-action-item > span:last-child {
-    flex: 1;
-}
+    .header-left {
+        order: 1;
+        flex: 1 1 180px;
+    }
 
+    .header-right {
+        order: 2;
+        flex: 0 0 auto;
+        margin: 0;
+    }
 
+    .main-navigation {
+        order: 3;
+        flex: 1 1 100%;
 
-/* =========================================================
-   MESSENGER DROPDOWN — VISUAL IMPROVEMENTS
+        width: 100%;
+        max-width: none;
+        height: 46px;
 
-   Styles the dynamically generated Messenger interface.
-   Existing JavaScript and class names are preserved.
-   ========================================================= */
-
-/* Main Messenger layout */
-.messenger-interface {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    width: 100%;
-    min-width: 0;
-    color: #1c1e21;
-    background: #ffffff;
-}
-
-/* Search field */
-.messenger-interface .header-dropdown-search {
-    width: 100%;
-    min-width: 0;
-    min-height: 42px;
-    padding: 10px 14px;
-    color: #1c1e21;
-    background: #f0f2f5;
-    border: 1px solid transparent;
-    border-radius: 22px;
-    font: inherit;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.messenger-interface .header-dropdown-search:focus {
-    background: #ffffff;
-    border-color: #1877f2;
-    box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.12);
-}
-
-/* Registered-user list */
-.messenger-user-list {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    max-height: 340px;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
-}
-
-.messenger-user-list > * {
-    min-width: 0;
-    border-radius: 10px;
-}
-
-/* User entries, whether rendered as buttons or links */
-.messenger-user-list button,
-.messenger-user-list a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 11px 10px;
-    color: inherit;
-    background: transparent;
-    border: none;
-    border-radius: 10px;
-    font: inherit;
-    text-align: left;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background 0.18s ease;
-}
-
-.messenger-user-list button:hover,
-.messenger-user-list a:hover {
-    background: #f0f2f5;
-}
-
-.messenger-user-list button:focus-visible,
-.messenger-user-list a:focus-visible {
-    outline: 2px solid #1877f2;
-    outline-offset: -2px;
-}
-
-/* Empty and loading messages */
-.messenger-interface .header-dropdown-empty {
-    margin: 0;
-    padding: 24px 12px;
-    color: #65676b;
-    font-size: 14px;
-    line-height: 1.6;
-    text-align: center;
-}
-
-/* Conversation panel */
-.messenger-conversation {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    min-height: 320px;
-    max-height: 520px;
-    overflow: hidden;
-    background: #ffffff;
-    border: 1px solid #e4e6eb;
-    border-radius: 12px;
-}
-
-.messenger-conversation[hidden] {
-    display: none !important;
-}
-
-/* Conversation header */
-.messenger-conversation-heading {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-height: 58px;
-    padding: 10px 12px;
-    background: #ffffff;
-    border-bottom: 1px solid #e4e6eb;
-}
-
-.messenger-back-button {
-    flex-shrink: 0;
-    padding: 8px 10px;
-    color: #1877f2;
-    background: #e7f3ff;
-    border: none;
-    border-radius: 8px;
-    font: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.messenger-back-button:hover {
-    background: #dbeafe;
-}
-
-.messenger-partner-name {
-    overflow: hidden;
-    color: #1c1e21;
-    font-size: 15px;
-    font-weight: 700;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Scrollable message history */
-.messenger-messages {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 10px;
-    min-height: 180px;
-    padding: 16px 12px;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    background: #ffffff;
-    scrollbar-width: thin;
-}
-
-/
-/* -----------------------------------------------------
-   MESSENGER CHAT BUBBLES
------------------------------------------------------ */
-
-.messenger-messages {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    min-height: 180px;
-    max-height: 320px;
-    overflow-y: auto;
-    padding: 14px 10px;
-    background: #f0f2f5;
-    border-radius: 10px;
-    scroll-behavior: smooth;
-}
-
-/* Shared styling for individual messages. */
-.messenger-message {
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
-    max-width: 82%;
-    padding: 9px 12px;
-    border-radius: 16px;
-    overflow-wrap: anywhere;
-    line-height: 1.4;
-    box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
-}
-
-/* Messages sent by the signed-in user. */
-.messenger-message.message-sent {
-    align-self: flex-end;
-    background: #0084ff;
-    color: #ffffff;
-    border-bottom-right-radius: 4px;
-}
-
-/* Messages received from the other user. */
-.messenger-message.message-received {
-    align-self: flex-start;
-    background: #ffffff;
-    color: #1c1e21;
-    border: 1px solid #e4e6eb;
-    border-bottom-left-radius: 4px;
-}
-
-/* Message text. */
-.messenger-message-text {
-    margin: 0;
-    font-size: 14px;
-    white-space: pre-wrap;
-}
-
-/* Message timestamps. */
-.messenger-message-time {
-    display: block;
-    margin-top: 5px;
-    font-size: 10px;
-    line-height: 1.3;
-    opacity: 0.75;
-    overflow-wrap: anywhere;
-}
-
-.messenger-message.message-sent .messenger-message-time {
-    color: #ffffff;
-}
-
-/* Scrollbar styling. */
-.messenger-messages::-webkit-scrollbar {
-    width: 6px;
-}
-
-.messenger-messages::-webkit-scrollbar-thumb {
-    background: #bcc0c4;
-    border-radius: 10px;
-}
-
-.messenger-messages::-webkit-scrollbar-track {
-    background: transparent;
+        margin: 0;
+        padding: 0;
+    }
 }
 
 
-/* Status feedback */
-.messenger-status {
-    margin: 0;
-    padding: 0 12px 8px;
-    color: #65676b;
-    font-size: 12px;
-    line-height: 1.5;
-}
+/* Compact Messenger layout on narrow screens */
 
-/* Message input and Send button */
-.messenger-send-form {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px;
-    background: #ffffff;
-    border-top: 1px solid #e4e6eb;
-}
-
-.messenger-message-input {
-    flex: 1;
-    width: 0;
-    min-width: 0;
-    min-height: 42px;
-    padding: 10px 14px;
-    color: #1c1e21;
-    background: #f0f2f5;
-    border: 1px solid transparent;
-    border-radius: 22px;
-    font: inherit;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.messenger-message-input:focus {
-    background: #ffffff;
-    border-color: #1877f2;
-    box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1);
-}
-
-.messenger-send-form button {
-    flex-shrink: 0;
-    min-height: 40px;
-    padding: 9px 16px;
-    color: #ffffff;
-    background: #1877f2;
-    border: none;
-    border-radius: 22px;
-    font: inherit;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.messenger-send-form button:hover {
-    background: #166fe5;
-}
-
-.messenger-send-form button:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-}
-
-/* Keyboard accessibility */
-.messenger-back-button:focus-visible,
-.messenger-send-form button:focus-visible {
-    outline: 3px solid rgba(24, 119, 242, 0.3);
-    outline-offset: 2px;
-}
-
-/* Smaller screens */
 @media (max-width: 480px) {
     .messenger-user-list {
         max-height: 280px;
@@ -769,7 +1094,7 @@ body.dark-theme .header-dropdown-search {
     .messenger-conversation-heading {
         gap: 8px;
         padding: 8px;
-    }         
+    }
 
     .messenger-send-form {
         gap: 6px;
@@ -779,237 +1104,4 @@ body.dark-theme .header-dropdown-search {
     .messenger-send-form button {
         padding: 9px 12px;
     }
-}
-
-
-
-
-
-/* =========================================
-    11. RESPONSIVE HEADER
-========================================= */
-
-@media (max-width: 1100px) {
- .facebook-header {
-     gap: 10px;
-     padding: 0 12px;
- }
-
- .header-left {
-     gap: 8px;
- }
-
- .search-container {
-     width: 200px;
- }
-
- .nav-item {
-     padding: 8px 6px;
-     font-size: 18px;
- }
-
- .header-right {
-     gap: 6px;
- }
-
- .utility-button {
-     width: 38px;
-     height: 38px;
- }
-
- #logoutButton {
-     width: auto;
-     padding: 0 10px;
- }
-}
-
-@media (max-width: 760px) {
- .facebook-header {
-     height: auto;
-     min-height: 60px;
-     flex-wrap: wrap;
-     padding: 8px 10px;
-     gap: 8px;
- }
-
- .header-left {
-     flex: 1 1 auto;
- }
-
- .facebook-logo .fa-facebook {
-     font-size: 36px;
- }
-
- .search-container {
-     width: auto;
-     flex: 1 1 160px;
-     max-width: 260px;
- }
-
- .main-navigation {
-     order: 3;
-     flex: 1 1 100%;
-     height: 46px;
-     justify-content: space-around;
- }
-
- .nav-item {
-     height: 46px;
-     max-width: none;
-     padding: 6px 4px;
-     font-size: 18px;
- }
-
- .header-right {
-     gap: 6px;
- }
-
- .utility-button {
-     width: 36px;
-     height: 36px;
-     font-size: 16px;
- }
-
- #logoutButton {
-     width: auto;
-     padding: 0 9px;
-     gap: 6px;
- }
-
- #logoutButton .text {
-     font-size: 12px;
- }
-}
-
-@media (max-width: 420px) {
- .facebook-header {
-     padding: 8px;
- }
-
- .header-left {
-     gap: 8px;
- }
-
- .search-container {
-     padding: 0 9px;
-     flex-basis: 120px;
- }
-
- .search-input {
-     font-size: 12px;
- }
-
- .header-right {
-     gap: 4px;
- }
-
- .utility-button {
-     width: 32px;
-     height: 32px;
-     font-size: 14px;
- }
-
- #logoutButton {
-     padding: 0 7px;
-     gap: 5px;
- }
-
- #logoutButton .text {
-     font-size: 11px;
- }
-
- .nav-item {
-     font-size: 16px;
- }
-}
-
-
-/* =========================================
-   HEADER DROPDOWN PANELS
-========================================= */
-
-.header-dropdown {
-    position: absolute;
-    top: calc(100% + 8px);
-    right: 16px;
-    width: min(360px, calc(100vw - 24px));
-    max-height: 70vh;
-    overflow-y: auto;
-    padding: 16px;
-    background: #ffffff;
-    color: #1c1e21;
-    border: 1px solid #e4e6eb;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
-    z-index: 1100;
-}
-
-.header-dropdown[hidden] {
-    display: none;
-}
-
-.header-dropdown-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
-.header-dropdown-heading h2 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.header-dropdown-close {
-    width: 34px;
-    height: 34px;
-    border: none;
-    border-radius: 50%;
-    background: #f0f2f5;
-    color: #1c1e21;
-    font-size: 24px;
-    cursor: pointer;
-}
-
-.header-dropdown-item {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: transparent;
-    color: inherit;
-    text-align: left;
-    font-size: 15px;
-    cursor: pointer;
-}
-
-.header-dropdown-item:hover,
-.header-dropdown-item:focus-visible {
-    background: #f0f2f5;
-}
-
-.header-dropdown-empty,
-.header-dropdown-description {
-    margin: 12px 0;
-    color: #65676b;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-.header-dropdown-search {
-    width: 100%;
-    padding: 10px 12px;
-    margin-bottom: 8px;
-    border: none;
-    border-radius: 20px;
-    outline: none;
-    background: #f0f2f5;
-    font-size: 14px;
-}
-
-.header-dropdown-search:focus {
-    box-shadow: 0 0 0 2px #0866ff;
 }

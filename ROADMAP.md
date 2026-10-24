@@ -42,6 +42,7 @@ A feature should only be marked complete after its implementation has been revie
 
 ## Phase 4 — Main Interface
 
+
 * [ ] Complete and review the main page layout.
 * [ ] Build and refine the feed and stories presentation.
 * [ ] Complete the create-post interface.

@@ -29,12 +29,9 @@
          <!-- Header Left Section -->
          <div class="header-left">
 
-            <!-- Clickable Facebook Logo -->
-             <a href="./index.html"
-             class="facebook-logo"
-             aria-label="Facebook home">
-            <i class="fa-brands fa-facebook" aria-hidden="true"></i>
-         </a>
+            <!-- Facebook Logo -->
+            <i class="fa-brands fa-facebook"></i>
+
 
             <!-- Search -->
             <div class="search-container">
@@ -85,7 +82,7 @@
             <!-- Menu -->
             <button type="button" class="utility-button" data-action="menu">
                <i class="fa-solid fa-bars" aria-hidden="true"></i>
-               <span class="text">Menu</span>
+               <span class="text">Facebook Menu</span>
             </button>
 
             <!-- Notifications -->
@@ -240,6 +237,7 @@
          <!-- Central Feed Section (Role 4) -->
          <section class="feed" aria-label="News feed">
  
+         <div id="homeFeedView">
              <!-- Create posts -->
               <section
                  class="create-post"
@@ -256,23 +254,174 @@
              >
                  <!-- Stories are rendered dynamically by render.js -->
              </section>
- 
-             <!-- Create Post -->
+
              
- 
              <!-- Posts Feed -->
              <section
                  class="posts"
                  aria-label="Recent posts"
-                 aria-live="polite"
-             >
+                 aria-live="polite">
                  <!-- Posts are rendered dynamically by render.js -->
              </section>
  
+
+            </div>
+             <!-- YouTube Video Feed -->
+              <section class="youtube-videos" id="youtubeVideos" hidden>
+               <div class="youtube-videos-heading">
+                  <div>
+                     <h2>Videos</h2>
+                     <p>Discover videos to watch</p>
+                  </div>
+                  <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+               </div>
+               <!-- JavaScript will insert video cards here. -->
+                <div class="youtube-video-grid" id="youtubeVideoGrid">
+                  <p class="youtube-video-message">Loading videos...</p>
+                </div>
+              </section>
+
+              
+              <!-- =====================================================
+                   MARKETPLACE VIEW
+                   Hidden by default; JavaScript opens it when
+                   the Marketplace navigation button is clicked.
+                   ===================================================== -->
+              <section class="marketplace-view" id="marketplaceView" hidden>
+              
+                  <div class="marketplace-heading">
+                      <div>
+                          <h2>Marketplace</h2>
+                          <p>Discover products from local sellers.</p>
+                      </div>
+                      <i class="fa-solid fa-store" aria-hidden="true"></i>
+                  </div>
+
+
+                  <!-- Marketplace shopping cart -->
+               <section class="marketplace-cart" aria-label="Shopping cart">
+                  <button
+                     type="button"
+                     class="marketplace-cart-toggle"
+                     id="marketplaceCartToggle"
+                     aria-expanded="false"
+                     aria-controls="marketplaceCartPanel">
+
+                     <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                     My Cart (<span id="marketplaceCartCount">0</span>)
+                     <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                  </button>
+
+                  <div class="marketplace-cart-panel" id="marketplaceCartPanel" hidden>
+                     <h3>Your shopping cart</h3>
+
+                     <div id="marketplaceCartItems" aria-live="polite">
+                           <p class="marketplace-message">Your cart is empty.</p>
+                     </div>
+
+                     <div class="marketplace-cart-footer">
+                           <p>Total: <strong id="marketplaceCartTotal">$0.00</strong></p>
+                           <button type="button" id="marketplaceClearCart">
+                              Clear cart
+                           </button>
+                     </div>
+                  </div>
+               </section>
+              
+                  <!-- Search and category filters -->
+                  <div class="marketplace-filters">
+                      <label for="marketplaceSearch">Search products</label>
+                      <input
+                          type="search"
+                          id="marketplaceSearch"
+                          placeholder="Search products..."
+                          autocomplete="off">
+              
+                      <label for="marketplaceCategory">Category</label>
+                      <select id="marketplaceCategory">
+                          <option value="all">All categories</option>
+                          <option value="Electronics">Electronics</option>
+                          <option value="Fashion">Fashion</option>
+                          <option value="Home">Home</option>
+                          <option value="Accessories">Accessories</option>
+                      </select>
+                  </div>
+              
+                  <!-- JavaScript inserts product cards here -->
+                  <div
+                      class="marketplace-product-grid"
+                      id="marketplaceProductGrid"
+                      aria-live="polite">
+
+                      <p class="marketplace-message">Loading products...</p>
+                  </div>
+              
+                  <p class="marketplace-demo-note">
+                      Sample listings for demonstration. Products are not real offers.
+                  </p>
+              </section>   
+              
+              <!-- FRIENDS VIEW -->
+      <section id="friendsView" class="friends-view" hidden>
+
+         <!-- Friends page heading -->
+         <div class="friends-page-heading">
+            <h1>Friends</h1>
+            <p>Manage your connections and discover people you may know.</p>
+         </div>
+
+         <!-- People You May Know -->
+         <section
+            class="friend-suggestions"
+            id="friendSuggestions"
+            aria-label="People you may know">
+
+            <div class="friend-suggestions-heading">
+                  <div>
+                     <h2>People You May Know</h2>
+                     <p>Connect with people on the platform.</p>
+                  </div>
+
+                  <i class="fa-solid fa-user-group" aria-hidden="true"></i>
+            </div>
+
+            <div
+                  class="friend-suggestions-list"
+                  id="friendSuggestionsList"
+                  aria-live="polite">
+
+                  <p class="friend-suggestions-message">
+                     Loading suggestions...
+                  </p>
+            </div>
          </section>
 
-         <!-- Right Sidebar (Role 7) -->
+         <!-- Incoming Friend Requests -->
+         <section
+            class="incoming-friend-requests"
+            id="incomingFriendRequests"
+            aria-label="Incoming friend requests">
+
+            <div class="incoming-friend-requests-heading">
+                  <h2>Friend Requests</h2>
+            </div>
+
+            <div
+                  class="incoming-friend-requests-list"
+                  id="incomingFriendRequestsList"
+                  aria-live="polite">
+                  <p class="incoming-friend-requests-message">
+                     Loading friend requests...
+                  </p>
+            </div>
+         </section>
+      </section>
+   </section>
+
          
+
+         <!-- Right Sidebar (Role 7) -->
+            
          <!-- RIGHT SIDEBAR: supplementary Facebook-style content -->
          <aside class="right-sidebar" aria-label="Right sidebar">
          

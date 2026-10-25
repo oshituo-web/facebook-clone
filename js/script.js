@@ -27,10 +27,16 @@ import {
     getComments,
     getMyNotifications,
     markNotificationRead,
-    getMessageableProfiles,
     getConversationMessages,
     sendDirectMessage,
-    markReceivedMessagesRead
+    markReceivedMessagesRead,
+    markReceivedMessagesDelivered,
+    getFriendSuggestions,
+    sendFriendRequest,
+    getIncomingFriendRequests,
+    respondToFriendRequest,
+    getMessageableProfiles,
+    getMyFriends
 } from "./data.js";
 
 import {
@@ -39,6 +45,10 @@ import {
     renderCreatePost,
     renderSidebarUser
 } from "./render.js";
+
+// Load the YouTube video feed feature.
+import { initYoutubeVideos } from "./youtubeVideos.js";
+import { initMarketplace } from "./marketplace.js";
 
 
 
@@ -91,6 +101,14 @@ function renderRightSidebarContacts(users) {
             avatarWrapper.appendChild(avatarImage);
         }
 
+        if (user.isOnline) {
+            const onlineIndicator = document.createElement("span");
+            onlineIndicator.className = "online-indicator";
+            onlineIndicator.setAttribute("role", "img");
+            onlineIndicator.setAttribute("aria-label", "Online");
+            avatarWrapper.appendChild(onlineIndicator);
+        }
+
         // Display the real name from the JSON record.
         const contactName = document.createElement("span");
         contactName.className = "contact-name";
@@ -120,11 +138,11 @@ let authenticatedUser = null;
 
 /* Read locally saved posts safely. */
 
+
 function readLocalPosts() {
     try {
-        const savedPosts = localStorage.getItem(
-            LOCAL_POSTS_STORAGE_KEY
-        );
+        const storageKey = getUserLocalPostsStorageKey();
+        const savedPosts = localStorage.getItem(storageKey);
 
         if (!savedPosts) {
             return [];
@@ -140,12 +158,32 @@ function readLocalPosts() {
 }
 
 
+
+/**
+ * Return a separate Local Storage key for each authenticated user.
+ * This prevents posts from one account appearing in another account's feed.
+ */
+function getUserLocalPostsStorageKey() {
+    if (!authenticatedUser) {
+        throw new Error(
+            "Cannot access local posts without an authenticated user."
+        );
+    }
+
+    return `${LOCAL_POSTS_STORAGE_KEY}_auth-${authenticatedUser.id}`;
+}
+
+
+
 /* Save posts to this browser. */
+
 
 function saveLocalPosts(posts) {
     try {
+        const storageKey = getUserLocalPostsStorageKey();
+
         localStorage.setItem(
-            LOCAL_POSTS_STORAGE_KEY,
+            storageKey,
             JSON.stringify(posts)
         );
 
@@ -155,6 +193,7 @@ function saveLocalPosts(posts) {
         return false;
     }
 }
+
 
 
 
@@ -313,20 +352,27 @@ async function loadApplicationData() {
         ];
 
         
-        /* Render the feed and stories. */
+        // Render the feed and stories.
         renderSidebarUser(currentUser);
         renderPosts(posts, usersForRendering, comments);
         renderStories(stories, usersForRendering);
-        
+
+        // Set up the Add Friend button handler and load suggestions.
+        setupFriendSuggestionEvents();
+        await renderFriendSuggestions();
+
+        // Set up and load incoming friend requests.
+        setupIncomingFriendRequestEvents();
+        await renderIncomingFriendRequests();
+
+
         // Display contacts using the users loaded from users.json.
         renderRightSidebarContacts(users);
         
 
-        /*
-         * Render the create-post composer.
-         * The callback saves the new post before updating
-         * the visible feed.
-         */
+        /* Render the create-post composer.
+          The callback saves the new post before updating
+          the visible feed. */
         renderCreatePost(currentUser, (newPost) => {
             const updatedLocalPosts = [
                 newPost,
@@ -367,11 +413,447 @@ async function loadApplicationData() {
 }
 
 
+// =========================================================
+// FRIEND SUGGESTIONS — RENDER PROFILES AND HANDLE REQUESTS
+// =========================================================
 
-/*
-   Display an error message inside the feed area when possible.
-*/
+/**
+ * Display suggested profiles in the People You May Know section.
+ */
+async function renderFriendSuggestions() {
+    const suggestionsContainer = document.getElementById(
+        "friendSuggestionsList"
+    );
 
+    // Do nothing if the section is not present in the HTML.
+    if (!suggestionsContainer) return;
+
+    suggestionsContainer.textContent = "Loading suggestions...";
+
+    try {
+        const profiles = await getFriendSuggestions();
+
+        // Clear the loading message before rendering profile cards.
+        suggestionsContainer.replaceChildren();
+
+        if (profiles.length === 0) {
+            const message = document.createElement("p");
+            message.className = "friend-suggestions-message";
+            message.textContent = "No new suggestions right now.";
+            suggestionsContainer.appendChild(message);
+            return;
+        }
+
+        profiles.forEach(profile => {
+            const card = document.createElement("article");
+            card.className = "friend-suggestion-card";
+
+            // Show the profile picture when one is available.
+            if (profile.avatar_url) {
+                const avatar = document.createElement("img");
+                avatar.className = "friend-suggestion-avatar";
+                avatar.src = profile.avatar_url;
+                avatar.alt = "";
+                avatar.loading = "lazy";
+
+                // Hide broken images instead of leaving a broken icon.
+                avatar.addEventListener("error", () => {
+                    avatar.remove();
+                }, { once: true });
+
+                card.appendChild(avatar);
+            } else {
+                // Use a simple icon when the profile has no picture.
+                const avatar = document.createElement("div");
+                avatar.className = "friend-suggestion-avatar";
+                avatar.setAttribute("aria-hidden", "true");
+                avatar.style.display = "grid";
+                avatar.style.placeItems = "center";
+                avatar.innerHTML =
+                    '<i class="fa-solid fa-user"></i>';
+
+                card.appendChild(avatar);
+            }
+
+            const name = document.createElement("p");
+            name.className = "friend-suggestion-name";
+            name.textContent = profile.display_name || "Facebook user";
+            card.appendChild(name);
+
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "friend-suggestion-button";
+            button.textContent = "Add Friend";
+            button.dataset.recipientId = profile.id;
+
+            card.appendChild(button);
+            suggestionsContainer.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Failed to load friend suggestions:", error);
+
+        suggestionsContainer.replaceChildren();
+
+        const message = document.createElement("p");
+        message.className = "friend-suggestions-message";
+        message.textContent =
+            "Could not load suggestions. Please sign in and try again.";
+
+        suggestionsContainer.appendChild(message);
+    }
+}
+
+
+/**
+ * Handle Add Friend clicks using one event listener on the container.
+ */
+function setupFriendSuggestionEvents() {
+    const suggestionsContainer = document.getElementById(
+        "friendSuggestionsList"
+    );
+
+    if (!suggestionsContainer) return;
+
+    // Prevent registering the same listener more than once.
+    if (suggestionsContainer.dataset.eventsReady === "true") return;
+    suggestionsContainer.dataset.eventsReady = "true";
+
+    suggestionsContainer.addEventListener("click", async event => {
+        const button = event.target.closest(
+            "button[data-recipient-id]"
+        );
+
+        if (!button || !suggestionsContainer.contains(button)) return;
+
+        const recipientId = button.dataset.recipientId;
+
+        button.disabled = true;
+        button.textContent = "Sending...";
+
+        try {
+            await sendFriendRequest(recipientId);
+
+            // Remove this card because the request has been sent.
+            const card = button.closest(".friend-suggestion-card");
+            if (card) card.remove();
+
+            if (suggestionsContainer.children.length === 0) {
+                const message = document.createElement("p");
+                message.className = "friend-suggestions-message";
+                message.textContent =
+                    "No new suggestions right now.";
+                suggestionsContainer.appendChild(message);
+            }
+        } catch (error) {
+            console.error("Failed to send friend request:", error);
+
+            button.disabled = false;
+            button.textContent = "Add Friend";
+
+            alert(
+                error.message ||
+                "Could not send the friend request. Please try again."
+            );
+        }
+    });
+}
+
+
+// =========================================================
+// INCOMING FRIEND REQUESTS 1: RENDER REQUESTS
+// Loads pending requests and displays each requester's profile.
+// =========================================================
+
+async function renderIncomingFriendRequests() {
+    const requestsContainer = document.getElementById(
+        "incomingFriendRequestsList"
+    );
+
+    if (!requestsContainer) return;
+
+    requestsContainer.textContent = "Loading friend requests...";
+
+    try {
+        // Load incoming requests and profile information from Supabase.
+        const [requests, profiles] = await Promise.all([
+            getIncomingFriendRequests(),
+            getMessageableProfiles()
+        ]);
+
+        // Match each requester's user ID to their profile.
+        const profilesById = new Map(
+            profiles.map(profile => [profile.id, profile])
+        );
+
+        requestsContainer.replaceChildren();
+
+        if (requests.length === 0) {
+            const message = document.createElement("p");
+            message.className = "incoming-friend-requests-message";
+            message.textContent = "You have no pending friend requests.";
+            requestsContainer.appendChild(message);
+            return;
+        }
+
+        requests.forEach(request => {
+            const profile = profilesById.get(request.requester_id);
+
+            const card = document.createElement("article");
+            card.className = "incoming-friend-request-card";
+            card.dataset.requestId = request.id;
+
+            // Display the requester's avatar, or a default icon.
+            if (profile?.avatar_url) {
+                const avatar = document.createElement("img");
+                avatar.className = "incoming-friend-request-avatar";
+                avatar.src = profile.avatar_url;
+                avatar.alt = "";
+                avatar.loading = "lazy";
+
+                avatar.addEventListener(
+                    "error",
+                    () => avatar.remove(),
+                    { once: true }
+                );
+
+                card.appendChild(avatar);
+            } else {
+                const avatar = document.createElement("div");
+                avatar.className = "incoming-friend-request-avatar";
+                avatar.setAttribute("aria-hidden", "true");
+                avatar.innerHTML = '<i class="fa-solid fa-user"></i>';
+                card.appendChild(avatar);
+            }
+
+            // Display the requester's name safely as text.
+            const name = document.createElement("p");
+            name.className = "incoming-friend-request-name";
+            name.textContent = profile?.display_name || "Facebook user";
+            card.appendChild(name);
+
+            // Accept button.
+            const acceptButton = document.createElement("button");
+            acceptButton.type = "button";
+            acceptButton.className = "friend-request-action accept";
+            acceptButton.dataset.action = "accept";
+            acceptButton.textContent = "Accept";
+            acceptButton.setAttribute("aria-label", `Accept request from ${name.textContent}`);
+
+            // Reject button.
+            const rejectButton = document.createElement("button");
+            rejectButton.type = "button";
+            rejectButton.className = "friend-request-action reject";
+            rejectButton.dataset.action = "reject";
+            rejectButton.textContent = "Reject";
+            rejectButton.setAttribute("aria-label", `Reject request from ${name.textContent}`);
+
+            card.append(acceptButton, rejectButton);
+            requestsContainer.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Failed to load incoming friend requests:", error);
+
+        requestsContainer.replaceChildren();
+
+        const message = document.createElement("p");
+        message.className = "incoming-friend-requests-message";
+        message.textContent =
+            "Could not load friend requests. Please sign in and try again.";
+
+        requestsContainer.appendChild(message);
+    }
+}
+
+
+/* =========================================================
+   FRIENDS LIST — DISPLAY ACCEPTED FRIENDS
+
+   Retrieve the signed-in user's accepted friends from
+   Supabase and display their profiles in the Friends view.
+========================================================= */
+
+async function renderMyFriends() {
+    const friendsView = document.getElementById("friendsView");
+
+    // Stop if the Friends view is not present on this page.
+    if (!friendsView) return;
+
+    // Create the Friends List section once.
+    let friendsSection = document.getElementById("myFriendsSection");
+
+    if (!friendsSection) {
+        friendsSection = document.createElement("section");
+        friendsSection.id = "myFriendsSection";
+        friendsSection.className = "my-friends-section";
+
+        const heading = document.createElement("h2");
+        heading.textContent = "Friends";
+
+        const friendsList = document.createElement("div");
+        friendsList.id = "myFriendsList";
+        friendsList.className = "my-friends-list";
+
+        friendsSection.append(heading, friendsList);
+        friendsView.appendChild(friendsSection);
+    }
+
+    const friendsList = friendsSection.querySelector("#myFriendsList");
+
+    friendsList.replaceChildren();
+
+    const loadingMessage = document.createElement("p");
+    loadingMessage.className = "my-friends-message";
+    loadingMessage.textContent = "Loading your friends...";
+
+    friendsList.appendChild(loadingMessage);
+
+    try {
+        const friends = await getMyFriends();
+
+        friendsList.replaceChildren();
+
+        if (friends.length === 0) {
+            const emptyMessage = document.createElement("p");
+            emptyMessage.className = "my-friends-message";
+            emptyMessage.textContent =
+                "You haven't added any friends yet. Accept a friend request to see your friends here.";
+
+            friendsList.appendChild(emptyMessage);
+            return;
+        }
+
+        friends.forEach((friend) => {
+            const card = document.createElement("article");
+            card.className = "my-friend-card";
+
+            const avatar = document.createElement("div");
+            avatar.className = "my-friend-avatar";
+
+            const name = friend.display_name || "Facebook user";
+
+            if (
+                typeof friend.avatar_url === "string" &&
+                /^https?:\/\//i.test(friend.avatar_url)
+            ) {
+                const image = document.createElement("img");
+                image.src = friend.avatar_url;
+                image.alt = `${name}'s profile picture`;
+                image.loading = "lazy";
+
+                image.addEventListener("error", () => {
+                    avatar.replaceChildren();
+                    avatar.textContent =
+                        name.trim().charAt(0).toUpperCase() || "?";
+                }, { once: true });
+
+                avatar.appendChild(image);
+            } else {
+                avatar.textContent =
+                    name.trim().charAt(0).toUpperCase() || "?";
+            }
+
+            const nameElement = document.createElement("p");
+            nameElement.className = "my-friend-name";
+            nameElement.textContent = name;
+
+            card.append(avatar, nameElement);
+            friendsList.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Failed to load your friends:", error);
+
+        friendsList.replaceChildren();
+
+        const errorMessage = document.createElement("p");
+        errorMessage.className = "my-friends-message";
+        errorMessage.textContent =
+            "Couldn't load your friends. Please try again.";
+
+        const retryButton = document.createElement("button");
+        retryButton.type = "button";
+        retryButton.textContent = "Retry";
+        retryButton.addEventListener("click", renderMyFriends);
+
+        friendsList.append(errorMessage, retryButton);
+    }
+}
+
+
+// =========================================================
+// INCOMING FRIEND REQUESTS 2: ACCEPT OR REJECT
+// Uses event delegation so the buttons work on every request card.
+// =========================================================
+
+function setupIncomingFriendRequestEvents() {
+    const requestsContainer = document.getElementById(
+        "incomingFriendRequestsList"
+    );
+
+    if (!requestsContainer) return;
+
+    // Prevent the same click listener from being attached more than once.
+    if (requestsContainer.dataset.eventsReady === "true") return;
+    requestsContainer.dataset.eventsReady = "true";
+
+    requestsContainer.addEventListener("click", async event => {
+        const button = event.target.closest(
+            "button[data-action]"
+        );
+
+        if (!button || !requestsContainer.contains(button)) return;
+
+        const card = button.closest(".incoming-friend-request-card");
+        if (!card) return;
+
+        const requestId = card.dataset.requestId;
+        const action = button.dataset.action;
+
+        if (action !== "accept" && action !== "reject") return;
+
+        // Temporarily disable both buttons to prevent duplicate responses.
+        const actionButtons = card.querySelectorAll("button");
+        actionButtons.forEach(item => {
+            item.disabled = true;
+        });
+
+        button.textContent = action === "accept" ? "Accepting..." : "Rejecting...";
+
+        try {
+            await respondToFriendRequest(requestId, action === "accept");
+
+            // Remove the handled request from the page.
+            card.remove();
+
+            if (requestsContainer.querySelectorAll(
+                ".incoming-friend-request-card"
+            ).length === 0) {
+                const message = document.createElement("p");
+                message.className = "incoming-friend-requests-message";
+                message.textContent = "You have no pending friend requests.";
+                requestsContainer.replaceChildren(message);
+            }
+
+            // Refresh suggestions to reflect the updated request status.
+            await renderFriendSuggestions();
+        } catch (error) {
+            console.error("Could not respond to friend request:", error);
+
+            actionButtons.forEach(item => {
+                item.disabled = false;
+            });
+
+            button.textContent = action === "accept" ? "Accept" : "Reject";
+
+            alert(
+                error.message ||
+                "Could not update this friend request. Please try again."
+            );
+        }
+    });
+}
+
+
+/*Display an error message inside the feed area when possible.*/
 function showFeedMessage(message) {
     const postsContainer = document.querySelector(".posts");
 
@@ -439,30 +921,104 @@ function selectHeaderNavItem(selectedItem) {
 
 headerNavItems.forEach((item) => {
     item.addEventListener("click", () => {
-        selectHeaderNavItem(item);
+        const action = item.dataset.action;
 
-        // Home is the feed page.
-        if (item.dataset.action === "home") {
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
+        // Switch the central content for supported feed views.
+        if (
+            action === "home" ||
+            action === "video" ||
+            action === "marketplace" ||
+            action === "friends"
+        ) {
+            showFeedView(action);
+            return;
         }
+
+        // Keep the active-button behavior for Groups for now.
+        selectHeaderNavItem(item);
     });
 });
 
 
-// Clicking the Facebook logo returns to the feed.
+    // Clicking the Facebook logo returns to the feed.
 
-const facebookLogo = document.querySelector(".facebook-logo");
+    const facebookLogo = document.querySelector(".facebook-logo");
 
-if (facebookLogo) {
-    facebookLogo.addEventListener("click", (event) => {
-        event.preventDefault();
+    if (facebookLogo) {
+        facebookLogo.addEventListener("click", (event) => {
+            event.preventDefault();
 
-        window.location.href = "./index.html";
+            window.location.href = "./index.html";
+        });
+    }
+
+
+/* =========================================================
+   HOME, VIDEO, MARKETPLACE AND FRIENDS VIEW SWITCHING
+
+   Only one central-feed view is visible at a time.
+   ========================================================= */
+   const homeFeedView = document.getElementById("homeFeedView");
+   const youtubeVideosView = document.getElementById("youtubeVideos");
+   const marketplaceView = document.getElementById("marketplaceView");
+   const friendsView = document.getElementById("friendsView");
+
+    function showFeedView(viewName) {
+    // Find the navigation button the user clicked.
+    const selectedItem = document.querySelector(
+        `.main-navigation .nav-item[data-action="${viewName}"]`
+    );
+
+    // Check that all views and the selected navigation button exist.
+    if (
+        !homeFeedView ||
+        !youtubeVideosView ||
+        !marketplaceView ||
+        !friendsView ||
+        !selectedItem
+    ) {
+        console.error(
+            "Could not switch feed view. Check the HTML IDs and navigation action."
+        );
+        return;
+    }
+
+    // Highlight the selected navigation button.
+    selectHeaderNavItem(selectedItem);
+
+    // Show the selected view and hide the other views.
+    homeFeedView.hidden = viewName !== "home";
+    youtubeVideosView.hidden = viewName !== "video";
+    marketplaceView.hidden = viewName !== "marketplace";
+    friendsView.hidden = viewName !== "friends";
+
+    // Load videos when the Videos view is opened.
+    if (viewName === "video") {
+        initYoutubeVideos();
+    }
+
+    // Load products when Marketplace is opened.
+    if (viewName === "marketplace") {
+        initMarketplace();
+    }
+
+    // Load friend suggestions, incoming requests and accepted friends.
+    if (viewName === "friends") {
+        setupFriendSuggestionEvents();
+        setupIncomingFriendRequestEvents();
+    
+        renderFriendSuggestions();
+        renderIncomingFriendRequests();
+        renderMyFriends();
+    }
+
+    // Return to the top of the page after switching views.
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
     });
 }
+
 
 
 /* =========================================================
@@ -710,8 +1266,8 @@ if (facebookHeader) {
     let openButton = null;
 
     // Store each Messenger panel's loading function.
-// A WeakMap associates the function with its panel.
-const messengerPanelLoaders = new WeakMap();
+    // A WeakMap associates the function with its panel.
+    const messengerPanelLoaders = new WeakMap();
 
 
     function closeHeaderPanel() {
@@ -728,155 +1284,232 @@ const messengerPanelLoaders = new WeakMap();
     }
 
     
+    
     /* ---------------------------------------------------------
-       SECTION 7A: LOAD AND DISPLAY NOTIFICATIONS
-    
-       Retrieve notifications for the signed-in user and build
-       the interface using DOM elements and textContent.
-    
-       textContent prevents notification messages from being
-       interpreted as HTML.
-    --------------------------------------------------------- */
-    
+       SECTION 7A: NOTIFICATIONS AND UNREAD BADGE
+
+       This section:
+       1. Displays the signed-in user's notifications.
+       2. Shows the unread notification count on the bell.
+       3. Allows notifications to be marked as read.
+       4. Handles loading, empty and error states.
+       --------------------------------------------------------- */
+
+
+    /* ---------------------------------------------------------
+       7A.1: UPDATE THE NOTIFICATION BADGE
+       Count unread notifications and hide the badge when the
+       unread count is zero.
+       --------------------------------------------------------- */
+
+    function updateNotificationBadge(notifications) {
+        const badge = facebookHeader.querySelector(".notification-badge");
+
+        // Stop safely if the badge is missing from the HTML.
+        if (!badge) return;
+
+        // Count only notifications that have not been read.
+        const unreadCount = notifications.filter(
+            (notification) => !notification.is_read
+        ).length;
+
+        // Show 99+ instead of a number larger than 99.
+        badge.textContent = unreadCount > 99 ? "99+" : String(unreadCount);
+
+        // Hide the badge when there are no unread notifications.
+        badge.hidden = unreadCount === 0;
+    }
+
+
+    /* ---------------------------------------------------------
+       7A.2: REFRESH THE BADGE ON PAGE LOAD
+       Fetch notifications for the currently signed-in user so
+       the badge count appears before the panel is opened.
+       --------------------------------------------------------- */
+
+    async function refreshNotificationBadge() {
+        try {
+            const notifications = await getMyNotifications();
+
+            updateNotificationBadge(notifications);
+        } catch (error) {
+            // A badge error should not stop other header features.
+            console.error("Failed to refresh notification badge:", error);
+        }
+    }
+
+
+    /* ---------------------------------------------------------
+       7A.3: LOAD AND DISPLAY NOTIFICATIONS
+       Build notification items safely using DOM elements and
+       textContent rather than inserting message text as HTML.
+       --------------------------------------------------------- */
+
     async function loadNotifications(panel) {
         const list = panel.querySelector(".notifications-list");
-    
-        if (!list) {
-            return;
-        }
-    
-        // Show feedback while the database request is running.
+
+        // Stop if the panel does not contain a notification list.
+        if (!list) return;
+
+        // Show a loading message while fetching notifications.
         list.replaceChildren();
-    
+
         const loadingMessage = document.createElement("p");
         loadingMessage.className = "header-dropdown-empty";
         loadingMessage.textContent = "Loading notifications...";
-    
+
         list.appendChild(loadingMessage);
-    
+
         try {
-            // Fetch only the signed-in user's notifications.
+            // Fetch notifications belonging to the signed-in user.
             const notifications = await getMyNotifications();
-    
+
+            // Update the badge every time the notifications are loaded.
+            updateNotificationBadge(notifications);
+
+            // Clear the loading message before displaying results.
             list.replaceChildren();
-    
-            // Display a friendly message if there are no results.
+
+            // Show a friendly message if there are no notifications.
             if (notifications.length === 0) {
                 const emptyMessage = document.createElement("p");
                 emptyMessage.className = "header-dropdown-empty";
                 emptyMessage.textContent = "You're all caught up!";
-    
+
                 list.appendChild(emptyMessage);
                 return;
             }
-    
-            // Create a separate interface item for each notification.
+
+            // Create a separate item for each notification.
             notifications.forEach((notification) => {
                 const item = document.createElement("div");
-    
                 item.className = "notification-item";
-    
-                // Give unread notifications a separate CSS class.
+
+                // Highlight unread notifications.
                 if (!notification.is_read) {
                     item.classList.add("is-unread");
                 }
-    
+
+                // Add the notification message.
                 const message = document.createElement("p");
                 message.className = "notification-message";
                 message.textContent =
                     notification.message || "You have a new notification.";
-    
+
                 item.appendChild(message);
-    
-                // Display the time when the notification was created.
+
+                // Display the date and time when available.
                 if (notification.created_at) {
                     const time = document.createElement("small");
                     time.className = "notification-time";
-    
+
                     const date = new Date(notification.created_at);
-    
+
                     time.textContent = Number.isNaN(date.getTime())
                         ? ""
                         : date.toLocaleString();
-    
+
                     item.appendChild(time);
                 }
-    
-                // Add a button only when the notification is unread.
+
+                // Unread notifications get a "Mark as read" button.
                 if (!notification.is_read) {
                     const readButton = document.createElement("button");
-    
+
                     readButton.type = "button";
                     readButton.className = "notification-read-button";
                     readButton.textContent = "Mark as read";
-    
+
                     readButton.addEventListener("click", async () => {
                         readButton.disabled = true;
                         readButton.textContent = "Updating...";
-    
+
                         try {
-                            // Update the record in Supabase.
+                            // Save the read status in Supabase.
                             const updated = await markNotificationRead(
                                 notification.id
                             );
-    
+
                             if (!updated) {
                                 throw new Error(
                                     "The notification could not be updated."
                                 );
                             }
-    
+
                             // Update the interface after the database succeeds.
                             notification.is_read = true;
                             item.classList.remove("is-unread");
-    
+
+                            // Decrease the badge count immediately.
+                            updateNotificationBadge(notifications);
+
+                            // Remove the button after marking as read.
                             readButton.remove();
-    
+
+                            // Show a label confirming that it has been read.
+                            const readLabel = document.createElement("small");
+                            readLabel.className = "notification-read-label";
+                            readLabel.textContent = "Read";
+
+                            item.appendChild(readLabel);
                         } catch (error) {
                             console.error(
                                 "Failed to mark notification as read:",
                                 error
                             );
-    
+
+                            // Allow the user to retry if the update fails.
                             readButton.disabled = false;
                             readButton.textContent = "Try again";
                         }
                     });
-    
+
                     item.appendChild(readButton);
                 } else {
+                    // Already-read notifications display a simple label.
                     const readLabel = document.createElement("small");
                     readLabel.className = "notification-read-label";
                     readLabel.textContent = "Read";
-    
+
                     item.appendChild(readLabel);
                 }
-    
+
                 list.appendChild(item);
             });
-    
         } catch (error) {
+            // Log the error for debugging.
             console.error("Failed to load notifications:", error);
-    
+
+            // Display a helpful error message.
             list.replaceChildren();
-    
+
             const errorMessage = document.createElement("p");
             errorMessage.className = "header-dropdown-empty";
             errorMessage.textContent =
                 "Couldn't load notifications. Please try again.";
-    
+
+            // Let the user retry loading the notifications.
             const retryButton = document.createElement("button");
             retryButton.type = "button";
             retryButton.className = "header-dropdown-item";
             retryButton.textContent = "Retry";
-    
+
             retryButton.addEventListener("click", () => {
                 loadNotifications(panel);
             });
-    
+
             list.append(errorMessage, retryButton);
         }
     }
+
+
+    /* ---------------------------------------------------------
+       7A.4: INITIALIZE THE BADGE
+       Run once when the header setup is initialized.
+       --------------------------------------------------------- */
+
+    refreshNotificationBadge();
+
 
     /* ---------------------------------------------------------
     SECTION 7B: MESSENGER — USER LIST AND CONVERSATIONS
@@ -1038,7 +1671,8 @@ const messengerPanelLoaders = new WeakMap();
          try {
              await loadCurrentUserId();
  
-             profiles = await getMessageableProfiles();
+             // Load only users who are already friends with the current user.
+             profiles = await getMyFriends();
  
              renderUserList();
  
@@ -1166,38 +1800,45 @@ const messengerPanelLoaders = new WeakMap();
      }
  
  
+     
      /* -----------------------------------------------------
         Open a conversation with the selected registered user.
      ----------------------------------------------------- */
- 
      async function openConversation(profile) {
          selectedProfile = profile;
- 
+     
          partnerName.textContent =
              profile.display_name || "Facebook User";
- 
+     
          searchInput.hidden = true;
          userList.hidden = true;
          conversationView.hidden = false;
- 
+     
          statusMessage.textContent = "";
          messageInput.value = "";
- 
+     
+         // First, load and display the conversation.
          await refreshConversation();
- 
-         // Mark incoming messages as read without preventing
-         // the conversation from opening if this update fails.
+     
+         // Update delivery and read receipts for incoming messages.
+         // If an update fails, keep the conversation open.
          try {
+             await markReceivedMessagesDelivered(profile.id);
              await markReceivedMessagesRead(profile.id);
+     
+             // Reload messages to display their latest saved statuses.
+             await refreshConversation();
          } catch (error) {
              console.error(
-                 "Failed to mark received messages as read:",
+                 "Failed to update message delivery/read status:",
                  error
              );
          }
- 
+     
+         // Put the cursor in the message input.
          messageInput.focus();
      }
+     
  
  
      /* -----------------------------------------------------

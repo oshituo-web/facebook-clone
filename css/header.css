@@ -971,33 +971,149 @@
 
 
 /* =====================================================
-   DARK THEME
+DARK THEME
 ===================================================== */
 
 body.dark-theme {
-    background-color: #18191a;
-    color: #e4e6eb;
+ background-color: #18191a;
+ color: #e4e6eb;
 }
 
+/* Header and dropdown surfaces */
 body.dark-theme .facebook-header,
 body.dark-theme .header-dropdown {
-    background-color: #242526;
-    color: #e4e6eb;
-    border-color: #3e4042;
+ background-color: #242526;
+ color: #e4e6eb;
+ border-color: #3e4042;
 }
 
+/* Dropdown text and interactive items */
 body.dark-theme .header-dropdown-item,
-body.dark-theme .header-dropdown-close {
-    color: #e4e6eb;
+body.dark-theme .header-dropdown-close,
+body.dark-theme .profile-action-item {
+ color: #e4e6eb;
 }
 
-body.dark-theme .header-dropdown-item:hover {
-    background-color: #3a3b3c;
+body.dark-theme .header-dropdown-item:hover,
+body.dark-theme .header-dropdown-item:focus-visible,
+body.dark-theme .profile-action-item:hover {
+ background-color: #3a3b3c;
 }
 
-body.dark-theme .header-dropdown-search {
-    background-color: #3a3b3c;
-    color: #e4e6eb;
+/* Search fields */
+body.dark-theme .header-dropdown-search,
+body.dark-theme .messenger-interface .header-dropdown-search {
+ background-color: #3a3b3c;
+ color: #e4e6eb;
+ border-color: #3e4042;
+}
+
+body.dark-theme .header-dropdown-search::placeholder,
+body.dark-theme .messenger-interface .header-dropdown-search::placeholder {
+ color: #b0b3b8;
+}
+
+/* Profile details */
+body.dark-theme .current-user-details strong {
+ color: #e4e6eb;
+}
+
+body.dark-theme .current-user-details span,
+body.dark-theme .header-dropdown-empty,
+body.dark-theme .header-dropdown-description,
+body.dark-theme .messenger-interface .header-dropdown-empty {
+ color: #b0b3b8;
+}
+
+/* Profile action icons */
+body.dark-theme .profile-action-icon {
+ background-color: #3a3b3c;
+ color: #e4e6eb;
+}
+
+/* Theme toggle button */
+body.dark-theme .header-dropdown #themeToggle {
+ background-color: #3a3b3c;
+ color: #ffffff;
+ border-color: #3e4042;
+}
+
+body.dark-theme .header-dropdown #themeToggle .profile-action-icon {
+ background-color: #4e4f50;
+ color: #ffffff;
+}
+
+body.dark-theme .header-dropdown #themeToggle #themeToggleText {
+ color: #ffffff;
+}
+
+body.dark-theme .header-dropdown #themeToggle:hover {
+ background-color: #4e4f50;
+}
+
+/* Messenger surfaces */
+body.dark-theme .messenger-interface,
+body.dark-theme .messenger-conversation,
+body.dark-theme .messenger-conversation-heading,
+body.dark-theme .messenger-message.message-received,
+body.dark-theme .messenger-send-form {
+ background-color: #242526;
+ color: #e4e6eb;
+ border-color: #3e4042;
+}
+
+body.dark-theme .messenger-partner-name,
+body.dark-theme .messenger-message.message-received {
+ color: #e4e6eb;
+}
+
+body.dark-theme .messenger-messages {
+ background-color: #18191a;
+}
+
+body.dark-theme .messenger-message-input {
+ background-color: #3a3b3c;
+ color: #e4e6eb;
+ border-color: #3e4042;
+}
+
+body.dark-theme .messenger-message-input::placeholder {
+ color: #b0b3b8;
+}
+
+body.dark-theme .messenger-user-list button:hover,
+body.dark-theme .messenger-user-list a:hover {
+ background-color: #3a3b3c;
+}
+
+body.dark-theme .messenger-status {
+ color: #b0b3b8;
+}
+
+/* Header utility buttons */
+body.dark-theme .utility-button,
+body.dark-theme #logoutButton {
+ background-color: #3a3b3c;
+ color: #e4e6eb;
+}
+
+body.dark-theme .utility-button:hover,
+body.dark-theme #logoutButton:hover {
+ background-color: #4e4f50;
+}
+
+/* Notification borders */
+body.dark-theme .notification-item {
+ border-color: #3e4042;
+}
+
+body.dark-theme .notification-message {
+ color: #e4e6eb;
+}
+
+body.dark-theme .notification-time,
+body.dark-theme .notification-read-label {
+ color: #b0b3b8;
 }
 
 

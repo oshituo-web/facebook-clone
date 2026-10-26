@@ -29,8 +29,16 @@
          <!-- Header Left Section -->
          <div class="header-left">
 
+
             <!-- Facebook Logo -->
             <i class="fa-brands fa-facebook"></i>
+
+            <!-- Clickable Facebook Logo -->
+             <a href="./index.html"
+             class="facebook-logo"
+             aria-label="Facebook home">
+            <i class="fa-brands fa-facebook" aria-hidden="true"></i>
+         </a>
 
 
             <!-- Search -->
@@ -82,7 +90,7 @@
             <!-- Menu -->
             <button type="button" class="utility-button" data-action="menu">
                <i class="fa-solid fa-bars" aria-hidden="true"></i>
-               <span class="text">Facebook Menu</span>
+               <span class="text">Menu</span>
             </button>
 
             <!-- Notifications -->
@@ -118,8 +126,13 @@
             <nav>
                <ul>
                   <li class="menu-item active">
+
                      <img class="avatar" id="sidebarAvatar" src="" alt="Your profile photo">
                      <span id="sidebarName">Your Name</span>
+
+                     <img class="avatar" src="https://i.pravatar.cc/100?img=47" alt="Your profile photo">
+                     <span>Your Name</span>
+
                   </li>
 
                   <!-- Icons and their titles -->
@@ -237,7 +250,6 @@
          <!-- Central Feed Section (Role 4) -->
          <section class="feed" aria-label="News feed">
  
-         <div id="homeFeedView">
              <!-- Create posts -->
               <section
                  class="create-post"
@@ -245,6 +257,7 @@
              >
                  <!-- The post composer is rendered dynamically by render.js -->
              </section>
+
 
              <!-- Stories -->
              <section
@@ -254,226 +267,123 @@
              >
                  <!-- Stories are rendered dynamically by render.js -->
              </section>
+ 
+             <!-- Create Post -->
 
              
+             <section
+                 class="create-post"
+                 aria-label="Create a post"
+             >
+                 <!-- The post composer is rendered dynamically by render.js -->
+             </section>
+
+ 
              <!-- Posts Feed -->
              <section
                  class="posts"
                  aria-label="Recent posts"
-                 aria-live="polite">
+                 aria-live="polite"
+             >
                  <!-- Posts are rendered dynamically by render.js -->
              </section>
  
-
-            </div>
-             <!-- YouTube Video Feed -->
-              <section class="youtube-videos" id="youtubeVideos" hidden>
-               <div class="youtube-videos-heading">
-                  <div>
-                     <h2>Videos</h2>
-                     <p>Discover videos to watch</p>
-                  </div>
-                  <i class="fa-brands fa-youtube" aria-hidden="true"></i>
-               </div>
-               <!-- JavaScript will insert video cards here. -->
-                <div class="youtube-video-grid" id="youtubeVideoGrid">
-                  <p class="youtube-video-message">Loading videos...</p>
-                </div>
-              </section>
-
-              
-              <!-- =====================================================
-                   MARKETPLACE VIEW
-                   Hidden by default; JavaScript opens it when
-                   the Marketplace navigation button is clicked.
-                   ===================================================== -->
-              <section class="marketplace-view" id="marketplaceView" hidden>
-              
-                  <div class="marketplace-heading">
-                      <div>
-                          <h2>Marketplace</h2>
-                          <p>Discover products from local sellers.</p>
-                      </div>
-                      <i class="fa-solid fa-store" aria-hidden="true"></i>
-                  </div>
-
-
-                  <!-- Marketplace shopping cart -->
-               <section class="marketplace-cart" aria-label="Shopping cart">
-                  <button
-                     type="button"
-                     class="marketplace-cart-toggle"
-                     id="marketplaceCartToggle"
-                     aria-expanded="false"
-                     aria-controls="marketplaceCartPanel">
-
-                     <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
-                     My Cart (<span id="marketplaceCartCount">0</span>)
-                     <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
-                  </button>
-
-                  <div class="marketplace-cart-panel" id="marketplaceCartPanel" hidden>
-                     <h3>Your shopping cart</h3>
-
-                     <div id="marketplaceCartItems" aria-live="polite">
-                           <p class="marketplace-message">Your cart is empty.</p>
-                     </div>
-
-                     <div class="marketplace-cart-footer">
-                           <p>Total: <strong id="marketplaceCartTotal">$0.00</strong></p>
-                           <button type="button" id="marketplaceClearCart">
-                              Clear cart
-                           </button>
-                     </div>
-                  </div>
-               </section>
-              
-                  <!-- Search and category filters -->
-                  <div class="marketplace-filters">
-                      <label for="marketplaceSearch">Search products</label>
-                      <input
-                          type="search"
-                          id="marketplaceSearch"
-                          placeholder="Search products..."
-                          autocomplete="off">
-              
-                      <label for="marketplaceCategory">Category</label>
-                      <select id="marketplaceCategory">
-                          <option value="all">All categories</option>
-                          <option value="Electronics">Electronics</option>
-                          <option value="Fashion">Fashion</option>
-                          <option value="Home">Home</option>
-                          <option value="Accessories">Accessories</option>
-                      </select>
-                  </div>
-              
-                  <!-- JavaScript inserts product cards here -->
-                  <div
-                      class="marketplace-product-grid"
-                      id="marketplaceProductGrid"
-                      aria-live="polite">
-
-                      <p class="marketplace-message">Loading products...</p>
-                  </div>
-              
-                  <p class="marketplace-demo-note">
-                      Sample listings for demonstration. Products are not real offers.
-                  </p>
-              </section>   
-              
-              <!-- FRIENDS VIEW -->
-      <section id="friendsView" class="friends-view" hidden>
-
-         <!-- Friends page heading -->
-         <div class="friends-page-heading">
-            <h1>Friends</h1>
-            <p>Manage your connections and discover people you may know.</p>
-         </div>
-
-         <!-- People You May Know -->
-         <section
-            class="friend-suggestions"
-            id="friendSuggestions"
-            aria-label="People you may know">
-
-            <div class="friend-suggestions-heading">
-                  <div>
-                     <h2>People You May Know</h2>
-                     <p>Connect with people on the platform.</p>
-                  </div>
-
-                  <i class="fa-solid fa-user-group" aria-hidden="true"></i>
-            </div>
-
-            <div
-                  class="friend-suggestions-list"
-                  id="friendSuggestionsList"
-                  aria-live="polite">
-
-                  <p class="friend-suggestions-message">
-                     Loading suggestions...
-                  </p>
-            </div>
          </section>
 
-         <!-- Incoming Friend Requests -->
-         <section
-            class="incoming-friend-requests"
-            id="incomingFriendRequests"
-            aria-label="Incoming friend requests">
 
-            <div class="incoming-friend-requests-heading">
-                  <h2>Friend Requests</h2>
-            </div>
 
-            <div
-                  class="incoming-friend-requests-list"
-                  id="incomingFriendRequestsList"
-                  aria-live="polite">
-                  <p class="incoming-friend-requests-message">
-                     Loading friend requests...
-                  </p>
-            </div>
-         </section>
-      </section>
-   </section>
 
-         
+                           <!-- RIGHT SIDEBAR -->
 
-         <!-- Right Sidebar (Role 7) -->
-            
-         <!-- RIGHT SIDEBAR: supplementary Facebook-style content -->
          <aside class="right-sidebar" aria-label="Right sidebar">
-         
-             <!-- Sponsored section: empty until real advertisement data is connected -->
-             <section class="sponsored-section" aria-labelledby="sponsored-heading">
-                 <h3 id="sponsored-heading">Sponsored</h3>
-         
-                 <p class="sidebar-empty">
-                     No sponsored content available.
-                 </p>
-             </section>
-         
-             <hr class="sidebar-divider">
-         
-             <!-- Birthdays section: no fictional birthday data -->
-             <section class="birthdays-section" aria-labelledby="birthdays-heading">
-                 <h3 id="birthdays-heading">Birthdays</h3>
-         
-                 <div class="birthday-content">
-                     <span class="gift-icon" aria-hidden="true">🎁</span>
-                     <p class="birthday-details">
-                         No birthdays to display right now.
+
+            <!-- 1. SPONSORED SECTION -->
+            <section class="sidebar-section sponsored-section">
+               <h3 class="section-heading">Sponsored</h3>
+
+               <a href="https://www.zara.com/" class="sponsored-item"
+                     target="_blank" rel="noopener noreferrer">
+                     <img
+                        src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=300"
+                        alt="Fashion products"
+                        class="sponsored-image"
+                     >
+
+                     <div class="sponsored-info">
+                        <h4>Discover New Styles</h4>
+                        <p>Explore the latest fashion trends.</p>
+                        <span>Zara</span>
+                     </div>
+               </a>
+
+               <a href="https://www.freecodecamp.org/learn/" class="sponsored-item"
+                     target="_blank" rel="noopener noreferrer">
+                     <img
+                        src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=300"
+                        alt="People working with technology"
+                        class="sponsored-image"
+                     >
+
+                     <div class="sponsored-info">
+                        <h4>Learn New Skills</h4>
+                        <p>Take your next step in technology.</p>
+                        <span>freeCodeCamp</span>
+                     </div>
+               </a>
+            </section>
+
+            <hr>
+
+            <!-- 2. BIRTHDAYS SECTION -->
+            <section class="sidebar-section birthdays-section">
+               <h3 class="section-heading">Birthdays</h3>
+
+               <div class="birthday-item">
+                     <span class="birthday-icon" aria-hidden="true">🎂</span>
+
+                     <p>
+                        <strong>Alex Johnson</strong> and
+                        <strong>2 others</strong> have birthdays today.
                      </p>
-                 </div>
-             </section>
-         
-             <hr class="sidebar-divider">
-         
-             <!-- Contacts: JavaScript will populate this list with real user data -->
-             <section class="contacts-section" aria-labelledby="contacts-heading">
-                 <div class="section-heading">
-                     <h3 id="contacts-heading">Contacts</h3>
-                 </div>
-         
-                 <ul class="contacts-list" id="rightSidebarContacts">
-                     <li class="sidebar-loading">Loading contacts...</li>
-                 </ul>
-             </section>
-         
-             <hr class="sidebar-divider">
-         
-             <!-- Group chats: shown as a heading until the feature is implemented -->
-             <section class="group-chats-section" aria-labelledby="group-chats-heading">
-                 <h3 id="group-chats-heading">Group chats</h3>
-         
-                 <p class="sidebar-empty">
-                     No group chats available.
-                 </p>
-             </section>
-         
-         </aside>
-         
+               </div>
+            </section>
+
+                     <hr>
+
+                     <!-- 3. CONTACTS SECTION -->
+            <section class="sidebar-section contacts-section">
+
+               <div class="contacts-header">
+                     <h3 class="section-heading">Contacts</h3>
+
+                     <div class="contact-actions">
+                        <button type="button" aria-label="Search contacts"
+                           title="Search contacts">⌕</button>
+                        <button type="button" aria-label="More contact options"
+                           title="More options">•••</button>
+                     </div>
+               </div>
+
+               <!-- JavaScript will insert contacts from users.json here -->
+               <div id="rightSidebarContacts" class="contacts-list">
+                     <p class="sidebar-loading">Loading contacts...</p>
+               </div>
+
+            </section>
+
+
+                     <!-- Group Chats -->
+                     <section class="sidebar-section group-chats-section">
+                        <h3>Group Chats</h3>
+
+                        <button type="button" class="create-group-button"
+                           aria-label="Create group chat" title="Create group chat">
+                           <span aria-hidden="true">+</span>
+                           <span>Create group <span class="create-group-chat-label">chat</span></span>
+                        </button>
+                     </section>
+
+                     </aside>
 
       </main>
 

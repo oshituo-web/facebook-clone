@@ -62,7 +62,7 @@
     margin: 16px 0;
 }
 
-/* ========================================
+
    BIRTHDAYS SECTION
 
 .birthday-content {
@@ -99,7 +99,6 @@
     line-height: 1.4;
 }
 
-/* ========================================
    CONTACTS SECTION
 
 .section-heading {
@@ -184,14 +183,12 @@
     border-radius: 50%;
 }
 
-/* ========================================
    GROUP CHATS SECTION
 
 .group-chats-section .sidebar-empty {
     padding-top: 4px;
 }
 
-/* ========================================
    SCROLLBAR
 
 .right-sidebar::-webkit-scrollbar {
@@ -207,15 +204,8 @@
     background-color: #8a8d91;
 }
 
-/* ========================================
-   RESPONSIVE DESIGN
 
-/* Hide the right sidebar on smaller screens */
-@media screen and (max-width: 900px) {
-    .right-sidebar {
-        display: none;
-    }
-}
+  
 
 /* ========================================
    FACEBOOK CLONE - RIGHT SIDEBAR (ROLE 7)
@@ -280,7 +270,6 @@
     margin: 16px 0;
 }
 
-/* ========================================
    BIRTHDAYS SECTION
 
 .birthday-content {

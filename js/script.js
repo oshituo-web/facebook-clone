@@ -83,7 +83,7 @@ function renderRightSidebarContacts(users) {
         contactItem.className = "contact-item";
 
         const avatarWrapper = document.createElement("div");
-        avatarWrapper.className = "avatar-wrapper";
+        avatarWrapper.className = "contact-avatar";
 
         // Display the avatar path provided in users.json.
         if (user.avatar) {
@@ -101,13 +101,11 @@ function renderRightSidebarContacts(users) {
             avatarWrapper.appendChild(avatarImage);
         }
 
-        if (user.isOnline) {
-            const onlineIndicator = document.createElement("span");
-            onlineIndicator.className = "online-indicator";
-            onlineIndicator.setAttribute("role", "img");
-            onlineIndicator.setAttribute("aria-label", "Online");
-            avatarWrapper.appendChild(onlineIndicator);
-        }
+        const onlineIndicator = document.createElement("span");
+        onlineIndicator.className = "online-indicator";
+        onlineIndicator.setAttribute("role", "img");
+        onlineIndicator.setAttribute("aria-label", "Online");
+        avatarWrapper.appendChild(onlineIndicator);
 
         // Display the real name from the JSON record.
         const contactName = document.createElement("span");

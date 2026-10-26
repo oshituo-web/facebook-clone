@@ -162,16 +162,24 @@ This project was developed collaboratively, with team members assigned specific 
 
 | Role | Responsibility | Team Member |
 |---|---|---|
-| Role 1 — Project Lead, Architecture and Coordination | Defines and maintains the project structure, oversees application architecture and module organisation, coordinates integration between HTML, CSS, JavaScript, JSON, Supabase, and external APIs, manages development priorities, and maintains project-wide consistency. | [Your full name] |
-| Role 2 — Authentication and Accounts | Handles registration, login, session management, and account-related functionality. | [Full name] |
-| Role 3 — Header and Navigation | Develops the header, navigation controls, search interface, and dropdown interactions. | [Full name] |
-| Role 4 — Feed and Stories | Handles feed and story presentation and assigned feed-related interactions. | [Full name] |
-| Role 5 — Data and JavaScript Integration | Handles data loading, rendering, application logic, and module integration. | [Full name] |
-| Role 6 — Responsive Design and Integration | Handles responsive layout, visual consistency, and cross-device testing. | [Full name] |
-| Role 7A — Left Sidebar | Develops the left sidebar and its assigned navigation elements. | [Full name] |
-| Role 7B — Right Sidebar | Develops the right sidebar and its assigned information or interactive elements. | [Full name] |
-| Role 8 — GitHub and Team Coordination | Coordinates version control, branches, pull requests, and code reviews. | [Full name] |
-| Role 9 — Quality Assurance and Documentation | Coordinates testing, issue tracking, and project documentation. | [Full name] |
+| Role 1 — Project Lead, Architecture and Coordination | Defines and maintains the project structure, oversees application architecture and module organisation, coordinates integration between HTML, CSS, JavaScript, JSON, Supabase, and external APIs, manages development priorities, and maintains project-wide consistency. | OSHITU OCHUKO |
+
+| Role 2 — Authentication and Accounts | Handles registration, login, session management, and account-related functionality. | OSHITU OCHUKO |
+
+| Role 3 — Header and Navigation | Develops the header, navigation controls, search interface, and dropdown interactions. | LUCKY TIJANI $ OSHITU OCHUKO  |
+| Role 4 — Feed and Stories | Handles feed and story presentation and assigned feed-related interactions. | CHARLES ADIKANKWU |
+
+| Role 5 — Data and JavaScript Integration | Handles data loading, rendering, application logic, and module integration. | OSHITU OCHUKO |
+
+| Role 6 — Responsive Design and Integration | Handles responsive layout, visual consistency, and cross-device testing. | OSHITU OCHUKO |
+
+| Role 7A — Left Sidebar | Develops the left sidebar and its assigned navigation elements. | CHARLES ADIKANKWU |
+
+| Role 7B — Right Sidebar | Develops the right sidebar and its assigned information or interactive elements. | TERRY OSAIGBOVO |
+
+| Role 8 — GitHub and Team Coordination | Coordinates version control, branches, pull requests, and code reviews. | OSHITU OCHUKO |
+
+| Role 9 — Quality Assurance and Documentation | Coordinates testing, issue tracking, and project documentation. | OSHITU OCHUKO |
 
 Team members also collaborated on integration, troubleshooting, testing, and preparation for the final demonstration. The role descriptions represent areas of responsibility and do not imply that each feature was developed independently.
 

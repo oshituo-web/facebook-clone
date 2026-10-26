@@ -1,0 +1,1073 @@
+
+/* =========================================================
+   FEATURES.CSS
+   YouTube, Marketplace, Shopping Cart, and Friends
+   ========================================================= */
+
+
+/* =========================================================
+   1. YOUTUBE VIDEO FEED
+   ========================================================= */
+
+.youtube-videos {
+    margin: 16px 0;
+    padding: 16px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.youtube-videos-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.youtube-videos-heading h2 {
+    margin: 0 0 4px;
+    font-size: 20px;
+}
+
+.youtube-videos-heading p {
+    margin: 0;
+    color: #65676b;
+    font-size: 14px;
+}
+
+.youtube-videos-heading > i {
+    color: #ff0000;
+    font-size: 28px;
+}
+
+.youtube-video-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.youtube-video-card {
+    min-width: 0;
+    overflow: hidden;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.youtube-video-player,
+.youtube-video-thumbnail-button {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    padding: 0;
+    border: 0;
+    background: #18191a;
+}
+
+.youtube-video-thumbnail-button {
+    cursor: pointer;
+}
+
+.youtube-video-thumbnail-button img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.youtube-video-thumbnail-button:focus-visible {
+    outline: 3px solid var(--facebook-blue, #1877f2);
+    outline-offset: -3px;
+}
+
+.youtube-video-play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 34px;
+    color: #fff;
+    background: #ff0000;
+    border-radius: 10px;
+    transform: translate(-50%, -50%);
+}
+
+.youtube-video-player iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.youtube-video-title {
+    margin: 10px 10px 5px;
+    font-size: 15px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.youtube-video-channel {
+    margin: 0 10px 12px;
+    color: #65676b;
+    font-size: 13px;
+}
+
+.youtube-video-message {
+    grid-column: 1 / -1;
+    margin: 8px 0;
+    color: #65676b;
+    font-size: 14px;
+}
+
+.youtube-video-source {
+    display: block;
+    margin: 12px 0 0;
+    color: #65676b;
+    font-size: 12px;
+}
+
+
+/* YouTube video modal */
+
+body.youtube-modal-open {
+    overflow: hidden;
+}
+
+.youtube-video-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.82);
+}
+
+.youtube-video-modal__dialog {
+    width: min(100%, 1000px);
+    max-height: calc(100dvh - 48px);
+    margin: auto;
+    overflow-y: auto;
+    color: #f5f5f5;
+    background: #18191a;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+}
+
+.youtube-video-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 16px;
+}
+
+.youtube-video-modal__title {
+    min-width: 0;
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.youtube-video-modal__close {
+    display: inline-flex;
+    flex: 0 0 40px;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    color: #f5f5f5;
+    background: #3a3b3c;
+    border: 0;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.youtube-video-modal__close:hover {
+    background: #505151;
+}
+
+.youtube-video-modal__close:focus-visible {
+    outline: 2px solid #0866ff;
+    outline-offset: 3px;
+}
+
+.youtube-video-modal__player {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+}
+
+.youtube-video-modal__player iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+
+/* =========================================================
+   2. MARKETPLACE — PRODUCT DISPLAY
+   ========================================================= */
+
+.marketplace-view {
+    margin: 20px 0;
+    padding: 22px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.marketplace-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.marketplace-heading h2 {
+    margin: 0 0 6px;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.marketplace-heading p {
+    margin: 0;
+    color: #65676b;
+    font-size: 14px;
+}
+
+.marketplace-heading > i {
+    color: var(--facebook-blue);
+    font-size: 30px;
+}
+
+
+/* Search and category filters */
+
+.marketplace-filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(180px, 1fr);
+    gap: 8px 14px;
+    margin-bottom: 24px;
+}
+
+.marketplace-filters label {
+    color: #444950;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.marketplace-filters input,
+.marketplace-filters select {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 10px 13px;
+    color: #1c1e21;
+    background: #f7f8fa;
+    border: 1px solid #d8dade;
+    border-radius: 9px;
+    font: inherit;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.marketplace-filters input:focus,
+.marketplace-filters select:focus {
+    border-color: var(--facebook-blue);
+    box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.12);
+}
+
+
+/* Product grid and cards */
+
+.marketplace-product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    align-items: stretch;
+}
+
+.marketplace-product-card {
+    min-width: 0;
+    overflow: hidden;
+    background: var(--white);
+    border: 1px solid #e1e3e6;
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.marketplace-product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.09);
+}
+
+.marketplace-product-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #f7f8fa;
+    border-bottom: 1px solid #f0f1f3;
+}
+
+.marketplace-product-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    object-fit: contain;
+    object-position: center;
+    transition: transform 0.25s ease;
+}
+
+.marketplace-product-card:hover .marketplace-product-image img {
+    transform: scale(1.04);
+}
+
+.marketplace-image-error {
+    color: #65676b;
+    font-size: 13px;
+}
+
+.marketplace-product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 15px;
+}
+
+.marketplace-product-details h3 {
+    margin: 0;
+    color: #1c1e21;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.marketplace-product-price {
+    margin: 0;
+    color: #1c1e21;
+    font-size: 20px;
+    font-weight: 750;
+    letter-spacing: -0.3px;
+}
+
+.marketplace-product-category {
+    align-self: flex-start;
+    margin: 0;
+    padding: 5px 9px;
+    color: #365899;
+    background: #edf4ff;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.marketplace-product-description {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 0;
+    color: #65676b;
+    font-size: 13px;
+    line-height: 1.55;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.marketplace-message {
+    grid-column: 1 / -1;
+    padding: 24px 12px;
+    color: #65676b;
+    font-size: 14px;
+    text-align: center;
+}
+
+.marketplace-demo-note {
+    margin: 22px 0 0;
+    color: #65676b;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   3. MARKETPLACE — SHOPPING CART
+   ========================================================= */
+
+.marketplace-cart {
+    margin: 0 0 22px;
+}
+
+.marketplace-cart-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 10px 16px;
+    color: #fff;
+    background: var(--facebook-blue);
+    border: none;
+    border-radius: 9px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.marketplace-cart-toggle:hover {
+    background: #166fe5;
+}
+
+.marketplace-cart-panel {
+    margin-top: 12px;
+    padding: 18px;
+    background: #f7f8fa;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.marketplace-cart-panel[hidden] {
+    display: none !important;
+}
+
+.marketplace-cart-panel h3 {
+    margin: 0 0 14px;
+    font-size: 18px;
+}
+
+.marketplace-cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 13px 0;
+    border-bottom: 1px solid #e1e3e6;
+}
+
+.marketplace-cart-item-name {
+    margin: 0 0 5px;
+    color: #1c1e21;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.marketplace-cart-item-quantity {
+    margin: 0;
+    color: #65676b;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.marketplace-remove-item {
+    flex-shrink: 0;
+    padding: 7px 10px;
+    color: #c62828;
+    background: #fff;
+    border: 1px solid #efcaca;
+    border-radius: 7px;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.marketplace-remove-item:hover {
+    background: #fff0f0;
+}
+
+.marketplace-cart-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 16px;
+}
+
+.marketplace-cart-footer p {
+    margin: 0;
+    color: #1c1e21;
+    font-size: 15px;
+}
+
+.marketplace-cart-footer strong {
+    font-size: 18px;
+}
+
+#marketplaceClearCart {
+    padding: 9px 12px;
+    color: #444950;
+    background: #fff;
+    border: 1px solid #d8dade;
+    border-radius: 7px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+#marketplaceClearCart:hover {
+    background: #f0f2f5;
+}
+
+
+/* Add-to-cart button */
+
+.marketplace-add-to-cart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: calc(100% - 24px);
+    min-height: 42px;
+    margin: 0 12px 12px;
+    padding: 10px;
+    color: var(--facebook-blue);
+    background: #e7f3ff;
+    border: none;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.marketplace-add-to-cart:hover {
+    color: #fff;
+    background: var(--facebook-blue);
+}
+
+.marketplace-add-to-cart.added {
+    color: #216e39;
+    background: #e5f5e9;
+}
+
+
+/* Cart quantity controls */
+
+.marketplace-quantity-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.marketplace-quantity-button {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    color: #1c1e21;
+    background: #fff;
+    border: 1px solid #d8dade;
+    border-radius: 7px;
+    font-size: 19px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.marketplace-quantity-button:hover {
+    background: #e7f3ff;
+}
+
+.marketplace-quantity-value {
+    min-width: 20px;
+    color: #1c1e21;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+}
+
+
+/* Marketplace keyboard focus */
+
+.marketplace-cart-toggle:focus-visible,
+.marketplace-add-to-cart:focus-visible,
+.marketplace-remove-item:focus-visible,
+.marketplace-quantity-button:focus-visible,
+#marketplaceClearCart:focus-visible {
+    outline: 3px solid rgba(24, 119, 242, 0.3);
+    outline-offset: 3px;
+}
+
+
+/* =========================================================
+   4. FRIEND SUGGESTIONS — PEOPLE YOU MAY KNOW
+   ========================================================= */
+
+.friend-suggestions {
+    margin: 16px 0;
+    padding: 16px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.friend-suggestions-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.friend-suggestions-heading h2 {
+    margin: 0;
+    color: var(--text-primary, #1c1e21);
+    font-size: 18px;
+}
+
+.friend-suggestions-heading p {
+    margin: 5px 0 0;
+    color: var(--text-secondary, #65676b);
+    font-size: 13px;
+}
+
+.friend-suggestions-heading > i {
+    color: var(--facebook-blue, #1877f2);
+    font-size: 22px;
+}
+
+.friend-suggestions-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.friend-suggestion-card {
+    min-width: 0;
+    overflow: hidden;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.friend-suggestion-avatar {
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #e4e6eb;
+}
+
+.friend-suggestion-name {
+    margin: 0 0 12px;
+    font-size: 14px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.friend-suggestion-button {
+    width: 100%;
+    padding: 9px 10px;
+    color: #fff;
+    background: var(--facebook-blue, #1877f2);
+    border: 0;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.friend-suggestion-button:hover {
+    filter: brightness(0.94);
+}
+
+.friend-suggestion-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.friend-suggestions-message {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 12px 0;
+    color: var(--text-secondary, #65676b);
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   5. INCOMING FRIEND REQUESTS
+   ========================================================= */
+
+.incoming-friend-requests {
+    margin: 16px 0;
+    padding: 18px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.incoming-friend-requests-heading h2 {
+    margin: 0 0 14px;
+    color: var(--text-color, #1c1e21);
+    font-size: 20px;
+}
+
+.incoming-friend-requests-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.incoming-friend-request-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.incoming-friend-request-avatar {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    color: #606770;
+    background: #e4e6eb;
+    border-radius: 50%;
+    object-fit: cover;
+    font-size: 24px;
+}
+
+.incoming-friend-request-name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.friend-request-action {
+    width: 100%;
+    padding: 9px 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.friend-request-action.accept {
+    color: #fff;
+    background: var(--facebook-blue, #1877f2);
+}
+
+.friend-request-action.reject {
+    color: #1c1e21;
+    background: #e4e6eb;
+}
+
+.friend-request-action:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.incoming-friend-requests-message {
+    margin: 8px 0;
+    color: #65676b;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   6. FRIENDS PAGE — MY FRIENDS LIST
+   ========================================================= */
+
+.my-friends-section {
+    width: 100%;
+    min-width: 0;
+    margin: 24px 0;
+    padding: 20px;
+    box-sizing: border-box;
+    color: var(--text-primary, #1c1e21);
+    background: var(--white, #fff);
+    border: 1px solid var(--border, #e4e6eb);
+    border-radius: 12px;
+}
+
+.my-friends-section h2 {
+    margin: 0 0 18px;
+    color: var(--text-primary, #1c1e21);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.my-friends-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+}
+
+.my-friend-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 12px;
+    box-sizing: border-box;
+    background: var(--white, #fff);
+    border: 1px solid var(--border, #e4e6eb);
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.my-friend-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.my-friend-avatar {
+    display: flex;
+    flex: 0 0 76px;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    overflow: hidden;
+    color: #1877f2;
+    background: #e7f0ff;
+    border-radius: 50%;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.my-friend-avatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.my-friend-name {
+    max-width: 100%;
+    margin: 0;
+    color: var(--text-primary, #1c1e21);
+    font-size: 15px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.my-friends-message {
+    margin: 12px 0;
+    color: var(--text-secondary, #65676b);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   7. DARK THEME — FRIENDS
+   ========================================================= */
+
+body.dark-theme .my-friends-section,
+body.dark-theme .my-friend-card {
+    color: #e4e6eb;
+    background: #242526;
+    border-color: #3e4042;
+}
+
+body.dark-theme .my-friends-section h2,
+body.dark-theme .my-friend-name {
+    color: #e4e6eb;
+}
+
+body.dark-theme .my-friends-message {
+    color: #b0b3b8;
+}
+
+
+/* =========================================================
+   8. RESPONSIVE STYLES
+   ========================================================= */
+
+/* Tablets and smaller screens */
+
+@media (max-width: 900px) {
+    .marketplace-product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .marketplace-product-image {
+        height: 200px;
+    }
+}
+
+
+/* Mobile devices */
+
+@media (max-width: 600px) {
+    .youtube-video-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .youtube-videos {
+        padding: 12px;
+    }
+
+    .youtube-video-modal {
+        padding: 12px;
+    }
+
+    .youtube-video-modal__dialog {
+        max-height: calc(100dvh - 24px);
+        border-radius: 8px;
+    }
+
+    .youtube-video-modal__header {
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .youtube-video-modal__title {
+        font-size: 14px;
+    }
+
+    .youtube-video-modal__close {
+        flex-basis: 36px;
+        width: 36px;
+        height: 36px;
+    }
+
+    .marketplace-view {
+        margin: 12px 0;
+        padding: 13px;
+    }
+
+    .marketplace-heading h2 {
+        font-size: 22px;
+    }
+
+    .marketplace-filters {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .marketplace-product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .marketplace-product-image {
+        height: 145px;
+    }
+
+    .marketplace-product-image img {
+        padding: 6px;
+    }
+
+    .marketplace-product-details {
+        gap: 7px;
+        padding: 10px;
+    }
+
+    .marketplace-product-details h3 {
+        font-size: 13px;
+    }
+
+    .marketplace-product-price {
+        font-size: 17px;
+    }
+
+    .marketplace-product-description {
+        font-size: 12px;
+    }
+
+    .marketplace-cart-panel {
+        padding: 12px;
+    }
+
+    .marketplace-cart-item {
+        align-items: flex-start;
+    }
+
+    .marketplace-cart-footer strong {
+        font-size: 16px;
+    }
+
+    .marketplace-add-to-cart {
+        width: calc(100% - 16px);
+        margin: 0 8px 8px;
+        padding: 9px 5px;
+        font-size: 12px;
+    }
+
+    .friend-suggestions {
+        padding: 12px;
+    }
+
+    .friend-suggestions-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .friend-suggestion-card {
+        padding: 10px;
+    }
+
+    .incoming-friend-requests {
+        padding: 12px;
+    }
+
+    .incoming-friend-requests-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .my-friends-section {
+        margin: 16px 0;
+        padding: 14px;
+    }
+
+    .my-friends-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .my-friend-card {
+        padding: 14px 8px;
+    }
+
+    .my-friend-avatar {
+        flex-basis: 64px;
+        width: 64px;
+        height: 64px;
+        font-size: 24px;
+    }
+}
+
+
+/* Very narrow screens */
+
+@media (max-width: 360px) {
+    .marketplace-product-grid,
+    .incoming-friend-requests-list {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

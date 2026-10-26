@@ -1,9 +1,9 @@
 
 /* =========================================
    11. RESPONSIVE DESIGN
-========================================= */
+   ========================================= */
 
-/* Tablet */
+/* Tablet: 761px to 1023px */
 @media (min-width: 761px) and (max-width: 1023px) {
     .main-layout {
         grid-template-columns: minmax(0, 1fr);
@@ -15,9 +15,15 @@
     .right-sidebar {
         display: none;
     }
+
+    .feed {
+        width: 100%;
+        min-width: 0;
+        padding: 0;
+    }
 }
 
-/* Mobile */
+/* Mobile: 760px and below */
 @media (max-width: 760px) {
     .main-layout {
         display: block;
@@ -35,6 +41,7 @@
     .feed {
         width: 100%;
         min-width: 0;
+        padding: 0;
     }
 
     .stories {
@@ -54,7 +61,9 @@
     }
 
     .post-image {
+        max-width: 100%;
         max-height: 480px;
+        object-fit: contain;
     }
 
     .create-post {

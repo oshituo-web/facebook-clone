@@ -761,6 +761,114 @@
     background: linear-gradient(145deg, #dfe6f0, #aebdd0);
 }
 
+<<<<<<< HEAD
+/* ----- The preview of the chosen photo or video ----- */
+.composer__preview {
+    position: relative;               /* so the X button can sit in the corner */
+    margin: 8px 0 12px;
+    border: 1px solid #CED0D4;
+    border-radius: 8px;
+    overflow: hidden;                 /* clips the media to the rounded corners */
+}
+ 
+.composer__preview img,
+.composer__preview video {
+    display: block;
+    width: 100%;
+    max-height: 260px;
+    object-fit: cover;                /* crop instead of stretching */
+}
+ 
+.composer__preview-remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+ 
+ 
+/* ----- The "Add to your post" row ----- */
+.composer__add {
+    display: flex;
+    justify-content: space-between;   /* label left, icons right */
+    align-items: center;
+    padding: 8px 12px 8px 16px;
+    margin-bottom: 16px;
+    border: 1px solid #CED0D4;
+    border-radius: 8px;
+}
+ 
+.composer__add-label {
+    font-size: 15px;
+    font-weight: 600;
+}
+ 
+.composer__add-icons {
+    display: flex;
+    gap: 4px;
+}
+ 
+.composer__add-btn {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;              /* centers the icon both ways */
+    border: none;
+    border-radius: 50%;
+    background: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+.composer__add-btn:hover { background: #F0F2F5; }
+ 
+ 
+/* ----- The emoji picker ----- */
+.composer__emojis {
+    display: flex;
+    flex-wrap: wrap;                  /* start a new line when full */
+    gap: 4px;
+    padding: 8px;
+    margin-bottom: 12px;
+    background: #F0F2F5;
+    border-radius: 8px;
+}
+ 
+.composer__emoji {
+    padding: 4px 6px;
+    border: none;
+    border-radius: 6px;
+    background: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+.composer__emoji:hover { background: #E4E6EB; }
+ 
+ 
+/* ----- IMPORTANT GOTCHA -----
+   The HTML "hidden" attribute is weak: any CSS "display" rule above
+   (like display: flex) overrides it. These two lines make "hidden"
+   win again. Try deleting them and watch the picker never hide! */
+.composer__emojis[hidden],
+.composer__preview[hidden] {
+    display: none;
+}
+ 
+ 
+/* ----- The modal can now grow taller (photo + emoji picker),
+   so let it scroll instead of running off the screen.
+   This is a NEW rule. Add it as it is. CSS merges rules that share a
+   selector, so it works whether or not you already have a .composer rule. ----- */
+.composer {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+=======
 
 /* =========================================================
    YOUTUBE VIDEO FEED
@@ -1837,3 +1945,4 @@
 }
 
 
+>>>>>>> main

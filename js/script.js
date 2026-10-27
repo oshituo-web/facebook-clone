@@ -193,20 +193,115 @@ function saveLocalPosts(posts) {
 }
 
 
-
-
 /* =========================================================
    CURRENT USER PROFILE
 
    Display information belonging to the authenticated
-   Supabase user. Never assume a user is logged in just
-   because a name or email exists in browser storage.
+   Supabase user.
 ========================================================= */
 
-function updateCurrentUserProfile(user) {
-    const nameElement = document.getElementById("currentUserName");
-    const emailElement = document.getElementById("currentUserEmail");
-    const avatarElement = document.getElementById("currentUserAvatar");
+/* =========================================================
+   PROFILE PICTURE UPLOAD — SUPABASE STORAGE
+========================================================= */
+
+let currentProfileAvatarUrl = "";
+
+async function uploadProfilePicture(file) {
+    if (!authenticatedUser) {
+        throw new Error("Please sign in before uploading a picture.");
+    }
+
+    const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+        throw new Error("Choose a JPG, PNG, or WebP image.");
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+        throw new Error("Your picture must be 2 MB or smaller.");
+    }
+
+    const userId = authenticatedUser.id;
+
+    const extension = {
+        "image/jpeg": "jpg",
+        "image/png": "png",
+        "image/webp": "webp"
+    }[file.type];
+
+    // Keep each user's picture inside their own folder.
+    const filePath =
+        `${userId}/profile-picture-${Date.now()}.${extension}`;
+
+    // Upload the picture to Supabase Storage.
+    const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file, {
+            upsert: false,
+            contentType: file.type,
+            cacheControl: "3600"
+        });
+
+    if (uploadError) {
+        throw uploadError;
+    }
+
+    // Get the public URL of the uploaded picture.
+    const { data: publicUrlData } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+    const avatarUrl = publicUrlData.publicUrl;
+
+    // Save the picture URL to the authenticated user's profile.
+    const { data: updatedProfile, error: profileError } =
+        await supabase
+            .from("profiles")
+            .update({ avatar_url: avatarUrl })
+            .eq("id", userId)
+            .select("id, avatar_url")
+            .maybeSingle();
+
+    // Remove the uploaded file if saving the profile fails.
+    if (profileError || !updatedProfile) {
+        await supabase.storage
+            .from("avatars")
+            .remove([filePath]);
+
+        if (profileError) {
+            throw profileError;
+        }
+
+        throw new Error(
+            "Your profile could not be updated. Check the profiles table, profile row, and update policy."
+        );
+    }
+
+    currentProfileAvatarUrl = avatarUrl;
+
+    return avatarUrl;
+}
+
+/* =========================================================
+   DISPLAY THE CURRENT USER'S PROFILE
+
+   Load the saved avatar from the profiles table first.
+   Fall back to the avatar stored in Supabase Auth metadata.
+========================================================= */
+
+async function updateCurrentUserProfile(user) {
+    const nameElement =
+        document.getElementById("currentUserName");
+
+    const emailElement =
+        document.getElementById("currentUserEmail");
+
+    const avatarElement =
+        document.getElementById("currentUserAvatar");
 
     if (!nameElement || !emailElement || !avatarElement || !user) {
         return;
@@ -224,16 +319,44 @@ function updateCurrentUserProfile(user) {
     nameElement.textContent = displayName;
     emailElement.textContent = user.email || "";
 
-    const avatarUrl = metadata.avatar_url || metadata.picture;
+    let savedAvatarUrl = "";
 
-    // Use a real avatar only when a valid HTTP(S) URL exists.
+    try {
+        const { data, error } = await supabase
+            .from("profiles")
+            .select("avatar_url")
+            .eq("id", user.id)
+            .maybeSingle();
+
+        if (error) {
+            throw error;
+        }
+
+        savedAvatarUrl = data?.avatar_url || "";
+    } catch (error) {
+        console.error(
+            "Could not load saved profile picture:",
+            error
+        );
+    }
+
+    currentProfileAvatarUrl =
+        savedAvatarUrl ||
+        metadata.avatar_url ||
+        metadata.picture ||
+        "";
+
+    // Clear the previous avatar before displaying the new one.
+    avatarElement.replaceChildren();
+
+    // Display a picture only if its URL uses HTTP or HTTPS.
     if (
-        typeof avatarUrl === "string" &&
-        /^https?:\/\//i.test(avatarUrl)
+        typeof currentProfileAvatarUrl === "string" &&
+        /^https?:\/\//i.test(currentProfileAvatarUrl)
     ) {
         const image = document.createElement("img");
 
-        image.src = avatarUrl;
+        image.src = currentProfileAvatarUrl;
         image.alt = `${displayName}'s profile picture`;
         image.className = "current-user-avatar-image";
 
@@ -242,12 +365,14 @@ function updateCurrentUserProfile(user) {
                 displayName.trim().charAt(0).toUpperCase() || "?";
         }, { once: true });
 
-        avatarElement.replaceChildren(image);
+        avatarElement.appendChild(image);
     } else {
+        // Display the user's initial when no picture is available.
         avatarElement.textContent =
             displayName.trim().charAt(0).toUpperCase() || "?";
     }
 }
+
 
 
 
@@ -266,16 +391,19 @@ async function startApplication() {
             throw error;
         }
 
+        // Redirect users who do not have an active session.
         if (!data.session) {
             window.location.replace("./login.html");
             return;
         }
-        
-        /* Keep the authenticated user available to the feed. */
+
+        // Keep the authenticated user available to the application.
         authenticatedUser = data.session.user;
-        
-        updateCurrentUserProfile(authenticatedUser);
-        // The user is logged in, so load the application.
+
+        // Load the user's saved profile information and avatar.
+        await updateCurrentUserProfile(authenticatedUser);
+
+        // The user is authenticated, so load the application data.
         await loadApplicationData();
 
     } catch (error) {
@@ -286,6 +414,7 @@ async function startApplication() {
         );
     }
 }
+
 
 
 
@@ -307,20 +436,20 @@ async function loadApplicationData() {
                 getComments()
             ]);
 
-        /* Read posts created in this browser. */
+        // Read posts created and saved in this browser.
         const localPosts = readLocalPosts();
 
-        /* Put locally created posts before fetched posts. */
+        // Put locally created posts before fetched posts.
         const posts = [...localPosts, ...fetchedPosts];
 
-        /* Do not render the composer without a signed-in user. */
+        // Do not render the composer without a signed-in user.
         if (!authenticatedUser) {
             throw new Error(
                 "No authenticated user is available."
             );
         }
 
-        /* Build a profile for the authenticated user. */
+        // Build a profile for the authenticated user.
         const metadata = authenticatedUser.user_metadata || {};
 
         const displayName =
@@ -334,7 +463,10 @@ async function loadApplicationData() {
             id: `auth-${authenticatedUser.id}`,
             name: displayName,
             email: authenticatedUser.email || "",
+
+            // Prefer the avatar saved in the Supabase profiles table.
             avatar:
+                currentProfileAvatarUrl ||
                 metadata.avatar_url ||
                 metadata.picture ||
                 ""
@@ -342,14 +474,16 @@ async function loadApplicationData() {
 
         /*
          * Keep the JSON users and add the signed-in user.
+         * Remove any existing entry with the same ID first.
          * This lets renderPosts find the author of new posts.
          */
         const usersForRendering = [
-            ...users,
+            ...users.filter(
+                (user) => user.id !== currentUser.id
+            ),
             currentUser
         ];
 
-        
         // Render the feed and stories.
         renderSidebarUser(currentUser);
         renderPosts(posts, usersForRendering, comments);
@@ -363,14 +497,14 @@ async function loadApplicationData() {
         setupIncomingFriendRequestEvents();
         await renderIncomingFriendRequests();
 
-
         // Display contacts using the users loaded from users.json.
         renderRightSidebarContacts(users);
-        
 
-        /* Render the create-post composer.
-          The callback saves the new post before updating
-          the visible feed. */
+        /*
+         * Render the create-post composer.
+         * The callback saves the new post before updating
+         * the visible feed.
+         */
         renderCreatePost(currentUser, (newPost) => {
             const updatedLocalPosts = [
                 newPost,
@@ -388,7 +522,7 @@ async function loadApplicationData() {
                 return false;
             }
 
-            /* Update the in-memory lists after saving succeeds. */
+            // Update the in-memory lists after saving succeeds.
             localPosts.unshift(newPost);
             posts.unshift(newPost);
 
@@ -415,9 +549,8 @@ async function loadApplicationData() {
 // FRIEND SUGGESTIONS — RENDER PROFILES AND HANDLE REQUESTS
 // =========================================================
 
-/**
- * Display suggested profiles in the People You May Know section.
- */
+/*Display suggested profiles in the People You May Know section.*/
+
 async function renderFriendSuggestions() {
     const suggestionsContainer = document.getElementById(
         "friendSuggestionsList"
@@ -885,7 +1018,7 @@ async function logoutUser() {
         alert("We couldn't log you out. Please try again.");
     }
 }
-                    
+
 
 /* =========================================================
    5. HEADER NAVIGATION
@@ -1004,7 +1137,7 @@ headerNavItems.forEach((item) => {
     if (viewName === "friends") {
         setupFriendSuggestionEvents();
         setupIncomingFriendRequestEvents();
-    
+
         renderFriendSuggestions();
         renderIncomingFriendRequests();
         renderMyFriends();
@@ -1135,7 +1268,7 @@ if (facebookHeader) {
 
         notifications: {
             title: "Notifications",
-        
+
             content: `
                 <div class="notifications-list">
                     <p class="header-dropdown-empty">
@@ -1148,16 +1281,16 @@ if (facebookHeader) {
 
         messenger: {
             title: "Messenger",
-        
+
             content: `
                 <div class="messenger-interface">
-        
+
                     <input
                         type="search"
                         class="header-dropdown-search"
                         placeholder="Search Messenger"
                         aria-label="Search registered users">
-        
+
                     <div
                         class="messenger-user-list"
                         aria-label="Registered users">
@@ -1165,33 +1298,33 @@ if (facebookHeader) {
                             Open Messenger to load users.
                         </p>
                     </div>
-        
+
                     <section class="messenger-conversation" hidden>
-        
+
                         <div class="messenger-conversation-heading">
                             <button
                                 type="button"
                                 class="messenger-back-button">
                                 &larr; Back
                             </button>
-        
+
                             <strong class="messenger-partner-name">
                                 Conversation
                             </strong>
                         </div>
-        
+
                         <div
                             class="messenger-messages"
                             aria-live="polite">
                         </div>
-        
+
                         <p
                             class="messenger-status"
                             role="status">
                         </p>
-        
+
                         <form class="messenger-send-form">
-        
+
                             <input
                                 type="text"
                                 class="messenger-message-input"
@@ -1199,64 +1332,83 @@ if (facebookHeader) {
                                 maxlength="2000"
                                 autocomplete="off"
                                 required>
-        
+
                             <button type="submit">
                                 Send
                             </button>
-        
+
                         </form>
-        
+
                     </section>
                 </div>
             `
         },
 
-        
-        profile: {
-            title: "Your account",
 
-            content: `
-                <!-- Signed-in user's profile information -->
-                <div class="current-user-profile" id="currentUserProfile">
-                    <div class="profile-avatar-placeholder" id="currentUserAvatar">
-                        ?
-                    </div>
 
-                    <div class="current-user-details">
-                        <strong id="currentUserName">Loading profile...</strong>
-                        <span id="currentUserEmail"></span>
-                    </div>
-                </div>
+profile: {
+    title: "Your account",
 
-                <div class="header-dropdown-divider"></div>
+    content: `
+        <!-- Signed-in user's profile information -->
+        <div class="current-user-profile" id="currentUserProfile">
 
-                <!-- Theme preference -->
-                <button
-                    type="button"
-                    class="header-dropdown-item profile-action-item"
-                    id="themeToggle">
-                    <span class="profile-action-icon" aria-hidden="true">
-                        <i class="fa-solid fa-moon"></i>
-                    </span>
-                    <span id="themeToggleText">Switch to dark mode</span>
-                </button>
+            <!-- Avatar -->
+            <div class="profile-avatar-placeholder" id="currentUserAvatar">
+                ?
+            </div>
 
-                <!-- Sign out of the current account -->
-                <button
-                    type="button"
-                    class="header-dropdown-item profile-action-item"
-                    data-profile-action="logout">
-                    <span class="profile-action-icon" aria-hidden="true">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                    </span>
-                    <span>Log Out</span>
-                </button>
-            `
-        }
+            <!-- Name and email -->
+            <div class="current-user-details">
+                <strong id="currentUserName">Loading profile...</strong>
+                <span id="currentUserEmail"></span>
+            </div>
 
-    
-    };
+        </div>
 
+        <!-- Profile picture upload -->
+        <div class="profile-picture-upload">
+            <label for="profilePictureInput">
+                Change profile picture
+            </label>
+
+            <input
+                type="file"
+                id="profilePictureInput"
+                accept="image/jpeg,image/png,image/webp"
+            >
+
+            <p id="profilePictureStatus" role="status"></p>
+        </div>
+
+        <div class="header-dropdown-divider"></div>
+
+        <!-- Theme preference -->
+        <button
+            type="button"
+            class="header-dropdown-item profile-action-item"
+            id="themeToggle"
+        >
+            <span class="profile-action-icon" aria-hidden="true">
+                <i class="fa-solid fa-moon"></i>
+            </span>
+            <span id="themeToggleText">Switch to dark mode</span>
+        </button>
+
+        <!-- Sign out of the current account -->
+        <button
+            type="button"
+            class="header-dropdown-item profile-action-item"
+            data-profile-action="logout"
+        >
+            <span class="profile-action-icon" aria-hidden="true">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </span>
+            <span>Log Out</span>
+        </button>
+    `
+  }
+};
 
     // Track the currently open panel and its button.
 
@@ -1281,8 +1433,8 @@ if (facebookHeader) {
         openButton = null;
     }
 
-    
-    
+
+
     /* ---------------------------------------------------------
        SECTION 7A: NOTIFICATIONS AND UNREAD BADGE
 
@@ -1511,14 +1663,14 @@ if (facebookHeader) {
 
     /* ---------------------------------------------------------
     SECTION 7B: MESSENGER — USER LIST AND CONVERSATIONS
- 
+
     Load registered profiles, search for a user, display
     a conversation, send messages, and mark received
     messages as read.
- 
+
     The database operations are handled by data.js.
  --------------------------------------------------------- */
- 
+
  function initializeMessengerPanel(panel) {
      const searchInput = panel.querySelector(".header-dropdown-search");
      const userList = panel.querySelector(".messenger-user-list");
@@ -1539,291 +1691,291 @@ if (facebookHeader) {
      );
      const statusMessage = panel.querySelector(".messenger-status");
      const backButton = panel.querySelector(".messenger-back-button");
- 
+
      // Store the profiles and selected conversation for this panel.
      let profiles = [];
      let selectedProfile = null;
      let currentUserId = null;
      let loadingUsers = false;
- 
- 
+
+
      /* -----------------------------------------------------
         Get the current user's ID from Supabase Auth.
      ----------------------------------------------------- */
- 
+
      async function loadCurrentUserId() {
          const { data, error } = await supabase.auth.getUser();
- 
+
          if (error) {
              throw error;
          }
- 
+
          if (!data.user) {
              throw new Error("Please sign in to use Messenger.");
          }
- 
+
          currentUserId = data.user.id;
      }
- 
- 
+
+
      /* -----------------------------------------------------
         Display the available registered users.
- 
+
         User names are assigned through textContent rather
         than inserted as HTML.
      ----------------------------------------------------- */
- 
+
      function renderUserList() {
          userList.replaceChildren();
- 
+
          const searchTerm = searchInput.value.trim().toLowerCase();
- 
+
          const filteredProfiles = profiles.filter((profile) => {
              const name = (
                  profile.display_name || "Facebook User"
              ).toLowerCase();
- 
+
              return name.includes(searchTerm);
          });
- 
+
          if (filteredProfiles.length === 0) {
              const emptyMessage = document.createElement("p");
- 
+
              emptyMessage.className = "header-dropdown-empty";
              emptyMessage.textContent = profiles.length === 0
                  ? "No other registered users were found."
                  : "No users match your search.";
- 
+
              userList.appendChild(emptyMessage);
              return;
          }
- 
+
          filteredProfiles.forEach((profile) => {
              const userButton = document.createElement("button");
- 
+
              userButton.type = "button";
              userButton.className = "messenger-user-item";
- 
+
              const avatar = document.createElement("span");
              avatar.className = "messenger-user-avatar";
- 
+
              const name = profile.display_name || "Facebook User";
- 
+
              // Display an avatar image when a valid URL is available.
              if (
                  typeof profile.avatar_url === "string" &&
                  /^https?:\/\//i.test(profile.avatar_url)
              ) {
                  const image = document.createElement("img");
- 
+
                  image.src = profile.avatar_url;
                  image.alt = "";
                  image.loading = "lazy";
- 
+
                  image.addEventListener("error", () => {
                      avatar.replaceChildren();
                      avatar.textContent =
                          name.trim().charAt(0).toUpperCase() || "?";
                  }, { once: true });
- 
+
                  avatar.appendChild(image);
              } else {
                  avatar.textContent =
                      name.trim().charAt(0).toUpperCase() || "?";
              }
- 
+
              const nameElement = document.createElement("span");
              nameElement.className = "messenger-user-name";
              nameElement.textContent = name;
- 
+
              userButton.append(avatar, nameElement);
- 
+
              userButton.addEventListener("click", () => {
                  openConversation(profile);
              });
- 
+
              userList.appendChild(userButton);
          });
      }
- 
- 
+
+
      /* -----------------------------------------------------
         Load profiles from Supabase.
      ----------------------------------------------------- */
- 
+
      async function loadUsers() {
          if (loadingUsers) {
              return;
          }
- 
+
          loadingUsers = true;
- 
+
          userList.replaceChildren();
- 
+
          const loadingMessage = document.createElement("p");
          loadingMessage.className = "header-dropdown-empty";
          loadingMessage.textContent = "Loading registered users...";
- 
+
          userList.appendChild(loadingMessage);
- 
+
          try {
              await loadCurrentUserId();
- 
+
              // Load only users who are already friends with the current user.
              profiles = await getMyFriends();
- 
+
              renderUserList();
- 
+
          } catch (error) {
              console.error("Failed to load Messenger users:", error);
- 
+
              userList.replaceChildren();
- 
+
              const errorMessage = document.createElement("p");
              errorMessage.className = "header-dropdown-empty";
              errorMessage.textContent =
                  "Couldn't load users. Please try again.";
- 
+
              const retryButton = document.createElement("button");
              retryButton.type = "button";
              retryButton.className = "header-dropdown-item";
              retryButton.textContent = "Retry";
- 
+
              retryButton.addEventListener("click", loadUsers);
- 
+
              userList.append(errorMessage, retryButton);
- 
+
          } finally {
              loadingUsers = false;
          }
      }
- 
- 
+
+
      /* -----------------------------------------------------
         Render the messages in the selected conversation.
      ----------------------------------------------------- */
- 
+
      function renderMessages(messages) {
          messagesContainer.replaceChildren();
- 
+
          if (messages.length === 0) {
              const emptyMessage = document.createElement("p");
- 
+
              emptyMessage.className = "header-dropdown-empty";
              emptyMessage.textContent =
                  "No messages yet. Say hello!";
- 
+
              messagesContainer.appendChild(emptyMessage);
              return;
          }
- 
+
          messages.forEach((message) => {
              const messageItem = document.createElement("div");
- 
+
              messageItem.className = "messenger-message";
- 
+
              // Visually distinguish messages sent by the current user.
              const isSentByMe = message.sender_id === currentUserId;
- 
+
              messageItem.classList.add(
                  isSentByMe ? "message-sent" : "message-received"
              );
- 
+
              const messageText = document.createElement("p");
              messageText.className = "messenger-message-text";
- 
+
              // Treat message content as plain text, not HTML.
              messageText.textContent = message.content || "";
- 
+
              messageItem.appendChild(messageText);
- 
+
              if (message.created_at) {
                  const time = document.createElement("small");
- 
+
                  const date = new Date(message.created_at);
- 
+
                  time.textContent = Number.isNaN(date.getTime())
                      ? ""
                      : date.toLocaleString();
- 
+
                  time.className = "messenger-message-time";
- 
+
                  messageItem.appendChild(time);
              }
- 
+
              messagesContainer.appendChild(messageItem);
          });
- 
+
          // Show the latest messages after rendering the conversation.
          messagesContainer.scrollTop = messagesContainer.scrollHeight;
      }
- 
- 
+
+
      /* -----------------------------------------------------
         Refresh the currently selected conversation.
      ----------------------------------------------------- */
- 
+
      async function refreshConversation() {
          if (!selectedProfile) {
              return;
          }
- 
+
          messagesContainer.replaceChildren();
- 
+
          const loadingMessage = document.createElement("p");
          loadingMessage.className = "header-dropdown-empty";
          loadingMessage.textContent = "Loading messages...";
- 
+
          messagesContainer.appendChild(loadingMessage);
- 
+
          try {
              const messages = await getConversationMessages(
                  selectedProfile.id
              );
- 
+
              renderMessages(messages);
- 
+
          } catch (error) {
              console.error("Failed to load conversation:", error);
- 
+
              messagesContainer.replaceChildren();
- 
+
              const errorMessage = document.createElement("p");
              errorMessage.className = "header-dropdown-empty";
              errorMessage.textContent =
                  "Couldn't load this conversation. Please try again.";
- 
+
              messagesContainer.appendChild(errorMessage);
          }
      }
- 
- 
-     
+
+
+
      /* -----------------------------------------------------
         Open a conversation with the selected registered user.
      ----------------------------------------------------- */
      async function openConversation(profile) {
          selectedProfile = profile;
-     
+
          partnerName.textContent =
              profile.display_name || "Facebook User";
-     
+
          searchInput.hidden = true;
          userList.hidden = true;
          conversationView.hidden = false;
-     
+
          statusMessage.textContent = "";
          messageInput.value = "";
-     
+
          // First, load and display the conversation.
          await refreshConversation();
-     
+
          // Update delivery and read receipts for incoming messages.
          // If an update fails, keep the conversation open.
          try {
              await markReceivedMessagesDelivered(profile.id);
              await markReceivedMessagesRead(profile.id);
-     
+
              // Reload messages to display their latest saved statuses.
              await refreshConversation();
          } catch (error) {
@@ -1832,92 +1984,92 @@ if (facebookHeader) {
                  error
              );
          }
-     
+
          // Put the cursor in the message input.
          messageInput.focus();
      }
-     
- 
- 
+
+
+
      /* -----------------------------------------------------
         Return to the list of registered users.
      ----------------------------------------------------- */
- 
+
      backButton.addEventListener("click", () => {
          selectedProfile = null;
- 
+
          conversationView.hidden = true;
          userList.hidden = false;
          searchInput.hidden = false;
- 
+
          statusMessage.textContent = "";
- 
+
          renderUserList();
          searchInput.focus();
      });
- 
- 
+
+
      /* -----------------------------------------------------
         Filter the user list as the search term changes.
      ----------------------------------------------------- */
- 
+
      searchInput.addEventListener("input", renderUserList);
- 
- 
+
+
      /* -----------------------------------------------------
         Send a message to the selected user.
      ----------------------------------------------------- */
- 
+
      messageForm.addEventListener("submit", async (event) => {
          event.preventDefault();
- 
+
          if (!selectedProfile) {
              statusMessage.textContent =
                  "Please select a user first.";
              return;
          }
- 
+
          const content = messageInput.value.trim();
- 
+
          if (!content) {
              return;
          }
- 
+
          const sendButton = messageForm.querySelector(
              'button[type="submit"]'
          );
- 
+
          sendButton.disabled = true;
          statusMessage.textContent = "Sending message...";
- 
+
          try {
              // Save the message through the Supabase function.
              await sendDirectMessage(selectedProfile.id, content);
- 
+
              messageInput.value = "";
              statusMessage.textContent = "Message sent.";
- 
+
              // Reload the conversation to show the saved message.
              await refreshConversation();
- 
+
          } catch (error) {
              console.error("Failed to send message:", error);
- 
+
              statusMessage.textContent =
                  "Couldn't send the message. Please try again.";
- 
+
          } finally {
              sendButton.disabled = false;
              messageInput.focus();
          }
      });
- 
- 
+
+
      // Return this function so the panel can reload users
      // whenever the Messenger dropdown is opened.
      return loadUsers;
  }
-    
+
 
 
     // Create a panel and connect its corresponding button.
@@ -1975,28 +2127,28 @@ if (facebookHeader) {
 
         button.addEventListener("click", (event) => {
             event.stopPropagation();
-        
+
             // Clicking the same button closes its panel.
             if (openPanel === panel) {
                 closeHeaderPanel();
                 return;
             }
-        
+
             // Close another panel before opening this one.
             closeHeaderPanel();
-        
+
             panel.hidden = false;
-        
+
             button.setAttribute("aria-expanded", "true");
-        
+
             openPanel = panel;
             openButton = button;
-        
+
             // Load fresh notifications whenever the panel opens.
             if (action === "notifications") {
                 loadNotifications(panel);
             }
-        
+
             // Load registered users whenever Messenger opens.
         if (action === "messenger") {
             const loadMessengerUsers = messengerPanelLoaders.get(panel);
@@ -2017,58 +2169,181 @@ if (facebookHeader) {
     });
 
 
-    // Handle actions inside dynamically created panels.
 
-    facebookHeader.addEventListener("click", (event) => {
-        const target = event.target;
+/* =========================================================
+   HEADER EVENT LISTENERS
 
-        if (!(target instanceof Element)) {
-            return;
-        }
+   These listeners handle actions inside dynamically
+   created header dropdown panels.
+========================================================= */
 
-        const navShortcut = target.closest("[data-nav-target]");
+// Handle actions inside dynamically created panels.
+facebookHeader.addEventListener("click", (event) => {
+    const target = event.target;
 
-        const profileAction = target.closest(
-            "[data-profile-action]"
+    if (!(target instanceof Element)) {
+        return;
+    }
+
+    const navShortcut = target.closest("[data-nav-target]");
+
+    const profileAction = target.closest(
+        "[data-profile-action]"
+    );
+
+    // Handle logout before other dropdown actions.
+    if (profileAction?.dataset.profileAction === "logout") {
+        closeHeaderPanel();
+        logoutUser();
+        return;
+    }
+
+    // Handle navigation shortcuts in the menu.
+    if (navShortcut) {
+        const destination = navShortcut.dataset.navTarget;
+
+        const navButton = facebookHeader.querySelector(
+            `.nav-item[data-action="${destination}"]`
         );
 
-        
-        // Handle logout immediately, before other dropdown actions.
-        if (profileAction?.dataset.profileAction === "logout") {
-            closeHeaderPanel();
-            logoutUser();
-            return;
+        closeHeaderPanel();
+
+        if (navButton) {
+            navButton.click();
         }
 
+        return;
+    }
+});
 
+/* =========================================================
+   PROFILE PICTURE UPLOAD — FILE INPUT HANDLER
+========================================================= */
 
-        // Menu shortcuts select their corresponding header item.
+facebookHeader.addEventListener("change", async (event) => {
+    const input = event.target;
 
-        if (navShortcut) {
-            const destination = navShortcut.dataset.navTarget;
+    if (
+        !(input instanceof HTMLInputElement) ||
+        input.id !== "profilePictureInput"
+    ) {
+        return;
+    }
 
-            const navButton = facebookHeader.querySelector(
-                `.nav-item[data-action="${destination}"]`
-            );
+    const file = input.files?.[0];
 
-            closeHeaderPanel();
+    if (!file) {
+        return;
+    }
 
-            if (navButton) {
-                navButton.click();
-            }
+    const panel = input.closest(".header-dropdown");
 
-            return;
+    const status = panel?.querySelector(
+        "#profilePictureStatus"
+    );
+
+    if (status) {
+        status.textContent = "Uploading your picture...";
+    }
+
+    input.disabled = true;
+
+    try {
+        await uploadProfilePicture(file);
+
+        if (status) {
+            status.textContent = "Picture updated successfully!";
         }
 
-    });
+        // Reload so components using the current user's avatar
+        // can load the newly saved picture.
+        window.location.reload();
+    } catch (error) {
+        console.error(
+            "Profile picture upload failed:",
+            error
+        );
 
-
-    // Close a dropdown when clicking outside the header.
-
-    document.addEventListener("click", (event) => {
-        if (!facebookHeader.contains(event.target)) {
-            closeHeaderPanel();
+        if (status) {
+            status.textContent =
+                error.message || "Upload failed. Please try again.";
         }
+    } finally {
+        input.disabled = false;
+        input.value = "";
+    }
+});
+
+/* =========================================================
+   CLOSE DROPDOWNS WHEN CLICKING OUTSIDE THE HEADER
+========================================================= */
+
+document.addEventListener("click", (event) => {
+    if (!facebookHeader.contains(event.target)) {
+        closeHeaderPanel();
+    }
+});
+
+/* =========================================================
+   CLOSE DROPDOWNS WITH THE ESCAPE KEY
+========================================================= */
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        closeHeaderPanel();
+    }
+});
+
+
+ /* =========================================================
+   PROFILE PICTURE UPLOAD — FILE INPUT HANDLER
+========================================================= */
+
+facebookHeader.addEventListener("change", async (event) => {
+    const input = event.target;
+
+    if (
+        !(input instanceof HTMLInputElement) ||
+        input.id !== "profilePictureInput"
+    ) {
+        return;
+    }
+
+    const file = input.files?.[0];
+
+    if (!file) return;
+
+    const panel = input.closest(".header-dropdown");
+    const status = panel?.querySelector("#profilePictureStatus");
+
+    if (status) {
+        status.textContent = "Uploading your picture...";
+    }
+
+    input.disabled = true;
+
+    try {
+        await uploadProfilePicture(file);
+
+        if (status) {
+            status.textContent = "Picture updated successfully!";
+        }
+
+        // Refresh the page so the updated avatar appears
+        // wherever the application loads the user's profile.
+        window.location.reload();
+
+    } catch (error) {
+        console.error("Profile picture upload failed:", error);
+
+        if (status) {
+            status.textContent =
+                error.message || "Upload failed. Please try again.";
+        }
+    } finally {
+        input.disabled = false;
+        input.value = "";
+    }
     });
 
 

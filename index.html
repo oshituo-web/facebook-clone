@@ -346,6 +346,15 @@
                         <strong>2 others</strong> have birthdays today.
                      </p>
                </div>
+               <div class="birthday-wish">
+                  <p id="birthdayWishText" class="birthday-wish-text">
+                     Happy birthday! Wishing you a wonderful day.
+                  </p>
+                  <button type="button" id="copyBirthdayWish">
+                     Copy birthday wish
+                  </button>
+                  <p id="birthdayWishStatus" class="sidebar-feedback" role="status"></p>
+               </div>
             </section>
 
                      <hr>
@@ -358,11 +367,33 @@
 
                      <div class="contact-actions">
                         <button type="button" aria-label="Search contacts"
+                           id="contactsSearchToggle" aria-expanded="false"
+                           aria-controls="contactSearchInput"
                            title="Search contacts">⌕</button>
                         <button type="button" aria-label="More contact options"
+                           id="contactsOptionsToggle" aria-expanded="false"
+                           aria-controls="contactsOptionsMenu"
                            title="More options">•••</button>
                      </div>
                </div>
+
+               <div id="contactsOptionsMenu" class="contacts-options-menu"
+                  role="menu" aria-label="Contact options" hidden>
+                  <button type="button" role="menuitemcheckbox"
+                     aria-checked="false" data-contact-menu-action="online">
+                     Show online contacts
+                  </button>
+                  <button type="button" role="menuitem"
+                     data-contact-menu-action="all">
+                     Show all contacts
+                  </button>
+               </div>
+
+               <input type="search" id="contactSearchInput"
+                  class="contact-search-input" placeholder="Search contacts"
+                  aria-label="Search contacts" hidden>
+               <p id="contactFilterStatus" class="sidebar-feedback"
+                  role="status" hidden></p>
 
                <!-- JavaScript will insert contacts from users.json here -->
                <div id="rightSidebarContacts" class="contacts-list">
@@ -375,6 +406,12 @@
                      <!-- Group Chats -->
                      <section class="sidebar-section group-chats-section">
                         <h3>Group Chats</h3>
+                        <p class="group-chats-note">
+                           Group shortcuts are saved in this browser only.
+                        </p>
+                        <div id="rightSidebarGroups" class="group-chat-list"></div>
+                        <p id="groupChatStatus" class="sidebar-feedback"
+                           role="status"></p>
 
                         <button type="button" class="create-group-button"
                            aria-label="Create group chat" title="Create group chat">

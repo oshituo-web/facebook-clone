@@ -4,14 +4,13 @@
 ======================================== */
 
 .right-sidebar {
-    width: 320px;
-    min-width: 280px;
+    min-width: 0;
     height: calc(100vh - 56px);
     position: sticky;
     top: 56px;
     align-self: start;
 
-    padding: 16px 12px;
+    padding: 16px 0 16px 20px;
     box-sizing: border-box;
 
     background-color: #f0f2f5;

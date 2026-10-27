@@ -8,7 +8,7 @@
 
 .facebook-header {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 640px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 600px minmax(0, 1fr);
     align-items: center;
 
     width: 100%;
@@ -41,7 +41,7 @@
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    margin-left: 18px;
+    margin-left: 10px;
 
     color: var(--facebook-blue);
     text-decoration: none;

@@ -79,8 +79,10 @@ function renderRightSidebarContacts(users) {
 
     // Create a contact entry using each user's JSON data.
     users.forEach((user) => {
-        const contactItem = document.createElement("li");
+        const contactItem = document.createElement("button");
+        contactItem.type = "button";
         contactItem.className = "contact-item";
+        contactItem.dataset.online = String(user.isOnline === true);
 
         const avatarWrapper = document.createElement("div");
         avatarWrapper.className = "contact-avatar";
@@ -101,11 +103,13 @@ function renderRightSidebarContacts(users) {
             avatarWrapper.appendChild(avatarImage);
         }
 
-        const onlineIndicator = document.createElement("span");
-        onlineIndicator.className = "online-indicator";
-        onlineIndicator.setAttribute("role", "img");
-        onlineIndicator.setAttribute("aria-label", "Online");
-        avatarWrapper.appendChild(onlineIndicator);
+        if (user.isOnline === true) {
+            const onlineIndicator = document.createElement("span");
+            onlineIndicator.className = "online-indicator";
+            onlineIndicator.setAttribute("role", "img");
+            onlineIndicator.setAttribute("aria-label", "Online");
+            avatarWrapper.appendChild(onlineIndicator);
+        }
 
         // Display the real name from the JSON record.
         const contactName = document.createElement("span");
@@ -114,7 +118,293 @@ function renderRightSidebarContacts(users) {
             user.name || user.username || "Unknown user";
 
         contactItem.append(avatarWrapper, contactName);
+        contactItem.setAttribute(
+            "aria-label",
+            `Open Messenger with ${contactName.textContent}`
+        );
+        contactItem.addEventListener("click", () => {
+            document.dispatchEvent(
+                new CustomEvent("facebook:open-contact", {
+                    detail: {
+                        name: contactName.textContent
+                    }
+                })
+            );
+        });
         contactsList.appendChild(contactItem);
+    });
+}
+
+function initializeRightSidebarInteractions() {
+    const birthdayWishText =
+        document.getElementById("birthdayWishText");
+    const copyBirthdayWishButton =
+        document.getElementById("copyBirthdayWish");
+    const birthdayWishStatus =
+        document.getElementById("birthdayWishStatus");
+
+    if (birthdayWishText && copyBirthdayWishButton && birthdayWishStatus) {
+        copyBirthdayWishButton.addEventListener("click", async () => {
+            try {
+                if (!navigator.clipboard?.writeText) {
+                    throw new Error("Clipboard access is unavailable.");
+                }
+
+                await navigator.clipboard.writeText(
+                    birthdayWishText.textContent.trim()
+                );
+                birthdayWishStatus.textContent = "Birthday wish copied.";
+            } catch (error) {
+                console.error("Could not copy the birthday wish:", error);
+                birthdayWishStatus.textContent =
+                    "Couldn't copy the wish. Select the text above to copy it manually.";
+            }
+        });
+    }
+
+    const contactsList = document.getElementById("rightSidebarContacts");
+    const searchToggle = document.getElementById("contactsSearchToggle");
+    const searchInput = document.getElementById("contactSearchInput");
+    const optionsToggle = document.getElementById("contactsOptionsToggle");
+    const optionsMenu = document.getElementById("contactsOptionsMenu");
+    const contactStatus = document.getElementById("contactFilterStatus");
+
+    if (
+        contactsList &&
+        searchToggle &&
+        searchInput instanceof HTMLInputElement &&
+        optionsToggle &&
+        optionsMenu &&
+        contactStatus
+    ) {
+        let onlineOnly = false;
+        const onlineMenuItem = optionsMenu.querySelector(
+            '[data-contact-menu-action="online"]'
+        );
+
+        const filterContacts = () => {
+            const query = searchInput.value.trim().toLocaleLowerCase();
+            const contactItems = [
+                ...contactsList.querySelectorAll(".contact-item")
+            ];
+            let visibleCount = 0;
+
+            contactItems.forEach((contact) => {
+                const matchesName = contact.textContent
+                    .trim()
+                    .toLocaleLowerCase()
+                    .includes(query);
+                const matchesOnline =
+                    !onlineOnly || contact.dataset.online === "true";
+                const isVisible = matchesName && matchesOnline;
+
+                contact.hidden = !isVisible;
+                visibleCount += Number(isVisible);
+            });
+
+            if (contactItems.length > 0 && visibleCount === 0) {
+                contactStatus.textContent = "No contacts match your filters.";
+                contactStatus.hidden = false;
+            } else {
+                contactStatus.textContent = "";
+                contactStatus.hidden = true;
+            }
+        };
+
+        searchToggle.addEventListener("click", () => {
+            const isOpening = searchInput.hidden;
+            searchInput.hidden = !isOpening;
+            searchToggle.setAttribute("aria-expanded", String(isOpening));
+
+            if (isOpening) {
+                searchInput.focus();
+            } else {
+                searchInput.value = "";
+                filterContacts();
+            }
+        });
+
+        searchInput.addEventListener("input", filterContacts);
+
+        const closeOptionsMenu = (returnFocus = false) => {
+            optionsMenu.hidden = true;
+            optionsToggle.setAttribute("aria-expanded", "false");
+
+            if (returnFocus) {
+                optionsToggle.focus();
+            }
+        };
+
+        optionsToggle.addEventListener("click", () => {
+            const isOpening = optionsMenu.hidden;
+            optionsMenu.hidden = !isOpening;
+            optionsToggle.setAttribute("aria-expanded", String(isOpening));
+
+            if (isOpening) {
+                optionsMenu.querySelector("button")?.focus();
+            }
+        });
+
+        optionsMenu.addEventListener("click", (event) => {
+            if (!(event.target instanceof Element)) {
+                return;
+            }
+
+            const menuItem = event.target.closest("[data-contact-menu-action]");
+
+            if (!menuItem || !optionsMenu.contains(menuItem)) {
+                return;
+            }
+
+            if (menuItem.dataset.contactMenuAction === "online") {
+                onlineOnly = !onlineOnly;
+                menuItem.setAttribute("aria-checked", String(onlineOnly));
+            } else if (menuItem.dataset.contactMenuAction === "all") {
+                onlineOnly = false;
+                searchInput.value = "";
+                filterContacts();
+            }
+
+            if (onlineMenuItem) {
+                onlineMenuItem.setAttribute(
+                    "aria-checked",
+                    String(onlineOnly)
+                );
+            }
+            filterContacts();
+            closeOptionsMenu();
+            optionsToggle.focus();
+        });
+
+        optionsMenu.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") {
+                closeOptionsMenu(true);
+            }
+        });
+
+        document.addEventListener("click", (event) => {
+            if (
+                event.target instanceof Node &&
+                !optionsMenu.contains(event.target) &&
+                !optionsToggle.contains(event.target)
+            ) {
+                closeOptionsMenu();
+            }
+        });
+    }
+
+    const groupList = document.getElementById("rightSidebarGroups");
+    const createGroupButton =
+        document.querySelector(".create-group-button");
+    const groupStatus = document.getElementById("groupChatStatus");
+
+    if (!groupList || !createGroupButton || !groupStatus) {
+        return;
+    }
+
+    const groupStorageKey =
+        `facebookCloneLocalGroups_auth-${authenticatedUser?.id || "guest"}`;
+    let groups = [];
+
+    const saveGroups = () => {
+        try {
+            localStorage.setItem(groupStorageKey, JSON.stringify(groups));
+            return true;
+        } catch (error) {
+            console.error("Could not save local group shortcuts:", error);
+            return false;
+        }
+    };
+
+    const renderGroups = () => {
+        groupList.replaceChildren();
+
+        groups.forEach((groupName) => {
+            const groupButton = document.createElement("button");
+            groupButton.type = "button";
+            groupButton.className = "group-chat-item";
+            groupButton.textContent = groupName;
+            groupButton.setAttribute("aria-pressed", "false");
+
+            groupButton.addEventListener("click", () => {
+                groupList.querySelectorAll(".group-chat-item")
+                    .forEach((item) => {
+                        item.setAttribute(
+                            "aria-pressed",
+                            String(item === groupButton)
+                        );
+                    });
+                groupStatus.textContent =
+                    `"${groupName}" selected. Group messaging is not connected.`;
+            });
+
+            groupList.appendChild(groupButton);
+        });
+    };
+
+    try {
+        const savedGroups = localStorage.getItem(groupStorageKey);
+
+        if (savedGroups) {
+            const parsedGroups = JSON.parse(savedGroups);
+
+            if (
+                !Array.isArray(parsedGroups) ||
+                parsedGroups.some((name) => typeof name !== "string")
+            ) {
+                throw new Error("Saved group shortcuts have an invalid format.");
+            }
+
+            groups = parsedGroups;
+        }
+    } catch (error) {
+        console.error("Could not load local group shortcuts:", error);
+        groupStatus.textContent =
+            "Saved group shortcuts couldn't be loaded in this browser.";
+    }
+
+    renderGroups();
+
+    createGroupButton.addEventListener("click", () => {
+        const groupName = window.prompt("Enter a name for your group chat:");
+
+        if (groupName === null) {
+            return;
+        }
+
+        const trimmedName = groupName.trim();
+
+        if (!trimmedName) {
+            groupStatus.textContent = "Enter a group name to continue.";
+            return;
+        }
+
+        if (trimmedName.length > 40) {
+            groupStatus.textContent =
+                "Group names must be 40 characters or fewer.";
+            return;
+        }
+
+        if (
+            groups.some(
+                (name) => name.toLocaleLowerCase() ===
+                    trimmedName.toLocaleLowerCase()
+            )
+        ) {
+            groupStatus.textContent = "That group shortcut already exists.";
+            return;
+        }
+
+        groups.push(trimmedName);
+        renderGroups();
+
+        if (saveGroups()) {
+            groupStatus.textContent =
+                `"${trimmedName}" added. This shortcut is saved only in this browser; group messaging is not connected.`;
+        } else {
+            groupStatus.textContent =
+                `"${trimmedName}" added for this session, but couldn't be saved in this browser.`;
+        }
     });
 }
 
@@ -499,6 +789,10 @@ async function loadApplicationData() {
 
         // Display contacts using the users loaded from users.json.
         renderRightSidebarContacts(users);
+<<<<<<< HEAD
+=======
+        initializeRightSidebarInteractions();
+>>>>>>> feature/right-sidebar
 
         /*
          * Render the create-post composer.
@@ -1418,6 +1712,7 @@ profile: {
     // Store each Messenger panel's loading function.
     // A WeakMap associates the function with its panel.
     const messengerPanelLoaders = new WeakMap();
+    const messengerPanelContactOpeners = new WeakMap();
 
 
     function closeHeaderPanel() {
@@ -1696,7 +1991,11 @@ profile: {
      let profiles = [];
      let selectedProfile = null;
      let currentUserId = null;
+<<<<<<< HEAD
      let loadingUsers = false;
+=======
+     let loadingUsersPromise = null;
+>>>>>>> feature/right-sidebar
 
 
      /* -----------------------------------------------------
@@ -1803,6 +2102,7 @@ profile: {
         Load profiles from Supabase.
      ----------------------------------------------------- */
 
+<<<<<<< HEAD
      async function loadUsers() {
          if (loadingUsers) {
              return;
@@ -1848,6 +2148,55 @@ profile: {
          } finally {
              loadingUsers = false;
          }
+=======
+     function loadUsers() {
+         if (loadingUsersPromise) {
+             return loadingUsersPromise;
+         }
+
+         loadingUsersPromise = (async () => {
+             userList.replaceChildren();
+
+             const loadingMessage = document.createElement("p");
+             loadingMessage.className = "header-dropdown-empty";
+             loadingMessage.textContent = "Loading registered users...";
+
+             userList.appendChild(loadingMessage);
+
+             try {
+                 await loadCurrentUserId();
+
+                 // Load only users who are already friends with the current user.
+                 profiles = await getMyFriends();
+
+                 renderUserList();
+
+             } catch (error) {
+                 console.error("Failed to load Messenger users:", error);
+
+                 userList.replaceChildren();
+
+                 const errorMessage = document.createElement("p");
+                 errorMessage.className = "header-dropdown-empty";
+                 errorMessage.textContent =
+                     "Couldn't load users. Please try again.";
+
+                 const retryButton = document.createElement("button");
+                 retryButton.type = "button";
+                 retryButton.className = "header-dropdown-item";
+                 retryButton.textContent = "Retry";
+
+                 retryButton.addEventListener("click", loadUsers);
+
+                 userList.append(errorMessage, retryButton);
+
+             } finally {
+                 loadingUsersPromise = null;
+             }
+         })();
+
+         return loadingUsersPromise;
+>>>>>>> feature/right-sidebar
      }
 
 
@@ -1989,6 +2338,7 @@ profile: {
          messageInput.focus();
      }
 
+<<<<<<< HEAD
 
 
      /* -----------------------------------------------------
@@ -2001,6 +2351,44 @@ profile: {
          conversationView.hidden = true;
          userList.hidden = false;
          searchInput.hidden = false;
+=======
+     async function openContact(contactName) {
+         await loadUsers();
+
+         const normalizedName = contactName.trim().toLocaleLowerCase();
+         const matchingProfile = profiles.find(
+             (profile) =>
+                 (profile.display_name || "").trim().toLocaleLowerCase() ===
+                 normalizedName
+         );
+
+         if (matchingProfile) {
+             await openConversation(matchingProfile);
+             return;
+         }
+
+         selectedProfile = null;
+         conversationView.hidden = true;
+         userList.hidden = false;
+         searchInput.hidden = false;
+         searchInput.value = contactName;
+         renderUserList();
+         searchInput.focus();
+     }
+
+
+
+     /* -----------------------------------------------------
+        Return to the list of registered users.
+     ----------------------------------------------------- */
+
+     backButton.addEventListener("click", () => {
+         selectedProfile = null;
+
+         conversationView.hidden = true;
+         userList.hidden = false;
+         searchInput.hidden = false;
+>>>>>>> feature/right-sidebar
 
          statusMessage.textContent = "";
 
@@ -2067,7 +2455,10 @@ profile: {
 
      // Return this function so the panel can reload users
      // whenever the Messenger dropdown is opened.
-     return loadUsers;
+     return {
+         loadUsers,
+         openContact
+     };
  }
 
 
@@ -2115,9 +2506,14 @@ profile: {
 
         // SECTION 7B: Initialize Messenger controls only for its panel.
         if (action === "messenger") {
+            const messengerActions = initializeMessengerPanel(panel);
             messengerPanelLoaders.set(
                 panel,
-                initializeMessengerPanel(panel)
+                messengerActions.loadUsers
+            );
+            messengerPanelContactOpeners.set(
+                panel,
+                messengerActions.openContact
             );
 }
 
@@ -2294,6 +2690,42 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+<<<<<<< HEAD
+=======
+document.addEventListener("facebook:open-contact", async (event) => {
+    const contactName = event.detail?.name;
+    const messengerButton = facebookHeader.querySelector(
+        '.utility-button[data-action="messenger"]'
+    );
+    const messengerPanel = facebookHeader.querySelector(
+        '.header-dropdown[data-panel="messenger"]'
+    );
+
+    if (
+        typeof contactName !== "string" ||
+        !messengerButton ||
+        !messengerPanel
+    ) {
+        return;
+    }
+
+    if (openPanel !== messengerPanel) {
+        messengerButton.click();
+    }
+
+    try {
+        const openContact =
+            messengerPanelContactOpeners.get(messengerPanel);
+
+        if (openContact) {
+            await openContact(contactName);
+        }
+    } catch (error) {
+        console.error("Could not open contact in Messenger:", error);
+    }
+});
+
+>>>>>>> feature/right-sidebar
 
  /* =========================================================
    PROFILE PICTURE UPLOAD — FILE INPUT HANDLER
